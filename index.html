@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="theme-color" content="#04060b" />
-  <title>OMNITRON // Willian AI Hub</title>
+  <title>OMNITRON v4.2 // Willian AI Hub</title>
   <link rel="manifest" href="./manifest.json" />
   <style>
     :root {
@@ -570,12 +571,12 @@
     </div>
 
     <div class="status-line">
-      <span id="status-text">OMNITRON ONLINE • TOQUE NO OLHO PARA FALAR</span>
+      <span id="status-text">OMNITRON v4.2 ONLINE • TOQUE NO OLHO PARA FALAR</span>
       <button class="stop-voice-btn" id="btn-stop-voice">⏹ PARAR VOZ</button>
     </div>
 
     <div class="teleprompter" id="teleprompter">
-      Núcleo Omnitron ativo. Toque no olho central para falar ou na engrenagem ⚙️ para configurar a voz colossal.
+      Núcleo Omnitron v4.2 ativo. Toque no olho central para falar ou na engrenagem ⚙️ para configurar a voz colossal.
     </div>
 
     <div class="quick-chips">
@@ -604,7 +605,7 @@
   <!-- Settings Modal -->
   <div class="overlay-panel" id="settings-panel">
     <div class="overlay-header">
-      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON</span>
+      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON v4.2</span>
       <button class="hud-btn" id="btn-close-settings">✕ Fechar</button>
     </div>
 
@@ -619,7 +620,7 @@
     </div>
 
     <div class="tip-box">
-      <strong>Nota importante:</strong> Sua chave Groq (<b>gsk_...</b>) agora detecta automaticamente o modelo ativo da sua conta. Para a <b>Voz Neural Masculina Colossal (Optimus Prime)</b>, gere uma chave gratuita <b>AIza...</b> em <b>aistudio.google.com/apikey</b> e cole no campo 2 acima.
+      <strong>Nota:</strong> Sua chave Groq (<b>gsk_...</b>) agora testa automaticamente todos os modelos liberados da sua conta. Para a <b>Voz Neural Masculina Colossal (Optimus Prime)</b>, gere uma chave gratuita <b>AIza...</b> em <b>aistudio.google.com/apikey</b> e cole no campo 2 acima.
     </div>
 
     <div class="field-group">
@@ -654,6 +655,13 @@
   </div>
 
   <script>
+    // Clear old service worker caches so updates load immediately
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(r => r.unregister());
+      }).catch(() => {});
+    }
+
     const state = {
       mode: 'chat',
       voiceEnabled: true,
@@ -898,7 +906,7 @@
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+      setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
     }
 
     async function speakWithGeminiColossus(cleanText, voiceKey, keepScreenText) {
@@ -960,14 +968,14 @@
 
       playBufferThroughIronDSP(audioBuffer, () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+        setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
       });
     }
 
     function speakFallbackBrowser(cleanText, keepScreenText) {
       if (!keepScreenText) teleprompter.textContent = cleanText;
       if (!('speechSynthesis' in window)) {
-        setVisualState('idle', 'OMNITRON ONLINE');
+        setVisualState('idle', 'OMNITRON v4.2 ONLINE');
         return;
       }
       playIronIgnition();
@@ -987,11 +995,11 @@
       utter.rate = 0.86;
       utter.onend = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+        setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
       };
       utter.onerror = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON ONLINE');
+        setVisualState('idle', 'OMNITRON v4.2 ONLINE');
       };
       window.speechSynthesis.speak(utter);
     }
@@ -1003,7 +1011,7 @@
 
       if (!state.voiceEnabled) {
         if (!keepScreenText) teleprompter.textContent = clean;
-        setVisualState('idle', 'OMNITRON ONLINE • VOZ SILENCIADA');
+        setVisualState('idle', 'OMNITRON v4.2 ONLINE • VOZ SILENCIADA');
         return;
       }
 
@@ -1060,7 +1068,7 @@
 
       recognition.onend = () => {
         if (body.getAttribute('data-state') === 'listening') {
-          setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+          setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
         }
       };
     }
@@ -1129,8 +1137,10 @@
       }
 
       if (key.startsWith('gsk_')) {
-        let chosenModel = state.cachedGroqModel;
-        if (!chosenModel) {
+        let candidateModels = [];
+        if (state.cachedGroqModel) {
+          candidateModels = [state.cachedGroqModel];
+        } else {
           const modelsRes = await fetch('https://api.groq.com/openai/v1/models', {
             headers: { 'Authorization': `Bearer ${key}` }
           });
@@ -1138,42 +1148,49 @@
           if (!modelsRes.ok || modelsData.error) {
             throw new Error('Groq API: ' + (modelsData.error?.message || `HTTP ${modelsRes.status}`));
           }
-          const validModels = (modelsData.data || [])
+          const available = (modelsData.data || [])
             .map(m => m.id)
             .filter(id => !/whisper|guard|safeguard|embed|tts|playai|orpheus|vision/i.test(id));
 
-          chosenModel =
-            validModels.find(id => /llama-3\.3.*70b/i.test(id)) ||
-            validModels.find(id => /llama-4|llama-3\.1.*70b|qwen.*32b|deepseek/i.test(id)) ||
-            validModels.find(id => /llama-3\.1.*8b|gemma|mixtral|gpt-oss/i.test(id)) ||
-            validModels[0];
+          const preferred = [
+            ...available.filter(id => /llama-3\.1-8b-instant/i.test(id)),
+            ...available.filter(id => /llama-4|qwen|gpt-oss|gemma|mixtral/i.test(id)),
+            ...available.filter(id => /llama-3\.3/i.test(id)),
+            ...available
+          ];
+          candidateModels = [...new Set(preferred)];
+        }
 
-          if (!chosenModel) {
-            throw new Error('Nenhum modelo de texto ativo encontrado na sua conta Groq.');
-          }
-          state.cachedGroqModel = chosenModel;
+        if (!candidateModels.length) {
+          throw new Error('Nenhum modelo de texto disponível nesta chave Groq.');
         }
 
         const msgs = useHistory
           ? [{ role: 'system', content: getSystemPrompt() }, ...state.history]
           : [{ role: 'user', content: promptText }];
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${key}`
-          },
-          body: JSON.stringify({
-            model: chosenModel,
-            messages: msgs
-          })
-        });
-        const data = await res.json();
-        if (!res.ok || data.error) {
-          state.cachedGroqModel = '';
-          throw new Error('Groq API: ' + (data.error?.message || `HTTP ${res.status}`));
+
+        let lastGroqErr = '';
+        for (const modelId of candidateModels) {
+          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${key}`
+            },
+            body: JSON.stringify({
+              model: modelId,
+              messages: msgs
+            })
+          });
+          const data = await res.json();
+          if (res.ok && !data.error && data.choices?.[0]?.message?.content) {
+            state.cachedGroqModel = modelId;
+            return data.choices[0].message.content;
+          }
+          lastGroqErr = data.error?.message || `HTTP ${res.status}`;
         }
-        return data.choices?.[0]?.message?.content || 'Sem resposta.';
+        state.cachedGroqModel = '';
+        throw new Error('Groq API: ' + lastGroqErr);
       }
 
       const model = document.getElementById('model-select').value;
@@ -1302,7 +1319,7 @@
     document.getElementById('btn-test-api').addEventListener('click', async () => {
       getAudioContext();
       saveSettingsToState();
-      showDiag('Conectando e buscando modelo ativo...');
+      showDiag('Conectando e testando modelos ativos...');
       try {
         const res = await callAIProvider('Responda em uma frase épica e curta: Conexão com o núcleo estabelecida.', false);
         const modelInfo = state.cachedGroqModel ? ` [Modelo: ${state.cachedGroqModel}]` : '';
