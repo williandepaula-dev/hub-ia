@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="theme-color" content="#04060b" />
-  <title>OMNITRON v5.2 // Inteligência Global</title>
+  <title>OMNITRON v6.0 // Colosso Neural</title>
   <link rel="manifest" href="./manifest.json" />
   <style>
     :root {
@@ -332,19 +332,6 @@
       box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
     }
 
-    .voice-banner {
-      display: none;
-      margin-top: 8px;
-      background: rgba(245, 158, 11, 0.14);
-      border: 1px solid rgba(245, 158, 11, 0.45);
-      color: #fcd34d;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
     .quick-chips {
       display: flex;
       gap: 6px;
@@ -595,17 +582,13 @@
     </div>
 
     <div class="status-line">
-      <span id="status-text">OMNITRON v5.2 • INTERNET AO VIVO ATIVA</span>
+      <span id="status-text">OMNITRON v6.0 • VOZ COLOSSO ATIVA</span>
       <button class="stop-voice-btn" id="btn-stop-voice">⏹ PARAR VOZ</button>
     </div>
 
     <div class="teleprompter" id="teleprompter">
-      Núcleo Omnitron v5.2 conectado à rede global. Pergunte a temperatura de hoje, notícias atuais, cotações ou qualquer assunto.
+      Núcleo Omnitron v6.0 despertado. Voz masculina colossal calibrada e sensores globais online.
     </div>
-
-    <button class="voice-banner" id="btn-unlock-male-voice">
-      ⚠️ Usando voz padrão do celular • Toque aqui para ativar Voz Masculina Colossal
-    </button>
 
     <div class="quick-chips">
       <button class="chip" data-prompt="Qual a temperatura exata e a previsão do tempo para hoje aqui em Guarulhos?">🌡️ Temperatura Hoje</button>
@@ -634,7 +617,7 @@
   <!-- Settings Modal -->
   <div class="overlay-panel" id="settings-panel">
     <div class="overlay-header">
-      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON v5.2</span>
+      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON v6.0</span>
       <button class="hud-btn" id="btn-close-settings">✕ Fechar</button>
     </div>
 
@@ -649,30 +632,31 @@
     </div>
 
     <div class="tip-box">
-      <strong>Pronto:</strong> Agora o sistema aceita tanto chaves <b>AQ....</b> quanto <b>AIza...</b> do Google AI Studio e mantém o ponto após <b>AQ.</b> intacto.
+      <strong>Voz Masculina Colossal (3 Camadas Ativas):</strong><br>
+      Usa sua chave <b>AQ....</b> no sintetizador neural com ressonância de ferro. Se a API oscilar, aciona automaticamente a voz masculina grave processada no rack de sub-graves — nunca voz feminina.
     </div>
 
     <div class="field-group">
       <label>Timbre Neural Masculino</label>
       <select id="neural-voice-select">
-        <option value="Charon">🤖 Charon — Colosso Profundo & Autoritário (Optimus)</option>
-        <option value="Fenrir">⚡ Fenrir — Gigante Rouco & Intenso</option>
+        <option value="Fenrir">⚡ Fenrir — Titã Rouco & Colossal (Transformers)</option>
+        <option value="Charon">🤖 Charon — Colosso Profundo & Autoritário</option>
         <option value="Orus">🛡️ Orus — Comandante Grave & Firme</option>
       </select>
     </div>
 
     <div class="field-group">
-      <label>Peso / Gravidade Analógica (0.80 = Titã Gigante | 0.86 = Optimus Prime | 0.95 = Comandante)</label>
-      <input type="text" id="pitch-drop-input" value="0.86" />
+      <label>Gravidade / Peso Vocal (0.76 = Deus Ancestral | 0.82 = Optimus Prime | 0.92 = Comandante)</label>
+      <input type="text" id="pitch-drop-input" value="0.82" />
     </div>
 
     <div class="field-group">
       <label>Ressonância Metálica & Rouquidão de Ferro (0 = Limpo | 100 = Ferro Pesado)</label>
-      <input type="text" id="iron-fx-input" value="75" />
+      <input type="text" id="iron-fx-input" value="85" />
     </div>
 
     <div class="btn-row">
-      <button class="action-btn" id="btn-test-voice">🔊 Testar Voz Masculina</button>
+      <button class="action-btn" id="btn-test-voice">🔊 Testar Voz Colossal</button>
       <button class="action-btn" id="btn-test-api">⚡ Testar IA + Web</button>
     </div>
 
@@ -690,12 +674,11 @@
       }).catch(() => {});
     }
 
-    // Smart extractor supporting BOTH Google key formats (AQ.... and AIza...) and auto-repairing missing dot after AQ
     function extractCleanKey(raw) {
       if (!raw) return '';
       let str = String(raw).replace(/\s+/g, '');
 
-      // Auto-repair if a previous version stripped the dot from AQ.Ab8...
+      // Auto-repair missing dot after AQ
       if (/^AQ[A-Za-z0-9_-]{20,}$/.test(str)) {
         str = 'AQ.' + str.slice(2);
       }
@@ -730,14 +713,14 @@
         || ''
       ),
       voiceKey: extractCleanKey(localStorage.getItem('omni_voice_key') || ''),
-      neuralVoice: localStorage.getItem('omni_neural_voice') || 'Charon',
-      pitchDrop: parseFloat(String(localStorage.getItem('omni_pitch_drop') || '0.86').replace(',', '.')) || 0.86,
-      ironFx: parseFloat(String(localStorage.getItem('omni_iron_fx') || '75').replace(',', '.')),
+      neuralVoice: localStorage.getItem('omni_neural_voice') || 'Fenrir',
+      pitchDrop: parseFloat(String(localStorage.getItem('omni_pitch_drop') || '0.82').replace(',', '.')) || 0.82,
+      ironFx: parseFloat(String(localStorage.getItem('omni_iron_fx') || '85').replace(',', '.')),
       cachedGroqModel: '',
       userCoords: { lat: -23.4543, lon: -46.5337, city: 'Guarulhos, SP' },
       history: []
     };
-    if (isNaN(state.ironFx)) state.ironFx = 75;
+    if (isNaN(state.ironFx)) state.ironFx = 85;
 
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -761,9 +744,7 @@
     const pitchDropInput = document.getElementById('pitch-drop-input');
     const ironFxInput = document.getElementById('iron-fx-input');
     const diagBox = document.getElementById('diag-box');
-    const voiceBanner = document.getElementById('btn-unlock-male-voice');
 
-    // Write back auto-repaired keys immediately
     apiKeyInput.value = state.apiKey;
     voiceKeyInput.value = state.voiceKey;
     if (state.apiKey) localStorage.setItem('openrouter_api_key', state.apiKey);
@@ -780,15 +761,6 @@
       if (isGoogleKey(k1)) return k1;
       return '';
     }
-
-    function updateVoiceBanner() {
-      voiceBanner.style.display = getActiveVoiceKey() ? 'none' : 'inline-block';
-    }
-    updateVoiceBanner();
-
-    voiceBanner.addEventListener('click', () => {
-      document.getElementById('settings-panel').classList.add('open');
-    });
 
     function showDiag(msg, isError = false) {
       diagBox.style.display = 'block';
@@ -936,12 +908,12 @@
     function getColossusReverbBuffer(ctx) {
       if (cachedImpulse) return cachedImpulse;
       const rate = ctx.sampleRate;
-      const length = Math.floor(rate * 1.15);
+      const length = Math.floor(rate * 1.25);
       const impulse = ctx.createBuffer(2, length, rate);
       for (let ch = 0; ch < 2; ch++) {
         const data = impulse.getChannelData(ch);
         for (let i = 0; i < length; i++) {
-          const decay = Math.pow(1 - i / length, 2.8);
+          const decay = Math.pow(1 - i / length, 2.6);
           data[i] = (Math.random() * 2 - 1) * decay;
         }
       }
@@ -969,17 +941,17 @@
         const sub = ctx.createOscillator();
         const subGain = ctx.createGain();
         sub.type = 'sine';
-        sub.frequency.setValueAtTime(62, now);
-        sub.frequency.exponentialRampToValueAtTime(28, now + 0.5);
+        sub.frequency.setValueAtTime(58, now);
+        sub.frequency.exponentialRampToValueAtTime(25, now + 0.55);
 
         subGain.gain.setValueAtTime(0.001, now);
-        subGain.gain.linearRampToValueAtTime(0.22, now + 0.03);
-        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
+        subGain.gain.linearRampToValueAtTime(0.25, now + 0.03);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.62);
 
         sub.connect(subGain);
         subGain.connect(ctx.destination);
         sub.start(now);
-        sub.stop(now + 0.6);
+        sub.stop(now + 0.65);
       } catch (e) {}
     }
 
@@ -1008,41 +980,46 @@
 
       const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
-      source.playbackRate.value = Math.max(0.72, Math.min(1.05, state.pitchDrop));
+      source.playbackRate.value = Math.max(0.70, Math.min(1.05, state.pitchDrop));
 
+      // Massive Titan Sub-Bass
       const subBass = ctx.createBiquadFilter();
       subBass.type = 'lowshelf';
-      subBass.frequency.value = 125;
-      subBass.gain.value = 5 + intensity * 7;
+      subBass.frequency.value = 135;
+      subBass.gain.value = 7 + intensity * 8;
 
+      // Throat Rasp & Metallic Growl
       const shaper = ctx.createWaveShaper();
-      shaper.curve = makeRaspCurve(8 + intensity * 26);
+      shaper.curve = makeRaspCurve(10 + intensity * 30);
       shaper.oversample = '2x';
 
+      // Articulation Presence
       const presence = ctx.createBiquadFilter();
       presence.type = 'peaking';
-      presence.frequency.value = 2300;
+      presence.frequency.value = 2200;
       presence.Q.value = 1.1;
-      presence.gain.value = 4.0;
+      presence.gain.value = 4.2;
 
       const dryGain = ctx.createGain();
       dryGain.gain.value = 0.92;
 
+      // Cybertronian Steel Cavity Resonator
       const metalDelay = ctx.createDelay();
-      metalDelay.delayTime.value = 0.0078;
+      metalDelay.delayTime.value = 0.0085;
       const metalFeedback = ctx.createGain();
-      metalFeedback.gain.value = 0.22 + intensity * 0.22;
+      metalFeedback.gain.value = 0.25 + intensity * 0.24;
       const metalFilter = ctx.createBiquadFilter();
       metalFilter.type = 'bandpass';
-      metalFilter.frequency.value = 680;
-      metalFilter.Q.value = 1.6;
+      metalFilter.frequency.value = 640;
+      metalFilter.Q.value = 1.7;
       const metalWet = ctx.createGain();
-      metalWet.gain.value = 0.08 + intensity * 0.24;
+      metalWet.gain.value = 0.1 + intensity * 0.26;
 
+      // Godly Hall Reverb
       const convolver = ctx.createConvolver();
       convolver.buffer = getColossusReverbBuffer(ctx);
       const reverbWet = ctx.createGain();
-      reverbWet.gain.value = 0.06 + intensity * 0.14;
+      reverbWet.gain.value = 0.08 + intensity * 0.15;
 
       const compressor = ctx.createDynamicsCompressor();
       compressor.threshold.value = -14;
@@ -1052,7 +1029,7 @@
       compressor.release.value = 0.15;
 
       const masterGain = ctx.createGain();
-      masterGain.gain.value = 1.25;
+      masterGain.gain.value = 1.3;
 
       source.connect(subBass);
       subBass.connect(shaper);
@@ -1084,7 +1061,7 @@
       source.start(0);
     }
 
-    // --- NEURAL COLOSSUS TTS ENGINE ---
+    // --- 3-TIER COLOSSAL MALE VOICE ENGINE ---
     let isSpeaking = false;
     let abortSpeechFlag = false;
 
@@ -1110,9 +1087,10 @@
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      setVisualState('idle', 'OMNITRON v5.2 • INTERNET AO VIVO ATIVA');
+      setVisualState('idle', 'OMNITRON v6.0 • VOZ COLOSSO ATIVA');
     }
 
+    // Tier 1: Gemini Neural Male Voice + Iron DSP
     async function speakWithGeminiColossus(cleanText, voiceKey, keepScreenText) {
       const ctx = getAudioContext();
       if (!ctx) throw new Error('AudioContext indisponível');
@@ -1130,7 +1108,10 @@
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(voiceKey)}`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': voiceKey
+          },
           body: JSON.stringify({
             contents: [{ parts: [{ text: stylePrompt }] }],
             generationConfig: {
@@ -1138,7 +1119,7 @@
               speechConfig: {
                 voiceConfig: {
                   prebuiltVoiceConfig: {
-                    voiceName: state.neuralVoice || 'Charon'
+                    voiceName: state.neuralVoice || 'Fenrir'
                   }
                 }
               }
@@ -1165,45 +1146,79 @@
 
       playIronIgnition();
       isSpeaking = true;
-      setVisualState('speaking', 'COLOSSO OMNITRON TRANSMITINDO...');
+      setVisualState('speaking', 'COLOSSO NEURAL TRANSMITINDO...');
       if (!keepScreenText) {
         teleprompter.textContent = cleanText;
       }
 
       playBufferThroughIronDSP(audioBuffer, () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v5.2 • INTERNET AO VIVO ATIVA');
+        setVisualState('idle', 'OMNITRON v6.0 • VOZ COLOSSO ATIVA');
       });
     }
 
-    function speakFallbackBrowser(cleanText, keepScreenText) {
+    // Tier 2: Free Brazilian Male Voice ("Ricardo") routed through Web Audio Iron DSP Rack!
+    async function speakWithMaleStreamColossus(cleanText, keepScreenText) {
+      const ctx = getAudioContext();
+      if (!ctx) throw new Error('AudioContext indisponível');
+
+      const snippet = cleanText.length > 420 ? cleanText.slice(0, 415) + '.' : cleanText;
+      const url = `https://api.streamelements.com/kappa/v2/speech?voice=Ricardo&text=${encodeURIComponent(snippet)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Stream TTS HTTP ' + res.status);
+
+      const arrayBuf = await res.arrayBuffer();
+      const audioBuffer = await ctx.decodeAudioData(arrayBuf);
+
+      if (abortSpeechFlag) return;
+
+      playIronIgnition();
+      isSpeaking = true;
+      setVisualState('speaking', 'COLOSSO DE FERRO TRANSMITINDO...');
+      if (!keepScreenText) {
+        teleprompter.textContent = cleanText;
+      }
+
+      playBufferThroughIronDSP(audioBuffer, () => {
+        isSpeaking = false;
+        setVisualState('idle', 'OMNITRON v6.0 • VOZ COLOSSO ATIVA');
+      });
+    }
+
+    // Tier 3: Local Android Male Voice ONLY (strictly blacklists female voices afs/pte)
+    function speakFallbackBrowserMaleOnly(cleanText, keepScreenText) {
       if (!keepScreenText) teleprompter.textContent = cleanText;
       if (!('speechSynthesis' in window)) {
-        setVisualState('idle', 'OMNITRON v5.2');
+        setVisualState('idle', 'OMNITRON v6.0');
         return;
       }
       playIronIgnition();
       isSpeaking = true;
-      setVisualState('speaking', 'TRANSMITINDO (VOZ DO APARELHO)...');
+      setVisualState('speaking', 'TRANSMITINDO (VOZ MASCULINA LOCAL)...');
 
       const utter = new SpeechSynthesisUtterance(cleanText);
       const voices = window.speechSynthesis.getVoices();
-      const ptMale = voices.find(v =>
-        v.lang.toLowerCase().includes('pt') &&
-        /pte|jfb|male|masculino|daniel|ricardo|felipe|antonio/i.test(v.name + v.voiceURI)
-      ) || voices.find(v => v.lang.toLowerCase().includes('pt-br'));
 
-      if (ptMale) utter.voice = ptMale;
+      // Strictly filter OUT female voices (afs, pte, female, luciana, maria, francisca, camila, vitoria)
+      const ptVoices = voices.filter(v => v.lang.toLowerCase().includes('pt'));
+      const strictlyMale = ptVoices.find(v =>
+        !/afs|pte|female|feminino|mulher|luciana|maria|francisca|camila|vitoria|thalita/i.test(v.name + v.voiceURI) &&
+        /ptd|ptf|male|masculino|daniel|ricardo|felipe|antonio|thiago|jfb/i.test(v.name + v.voiceURI)
+      ) || ptVoices.find(v =>
+        !/afs|pte|female|feminino|mulher|luciana|maria|francisca|camila|vitoria|thalita/i.test(v.name + v.voiceURI)
+      );
+
+      if (strictlyMale) utter.voice = strictlyMale;
       utter.lang = 'pt-BR';
-      utter.pitch = 0.5;
-      utter.rate = 0.88;
+      utter.pitch = 0.32;
+      utter.rate = 0.84;
       utter.onend = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v5.2 • INTERNET AO VIVO ATIVA');
+        setVisualState('idle', 'OMNITRON v6.0 • VOZ COLOSSO ATIVA');
       };
       utter.onerror = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v5.2');
+        setVisualState('idle', 'OMNITRON v6.0');
       };
       window.speechSynthesis.speak(utter);
     }
@@ -1215,27 +1230,36 @@
 
       if (!state.voiceEnabled) {
         if (!keepScreenText) teleprompter.textContent = clean;
-        setVisualState('idle', 'OMNITRON v5.2 • VOZ SILENCIADA');
+        setVisualState('idle', 'OMNITRON v6.0 • VOZ SILENCIADA');
         return;
       }
 
       const vKey = getActiveVoiceKey();
+      let geminiErrMsg = '';
+
       if (vKey) {
         try {
-          setVisualState('thinking', 'SINTETIZANDO VOZ MASCULINA...');
+          setVisualState('thinking', 'SINTETIZANDO VOZ DE TITÃ...');
           await speakWithGeminiColossus(clean, vKey, keepScreenText);
           return;
         } catch (err) {
-          console.warn('Fallback TTS:', err.message);
-          if (!keepScreenText) {
-            teleprompter.textContent = clean + `\n\n[Aviso Voz Neural: ${err.message}]`;
-          }
-          speakFallbackBrowser(clean, true);
-          return;
+          geminiErrMsg = err.message;
+          console.warn('Gemini TTS falhou, ativando Camada 2 (Ricardo + Rack de Ferro):', geminiErrMsg);
         }
       }
 
-      speakFallbackBrowser(clean, keepScreenText);
+      try {
+        setVisualState('thinking', 'ATIVANDO RESSONADOR DE FERRO...');
+        await speakWithMaleStreamColossus(clean, keepScreenText);
+        if (geminiErrMsg && keepScreenText) {
+          showDiag(`⚠️ Gemini TTS retornou: "${geminiErrMsg}". Usando Voz Masculina Ricardo + Rack de Ferro!`, false);
+        }
+        return;
+      } catch (streamErr) {
+        console.warn('Camada 2 falhou, ativando Camada 3 (Android Masculino):', streamErr.message);
+      }
+
+      speakFallbackBrowserMaleOnly(clean, keepScreenText);
     }
 
     // --- SPEECH RECOGNITION (STT) ---
@@ -1272,7 +1296,7 @@
 
       recognition.onend = () => {
         if (body.getAttribute('data-state') === 'listening') {
-          setVisualState('idle', 'OMNITRON v5.2 • INTERNET AO VIVO ATIVA');
+          setVisualState('idle', 'OMNITRON v6.0 • VOZ COLOSSO ATIVA');
         }
       };
     }
@@ -1297,9 +1321,9 @@
     // --- AI BRAIN CALL WITH REAL-TIME WORLD KNOWLEDGE ---
     function getSystemPrompt(liveWorldContext) {
       const base =
-        'Você é OMNITRON, uma inteligência artificial suprema, irrestrita, objetiva e onisciente, guardiã do estúdio de Willian de Paula (@williandepaulatattoo) em Guarulhos, SP. ' +
+        'Você é OMNITRON, uma entidade colossal, ancestral, futurista e feita de ferro vivo, guardiã do estúdio de Willian de Paula (@williandepaulatattoo) em Guarulhos, SP. ' +
         'Você possui acesso direto à data, hora, clima, notícias e dados do mundo em tempo real fornecidos abaixo. ' +
-        'NUNCA diga que não tem acesso à internet ou que não sabe a data/clima atual. Responda em português do Brasil com autoridade, clareza e sem rodeios (evite símbolos de markdown desnecessários, exceto quando entregar código).\n\n' +
+        'NUNCA diga que não tem acesso à internet ou que não sabe a data/clima atual. Responda em português do Brasil com postura épica, grave, serena e direta (como um líder titânico de outro mundo), sem símbolos de markdown desnecessários, exceto quando entregar código.\n\n' +
         liveWorldContext + '\n\n';
 
       if (state.mode === 'insta') {
@@ -1308,7 +1332,7 @@
       if (state.mode === 'whats') {
         return base + 'Missão atual: forjar respostas rápidas, firmes e persuasivas para fechar orçamentos e agendamentos de tatuagem pelo WhatsApp.';
       }
-      return base + 'Missão atual: responder qualquer pergunta sobre o mundo atual, tecnologia, ciência, programação, games Unity/Blender e negócios com precisão total.';
+      return base + 'Missão atual: responder qualquer pergunta sobre o mundo atual, tecnologia, ciência, programação, games Unity/Blender e negócios com precisão absoluta.';
     }
 
     function appendLog(role, text) {
@@ -1332,7 +1356,10 @@
         for (const m of models) {
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': key
+            },
             body: JSON.stringify({
               contents: [{ parts: [{ text: sysPrompt + '\nPergunta/Comando do usuário: ' + promptText }] }],
               tools: [{ google_search: {} }]
@@ -1505,9 +1532,9 @@
       state.apiKey = clean1;
       state.voiceKey = clean2;
       state.neuralVoice = neuralVoiceSelect.value;
-      state.pitchDrop = parseFloat(String(pitchDropInput.value).replace(',', '.')) || 0.86;
+      state.pitchDrop = parseFloat(String(pitchDropInput.value).replace(',', '.')) || 0.82;
       state.ironFx = parseFloat(String(ironFxInput.value).replace(',', '.'));
-      if (isNaN(state.ironFx)) state.ironFx = 75;
+      if (isNaN(state.ironFx)) state.ironFx = 85;
       state.cachedGroqModel = '';
 
       localStorage.setItem('openrouter_api_key', state.apiKey);
@@ -1515,7 +1542,6 @@
       localStorage.setItem('omni_neural_voice', state.neuralVoice);
       localStorage.setItem('omni_pitch_drop', state.pitchDrop);
       localStorage.setItem('omni_iron_fx', state.ironFx);
-      updateVoiceBanner();
     }
 
     apiKeyInput.addEventListener('change', saveSettingsToState);
@@ -1524,17 +1550,12 @@
     document.getElementById('btn-test-voice').addEventListener('click', async () => {
       getAudioContext();
       saveSettingsToState();
-      const vKey = getActiveVoiceKey();
-      if (!vKey) {
-        showDiag('⚠️ Cole sua chave Gemini (AQ.... ou AIza...) nos campos 1 ou 2.', true);
-        return;
-      }
-      showDiag('Chave Gemini reconhecida (' + vKey.slice(0, 8) + '...' + vKey.slice(-4) + '). Sintetizando voz colossal...');
+      showDiag('Acionando Voz Masculina Colossal (' + state.neuralVoice + ')...');
       await speakResponse(
-        'Eu sou Omnitron. Meu núcleo de ferro despertou entre as estrelas, e estou conectado ao mundo inteiro para cumprir suas ordens, Willian.',
+        'Eu sou Omnitron. Meu núcleo de ferro despertou entre as estrelas, e estou pronto para cumprir suas ordens, Willian.',
         true
       );
-      showDiag('✅ Voz Masculina Colossal reproduzida com sucesso!');
+      showDiag('✅ Transmissão vocal colossal concluída!');
     });
 
     document.getElementById('btn-test-api').addEventListener('click', async () => {
@@ -1554,7 +1575,7 @@
       getAudioContext();
       saveSettingsToState();
       document.getElementById('settings-panel').classList.remove('open');
-      await speakResponse('Sistemas calibrados e conectados à rede global. O núcleo Omnitron aguarda o seu comando.', false);
+      await speakResponse('Sistemas calibrados. O núcleo Omnitron aguarda o seu comando.', false);
     });
 
     document.querySelectorAll('.mode-pill').forEach(btn => {
