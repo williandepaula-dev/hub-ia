@@ -575,7 +575,7 @@
     </div>
 
     <div class="teleprompter" id="teleprompter">
-      Núcleo Omnitron despertar completo. Toque na engrenagem ⚙️ para configurar sua chave e ativar a voz colossal de ferro.
+      Núcleo Omnitron ativo. Toque no olho central para falar ou na engrenagem ⚙️ para configurar a voz colossal.
     </div>
 
     <div class="quick-chips">
@@ -609,17 +609,17 @@
     </div>
 
     <div class="field-group">
-      <label>1. Chave Principal de IA (OpenRouter `sk-or-...`, Gemini `AIza...` ou Groq `gsk_...`)</label>
+      <label>1. Chave Principal de IA (Groq `gsk_...`, Gemini `AIza...` ou OpenRouter `sk-or-...`)</label>
       <input type="password" id="api-key-input" placeholder="Cole sua API Key aqui..." />
     </div>
 
     <div class="field-group">
-      <label>2. Chave de Voz Neural Colossal (Gemini `AIza...` — se já colou acima, pode deixar igual)</label>
+      <label>2. Chave de Voz Neural Colossal (Gemini `AIza...` gratuita em aistudio.google.com/apikey)</label>
       <input type="password" id="voice-key-input" placeholder="Cole chave AIza... para voz estilo Optimus Prime..." />
     </div>
 
     <div class="tip-box">
-      <strong>Como funciona a Voz Colossal:</strong> Com uma chave <b>AIza...</b> (gratuita no Google AI Studio), o Omnitron gera áudio neural masculino profundo e passa por um <b>processador de metal, grave e rouquidão</b> (estilo Optimus Prime / Titã de Ferro).
+      <strong>Nota importante:</strong> Sua chave Groq (<b>gsk_...</b>) agora detecta automaticamente o modelo ativo da sua conta. Para a <b>Voz Neural Masculina Colossal (Optimus Prime)</b>, gere uma chave gratuita <b>AIza...</b> em <b>aistudio.google.com/apikey</b> e cole no campo 2 acima.
     </div>
 
     <div class="field-group">
@@ -666,6 +666,7 @@
       neuralVoice: localStorage.getItem('omni_neural_voice') || 'Charon',
       pitchDrop: parseFloat(localStorage.getItem('omni_pitch_drop') || '0.86'),
       ironFx: parseFloat(localStorage.getItem('omni_iron_fx') || '75'),
+      cachedGroqModel: '',
       history: []
     };
 
@@ -796,34 +797,28 @@
 
       const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
-      // True analog pitch drop (makes deep male voice massive & giant)
       source.playbackRate.value = Math.max(0.72, Math.min(1.05, state.pitchDrop));
 
-      // 1. Sub-bass chest weight
       const subBass = ctx.createBiquadFilter();
       subBass.type = 'lowshelf';
       subBass.frequency.value = 125;
       subBass.gain.value = 5 + intensity * 7;
 
-      // 2. Throat rasp / gravelly grit
       const shaper = ctx.createWaveShaper();
       shaper.curve = makeRaspCurve(8 + intensity * 26);
       shaper.oversample = '2x';
 
-      // 3. Vocal clarity presence (keeps words 100% intelligible)
       const presence = ctx.createBiquadFilter();
       presence.type = 'peaking';
       presence.frequency.value = 2300;
       presence.Q.value = 1.1;
       presence.gain.value = 4.0;
 
-      // 4. Dry signal
       const dryGain = ctx.createGain();
       dryGain.gain.value = 0.92;
 
-      // 5. Cybernetic Iron Chest Resonator (Short metallic comb delay)
       const metalDelay = ctx.createDelay();
-      metalDelay.delayTime.value = 0.0078; // 7.8ms metallic titanium cavity
+      metalDelay.delayTime.value = 0.0078;
       const metalFeedback = ctx.createGain();
       metalFeedback.gain.value = 0.22 + intensity * 0.22;
       const metalFilter = ctx.createBiquadFilter();
@@ -833,13 +828,11 @@
       const metalWet = ctx.createGain();
       metalWet.gain.value = 0.08 + intensity * 0.24;
 
-      // 6. Colossal Space Tail (Reverb)
       const convolver = ctx.createConvolver();
       convolver.buffer = getColossusReverbBuffer(ctx);
       const reverbWet = ctx.createGain();
       reverbWet.gain.value = 0.06 + intensity * 0.14;
 
-      // 7. Master Limiter / Compressor
       const compressor = ctx.createDynamicsCompressor();
       compressor.threshold.value = -14;
       compressor.knee.value = 12;
@@ -850,7 +843,6 @@
       const masterGain = ctx.createGain();
       masterGain.gain.value = 1.25;
 
-      // Routing
       source.connect(subBass);
       subBass.connect(shaper);
       shaper.connect(presence);
@@ -858,7 +850,6 @@
       presence.connect(dryGain);
       dryGain.connect(compressor);
 
-      // Metallic loop
       presence.connect(metalDelay);
       metalDelay.connect(metalFilter);
       metalFilter.connect(metalFeedback);
@@ -866,7 +857,6 @@
       metalFilter.connect(metalWet);
       metalWet.connect(compressor);
 
-      // Reverb send
       presence.connect(convolver);
       convolver.connect(reverbWet);
       reverbWet.connect(compressor);
@@ -915,7 +905,6 @@
       const ctx = getAudioContext();
       if (!ctx) throw new Error('AudioContext indisponível');
 
-      // Limit length for fast neural generation while preserving full answer
       const spokenText = cleanText.length > 650
         ? cleanText.slice(0, 640) + '. O restante da transmissão está registrado na tela.'
         : cleanText;
@@ -1140,6 +1129,31 @@
       }
 
       if (key.startsWith('gsk_')) {
+        let chosenModel = state.cachedGroqModel;
+        if (!chosenModel) {
+          const modelsRes = await fetch('https://api.groq.com/openai/v1/models', {
+            headers: { 'Authorization': `Bearer ${key}` }
+          });
+          const modelsData = await modelsRes.json();
+          if (!modelsRes.ok || modelsData.error) {
+            throw new Error('Groq API: ' + (modelsData.error?.message || `HTTP ${modelsRes.status}`));
+          }
+          const validModels = (modelsData.data || [])
+            .map(m => m.id)
+            .filter(id => !/whisper|guard|safeguard|embed|tts|playai|orpheus|vision/i.test(id));
+
+          chosenModel =
+            validModels.find(id => /llama-3\.3.*70b/i.test(id)) ||
+            validModels.find(id => /llama-4|llama-3\.1.*70b|qwen.*32b|deepseek/i.test(id)) ||
+            validModels.find(id => /llama-3\.1.*8b|gemma|mixtral|gpt-oss/i.test(id)) ||
+            validModels[0];
+
+          if (!chosenModel) {
+            throw new Error('Nenhum modelo de texto ativo encontrado na sua conta Groq.');
+          }
+          state.cachedGroqModel = chosenModel;
+        }
+
         const msgs = useHistory
           ? [{ role: 'system', content: getSystemPrompt() }, ...state.history]
           : [{ role: 'user', content: promptText }];
@@ -1150,12 +1164,13 @@
             'Authorization': `Bearer ${key}`
           },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: chosenModel,
             messages: msgs
           })
         });
         const data = await res.json();
         if (!res.ok || data.error) {
+          state.cachedGroqModel = '';
           throw new Error('Groq API: ' + (data.error?.message || `HTTP ${res.status}`));
         }
         return data.choices?.[0]?.message?.content || 'Sem resposta.';
@@ -1258,6 +1273,7 @@
       state.pitchDrop = parseFloat(pitchDropInput.value) || 0.86;
       state.ironFx = parseFloat(ironFxInput.value);
       if (isNaN(state.ironFx)) state.ironFx = 75;
+      state.cachedGroqModel = '';
 
       localStorage.setItem('openrouter_api_key', state.apiKey);
       localStorage.setItem('omni_voice_key', state.voiceKey);
@@ -1271,8 +1287,8 @@
       saveSettingsToState();
       const vKey = getActiveVoiceKey();
       if (!vKey) {
-        showDiag('⚠️ Cole uma chave Gemini (AIza...) no campo 1 ou 2 para ativar a voz neural Optimus Prime.', true);
-        speakFallbackBrowser('Eu sou Omnitron. Cole sua chave Gemini para ativar minha voz neural de ferro.', true);
+        showDiag('⚠️ Cole uma chave Gemini gratuita (AIza... de aistudio.google.com/apikey) no campo 2 para ativar a voz neural Optimus Prime.', true);
+        speakFallbackBrowser('Eu sou Omnitron. Cole sua chave Gemini gratuita no campo 2 para ativar minha voz neural de ferro.', true);
         return;
       }
       showDiag('Sintetizando voz colossal (' + state.neuralVoice + ') com processador de ferro...');
@@ -1286,10 +1302,11 @@
     document.getElementById('btn-test-api').addEventListener('click', async () => {
       getAudioContext();
       saveSettingsToState();
-      showDiag('Testando conexão com o servidor...');
+      showDiag('Conectando e buscando modelo ativo...');
       try {
         const res = await callAIProvider('Responda em uma frase épica e curta: Conexão com o núcleo estabelecida.', false);
-        showDiag('✅ Sucesso! Resposta: ' + res, false);
+        const modelInfo = state.cachedGroqModel ? ` [Modelo: ${state.cachedGroqModel}]` : '';
+        showDiag(`✅ Sucesso${modelInfo}! Resposta: ${res}`, false);
       } catch (err) {
         showDiag('❌ ' + err.message, true);
       }
