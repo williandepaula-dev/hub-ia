@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Willian AI Hub • Dev, WhatsApp & Insta</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #13151c;
+      --panel-2: #1a1d27;
+      --border: #262a38;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #6366f1;
+      --accent-2: #8b5cf6;
+      --wa: #16a34a;
+      --ig: #e11d48;
+      --gold: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); height: 100dvh; display: flex; overflow: hidden; }
+
+    /* BARRA LATERAL ESQUERDA (ÍCONES + LISTA DE MODELOS) */
+    .sidebar {
+      width: 315px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      height: 100%;
+      flex-shrink: 0;
+      z-index: 30;
+      transition: transform 0.25s ease;
+    }
+    .icon-rail {
+      width: 52px;
+      background: #0e1016;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .rail-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .rail-btn:hover, .rail-btn.active {
+      background: var(--panel-2);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .rail-sep { width: 24px; height: 1px; background: var(--border); margin: 4px 0; }
+
+    .drawer-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      overflow: hidden;
+    }
+    .search-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      width: 100%;
+      outline: none;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .filter-tab {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 9px;
+      border-radius: 99px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-tab.active {
+      background: var(--panel-2);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .model-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-right: 2px;
+    }
+    .model-item {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 9px 10px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .model-item:hover { background: var(--panel-2); }
+    .model-item.selected {
+      background: rgba(99, 102, 241, 0.14);
+      border-color: var(--accent);
+    }
+    .model-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .provider-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .model-info { min-width: 0; }
+    .model-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .model-desc {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tag {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 6px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      flex-shrink: 0;
+    }
+    .tag-frontier { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); }
+    .tag-dev { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .tag-free { background: rgba(22, 163, 74, 0.2); color: #86efac; border: 1px solid rgba(22, 163, 74, 0.4); }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .btn-side {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-side-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+    }
+
+    /* ÁREA PRINCIPAL */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-width: 0;
+      background: var(--bg);
+    }
+    .topbar {
+      height: 54px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .top-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .menu-toggle {
+      display: none;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .active-model-pill {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nav-modes {
+      display: flex;
+      gap: 5px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 9px;
+      border-radius: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .mode-btn.active { background: var(--panel-2); color: #fff; }
+    .mode-btn.active[data-mode="wa"] { background: rgba(22, 163, 74, 0.25); color: #4ade80; }
+    .mode-btn.active[data-mode="ig"] { background: rgba(225, 29, 72, 0.25); color: #fda4af; }
+
+    /* PAINÉIS DE CONTEÚDO */
+    .view { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+    .view.active { display: flex; }
+
+    /* CHAT */
+    .quick-prompts {
+      display: flex;
+      gap: 6px;
+      padding: 8px 12px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      background: #0e1016;
+      flex-shrink: 0;
+    }
+    .qp-chip {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: #d1d5db;
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 99px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .qp-chip:hover { border-color: var(--accent); color: #fff; }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .msg {
+      max-width: 88%;
+      padding: 11px 13px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    .msg-user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .msg-ai {
+      align-self: flex-start;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+      width: 100%;
+      max-width: 680px;
+    }
+    .msg-meta {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .msg-body pre {
+      background: #08090d;
+      border: 1px solid var(--border);
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      margin: 8px 0;
+      color: #a5b4fc;
+    }
+    .msg-body code { font-family: ui-monospace, monospace; background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 4px; }
+    .msg-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .act-btn {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: #e5e7eb;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+    .act-btn-wa { border-color: rgba(22, 163, 74, 0.5); color: #4ade80; }
+    .act-btn-ig { border-color: rgba(225, 29, 72, 0.5); color: #fda4af; }
+
+    .chat-input-bar {
+      padding: 10px 12px;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+    .chat-input-bar textarea {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      resize: none;
+      max-height: 120px;
+      min-height: 42px;
+      outline: none;
+    }
+    .chat-input-bar textarea:focus { border-color: var(--accent); }
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .send-btn {
+      background: var(--accent);
+      border: none;
+      font-weight: 800;
+    }
+
+    /* ESTÚDIOS WHATSAPP & INSTAGRAM */
+    .studio-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .card h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 5px; }
+    .input, .select, .textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    .textarea { min-height: 90px; resize: vertical; line-height: 1.4; }
+    .btn-full {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-wa { background: var(--wa); }
+    .btn-ig { background: linear-gradient(135deg, #e11d48, #9333ea); }
+    .btn-ai { background: var(--accent); }
+    .btn-dark { background: var(--panel-2); border: 1px solid var(--border); }
+    .row { display: flex; gap: 8px; }
+    .status-msg { font-size: 12px; color: var(--gold); text-align: center; margin-top: 8px; }
+
+    /* MODAL DE CONFIGURAÇÃO */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90dvh;
+      overflow-y: auto;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 25;
+    }
+    .overlay.show { display: block; }
+
+    @media (max-width: 820px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
+
+  <!-- PAINEL LATERAL MULTIMODELOS -->
+  <aside class="sidebar" id="sidebar">
+    <div class="icon-rail">
+      <button class="rail-btn active" title="Todos" onclick="filterByProvider('all', this)">⚡</button>
+      <button class="rail-btn" title="Anthropic Claude" onclick="filterByProvider('Anthropic', this)">A\</button>
+      <button class="rail-btn" title="Google Gemini" onclick="filterByProvider('Google', this)">✦</button>
+      <button class="rail-btn" title="OpenAI" onclick="filterByProvider('OpenAI', this)">◎</button>
+      <button class="rail-btn" title="DeepSeek" onclick="filterByProvider('DeepSeek', this)">🐋</button>
+      <button class="rail-btn" title="xAI Grok" onclick="filterByProvider('xAI', this)">Ø</button>
+      <button class="rail-btn" title="GLM & Kimi" onclick="filterByProvider('Open', this)">⌘</button>
+      <div class="rail-sep"></div>
+      <button class="rail-btn" title="WhatsApp Hub" onclick="switchMode('wa'); toggleSidebar(false);">🟢</button>
+      <button class="rail-btn" title="Instagram Studio" onclick="switchMode('ig'); toggleSidebar(false);">📸</button>
+    </div>
+
+    <div class="drawer-content">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="modelSearch" placeholder="Modelos de pesquisa..." oninput="renderModels()">
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="setTab('all', this)">Recomendado</button>
+        <button class="filter-tab" onclick="setTab('dev', this)">Dev & Código</button>
+        <button class="filter-tab" onclick="setTab('free', this)">Grátis</button>
+      </div>
+
+      <div class="model-list" id="modelList"></div>
+
+      <div class="sidebar-footer">
+        <button class="btn-side" onclick="clearChat()">🗑️ Nova Conversa</button>
+        <button class="btn-side btn-side-primary" onclick="openSettings()">⚙️ Chaves API, WhatsApp & Insta</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="menu-toggle" onclick="toggleSidebar(true)">☰</button>
+        <div class="active-model-pill" onclick="toggleSidebar(true)">
+          <span id="topModelBadge">✦</span>
+          <span id="topModelName">Gemini 3.8 Flash</span>
+          <span style="color: var(--muted); font-size: 10px;">▼</span>
+        </div>
+      </div>
+
+      <div class="nav-modes">
+        <button class="mode-btn active" data-mode="chat" onclick="switchMode('chat')">💬 IA Chat</button>
+        <button class="mode-btn" data-mode="ig" onclick="switchMode('ig')">📸 Insta</button>
+        <button class="mode-btn" data-mode="wa" onclick="switchMode('wa')">🟢 WhatsApp</button>
+      </div>
+    </header>
+
+    <!-- ABA 1: CHAT DEV & MULTI-IA -->
+    <section class="view active" id="view-chat">
+      <div class="quick-prompts">
+        <button class="qp-chip" onclick="useQuickPrompt('Crie o código completo e limpo para: ')">💻 Gerar Código</button>
+        <button class="qp-chip" onclick="useQuickPrompt('Encontre o bug e corrija este código:\n')">🐞 Corrigir Bug</button>
+        <button class="qp-chip" onclick="useQuickPrompt('Crie 3 opções de legenda viral para Instagram Reels sobre: ')">📸 Legenda Reels</button>
+        <button class="qp-chip" onclick="useQuickPrompt('Escreva uma resposta comercial profissional para enviar no WhatsApp para um cliente que perguntou: ')">🟢 Resposta Cliente</button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages"></div>
+
+      <div class="chat-input-bar">
+        <button class="icon-btn" id="btnVoiceChat" title="Falar no microfone" onclick="dictateTo('chatInput', this)">🎙️</button>
+        <textarea id="chatInput" rows="1" placeholder="Pergunte ao Gemini, Claude, DeepSeek..." onkeydown="handleChatKey(event)"></textarea>
+        <button class="icon-btn send-btn" id="btnSendChat" onclick="sendChatMessage()">➤</button>
+      </div>
+    </section>
+
+    <!-- ABA 2: ESTÚDIO INSTAGRAM + IA -->
+    <section class="view" id="view-ig">
+      <div class="studio-scroll">
+        <div class="card">
+          <h3 style="color: #fda4af;">📸 Central Instagram + IA</h3>
+          <p style="font-size: 12px; color: var(--muted); line-height: 1.4;">
+            Gere legendas, roteiros de Reels, sequências de Stories ou respostas de Direct usando a IA selecionada no menu e abra o Instagram com 1 toque.
+          </p>
+
+          <label class="label">Tipo de Conteúdo:</label>
+          <select class="select" id="igType">
+            <option value="Legenda para Reels viral com gancho forte, texto curto, chamada para orçamento no WhatsApp e hashtags locais">🎬 Legenda para Reels Viral</option>
+            <option value="Roteiro falado de 20 segundos para Reels mostrando o processo e o resultado final">🎙️ Roteiro Falado para Vídeo</option>
+            <option value="Sequência de 4 Stories estratégicos para abrir agenda e gerar pedidos de orçamento">📱 Sequência de 4 Stories que Vendem</option>
+            <option value="Resposta simpática e persuasiva para Direct levando o cliente para o WhatsApp">💬 Resposta de Direct (DM)</option>
+          </select>
+
+          <label class="label">Sobre o que é a publicação ou mensagem:</label>
+          <div class="row">
+            <input type="text" class="input" id="igTopic" placeholder="Ex: Fechamento de braço realismo preto e cinza feito hoje">
+            <button class="icon-btn" onclick="dictateTo('igTopic', this)">🎙️</button>
+          </div>
+
+          <button class="btn-full btn-ai" id="btnGenIg" onclick="generateInstagramPost()">✨ Criar Conteúdo com IA Ativa</button>
+
+          <label class="label">Texto Pronto (edite se quiser):</label>
+          <textarea class="textarea" id="igOutput" placeholder="O texto gerado pela IA aparecerá aqui..."></textarea>
+
+          <div class="row">
+            <button class="btn-full btn-dark" onclick="copyText('igOutput', 'igStatus')">📋 Copiar Texto</button>
+            <button class="btn-full btn-ig" onclick="openInstagramWithText()">📸 Copiar e Abrir Instagram</button>
+          </div>
+          <div class="status-msg" id="igStatus"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 3: CENTRAL WHATSAPP + IA -->
+    <section class="view" id="view-wa">
+      <div class="studio-scroll">
+        <div class="card">
+          <h3 style="color: #4ade80;">🟢 Central WhatsApp + IA</h3>
+          <p style="font-size: 12px; color: var(--muted); line-height: 1.4;">
+            Cole o que o cliente mandou ou escolha um modelo rápido. A IA escreve a resposta e dispara direto no seu WhatsApp.
+          </p>
+
+          <label class="label">Número do Cliente (opcional — deixe vazio para escolher o contato no WhatsApp):</label>
+          <input type="tel" class="input" id="waClientPhone" placeholder="Ex: 11999999999">
+
+          <label class="label">Mensagem do Cliente ou Objetivo do Contato:</label>
+          <div class="row">
+            <input type="text" class="input" id="waPrompt" placeholder="Ex: Cliente perguntou valor de um leão no antebraço">
+            <button class="icon-btn" onclick="dictateTo('waPrompt', this)">🎙️</button>
+          </div>
+
+          <div class="row" style="margin-top: 8px; flex-wrap: wrap;">
+            <button class="qp-chip" onclick="setWaPreset('Responder pedido de orçamento pedindo tamanho em cm, local do corpo e referência')">💰 Pedir Detalhes p/ Orçamento</button>
+            <button class="qp-chip" onclick="setWaPreset('Enviar mensagem de confirmação de horário da sessão amanhã no estúdio')">📅 Confirmar Sessão</button>
+            <button class="qp-chip" onclick="setWaPreset('Enviar instruções claras de cuidados pós-tatuagem e cicatrização')">🩹 Cuidados Pós-Tattoo</button>
+          </div>
+
+          <button class="btn-full btn-ai" id="btnGenWa" onclick="generateWhatsAppReply()">✨ Gerar Resposta com IA Ativa</button>
+
+          <label class="label">Mensagem Pronta para Enviar:</label>
+          <textarea class="textarea" id="waOutput" placeholder="A mensagem pronta para o WhatsApp aparecerá aqui..."></textarea>
+
+          <div class="row">
+            <button class="btn-full btn-dark" onclick="copyText('waOutput', 'waStatus')">📋 Copiar</button>
+            <button class="btn-full btn-wa" onclick="sendToWhatsApp()">🟢 Enviar no WhatsApp</button>
+          </div>
+          <div class="status-msg" id="waStatus"></div>
+        </div>
+
+        <div class="card">
+          <h3>🔗 Seu Link Direto do WhatsApp</h3>
+          <p style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Use na bio do Instagram para os clientes clicarem e caírem direto no seu atendimento:</p>
+          <input type="text" class="input" id="myWaLinkBox" readonly>
+          <button class="btn-full btn-dark" onclick="copyText('myWaLinkBox', 'waStatus')">📋 Copiar Meu Link wa.me</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL CONFIGURAÇÕES -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="font-size: 15px;">⚙️ Configurar IAs e Redes</h3>
+        <button class="icon-btn" style="width: 32px; height: 32px;" onclick="closeSettings()">✕</button>
+      </div>
+
+      <label class="label" style="color: #a5b4fc; font-weight: 700;">1. Chave OpenRouter (1 chave = Claude, Gemini, GPT-6, DeepSeek, Grok):</label>
+      <input type="password" class="input" id="cfgOpenRouter" placeholder="sk-or-v1-...">
+
+      <label class="label">Ou Chave Direta Google Gemini (opcional):</label>
+      <input type="password" class="input" id="cfgGemini" placeholder="AIzaSy...">
+
+      <label class="label">Ou Chave Direta Groq (opcional - ultra rápida):</label>
+      <input type="password" class="input" id="cfgGroq" placeholder="gsk_...">
+
+      <hr style="border: none; border-top: 1px solid var(--border); margin: 14px 0;">
+
+      <label class="label" style="color: #4ade80; font-weight: 700;">2. Seu WhatsApp (com DDD, ex: 11999999999):</label>
+      <input type="tel" class="input" id="cfgWaNumber" placeholder="11999999999">
+
+      <label class="label" style="color: #fda4af; font-weight: 700;">3. Seu @ do Instagram:</label>
+      <input type="text" class="input" id="cfgIgUser" placeholder="@williandepaulatattoo">
+
+      <label class="label">4. Contexto do Seu Negócio (para as IAs já saberem quem você é):</label>
+      <textarea class="textarea" style="min-height: 64px;" id="cfgContext">Sou Willian, tatuador profissional especialista em realismo preto e cinza em Guarulhos - SP (@williandepaulatattoo) e desenvolvedor de software.</textarea>
+
+      <button class="btn-full btn-ai" onclick="saveSettings()">💾 Salvar Tudo</button>
+    </div>
+  </div>
+
+  <script>
+    // CATÁLOGO DAS IAS MAIS COBIÇADAS PELOS DEVS
+    const MODELS = [
+      { id: 'google/gemini-3.8-flash', name: 'Gemini 3.8 Flash', provider: 'Google', icon: '✦', desc: 'Google • Rápido, visão e código', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
+      { id: 'google/gemini-3.1-pro-preview', name: 'Gemini 3.1 Pro', provider: 'Google', icon: '✦', desc: 'Google • Raciocínio profundo 1M', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
+      { id: 'anthropic/claude-fable-5.1', name: 'Claude Fable 5.1', provider: 'Anthropic', icon: 'A\\', desc: 'Anthropic • Arquitetura e agentes', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
+      { id: 'anthropic/claude-opus-5.5', name: 'Claude Opus 5.5', provider: 'Anthropic', icon: 'A\\', desc: 'Anthropic • Elite em engenharia', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
+      { id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5', provider: 'Anthropic', icon: 'A\\', desc: 'Anthropic • Velocidade + código', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
+      { id: 'openai/gpt-6-astra', name: 'GPT-6 Astra', provider: 'OpenAI', icon: '◎', desc: 'OpenAI • Top Frontend & Lógica', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
+      { id: 'openai/gpt-6.1-terra', name: 'GPT-6.1 Terra', provider: 'OpenAI', icon: '◎', desc: 'OpenAI • Multimodal 1M contexto', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'all' },
+      { id: 'deepseek/deepseek-v4.1-flash-1017', name: 'DeepSeek V4.1 Flash', provider: 'DeepSeek', icon: '🐋', desc: 'DeepSeek • Mais usado em código', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
+      { id: 'deepseek/deepseek-v4-pro-0813', name: 'DeepSeek V4 Pro', provider: 'DeepSeek', icon: '🐋', desc: 'DeepSeek • Raciocínio pesado', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
+      { id: 'z-ai/glm-5.3', name: 'GLM-5.3', provider: 'Open', icon: '⌘', desc: 'Z.ai • Líder open-weights código', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
+      { id: 'moonshotai/kimi-k3', name: 'Kimi K3', provider: 'Open', icon: '⌘', desc: 'Moonshot • Contexto longo & dev', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
+      { id: 'x-ai/grok-4.7', name: 'Grok 4.7', provider: 'xAI', icon: 'Ø', desc: 'xAI • Direto, sem rodeios', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'all' },
+      { id: 'qwen/qwen3.8-max', name: 'Qwen 3.8 Max', provider: 'Open', icon: '⌘', desc: 'Alibaba • Forte em full-stack', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
+      { id: 'google/gemma-4-31b:free', name: 'Gemma 4 31B (Grátis)', provider: 'Google', icon: '✦', desc: 'OpenRouter • Custo zero', tag: 'GRÁTIS', tagClass: 'tag-free', cat: 'free' },
+      { id: 'nvidia/nemotron-3-ultra:free', name: 'Nemotron 3 Ultra (Grátis)', provider: 'Open', icon: '⌘', desc: 'OpenRouter • Custo zero', tag: 'GRÁTIS', tagClass: 'tag-free', cat: 'free' },
+      { id: 'openrouter/auto', name: 'OpenRouter Auto', provider: 'Open', icon: '⚡', desc: 'Escolhe a melhor IA sozinho', tag: 'AUTO', tagClass: 'tag-frontier', cat: 'all' }
+    ];
+
+    let selectedModel = MODELS[0];
+    let currentTab = 'all';
+    let currentProvider = 'all';
+    let chatHistory = JSON.parse(localStorage.getItem('ai_hub_history') || '[]');
+
+    // CONFIGURAÇÕES SALVAS
+    const state = {
+      openrouter: localStorage.getItem('hub_or_key') || '',
+      gemini: localStorage.getItem('hub_gem_key') || '',
+      groq: localStorage.getItem('groq_api_key') || localStorage.getItem('hub_groq_key') || '',
+      waNumber: localStorage.getItem('hub_wa_num') || '',
+      igUser: localStorage.getItem('hub_ig_user') || '@williandepaulatattoo',
+      context: localStorage.getItem('hub_context') || 'Sou Willian, tatuador profissional especialista em realismo preto e cinza em Guarulhos - SP (@williandepaulatattoo) e desenvolvedor de software.'
+    };
+
+    function updateWaLinkDisplay() {
+      const clean = state.waNumber.replace(/\D/g, '');
+      const fullNum = clean.startsWith('55') ? clean : (clean ? '55' + clean : '5511999999999');
+      const msg = encodeURIComponent('Olá Willian! Vim pelo seu Instagram e gostaria de fazer um orçamento de tattoo.');
+      document.getElementById('myWaLinkBox').value = `https://wa.me/${fullNum}?text=${msg}`;
+    }
+
+    function openSettings() {
+      document.getElementById('cfgOpenRouter').value = state.openrouter;
+      document.getElementById('cfgGemini').value = state.gemini;
+      document.getElementById('cfgGroq').value = state.groq;
+      document.getElementById('cfgWaNumber').value = state.waNumber;
+      document.getElementById('cfgIgUser').value = state.igUser;
+      document.getElementById('cfgContext').value = state.context;
+      document.getElementById('settingsModal').classList.add('open');
+    }
+
+    function closeSettings() {
+      document.getElementById('settingsModal').classList.remove('open');
+    }
+
+    function saveSettings() {
+      state.openrouter = document.getElementById('cfgOpenRouter').value.trim();
+      state.gemini = document.getElementById('cfgGemini').value.trim();
+      state.groq = document.getElementById('cfgGroq').value.trim();
+      state.waNumber = document.getElementById('cfgWaNumber').value.trim();
+      state.igUser = document.getElementById('cfgIgUser').value.trim() || '@williandepaulatattoo';
+      state.context = document.getElementById('cfgContext').value.trim();
+
+      localStorage.setItem('hub_or_key', state.openrouter);
+      localStorage.setItem('hub_gem_key', state.gemini);
+      localStorage.setItem('hub_groq_key', state.groq);
+      if (state.groq) localStorage.setItem('groq_api_key', state.groq);
+      localStorage.setItem('hub_wa_num', state.waNumber);
+      localStorage.setItem('hub_ig_user', state.igUser);
+      localStorage.setItem('hub_context', state.context);
+
+      updateWaLinkDisplay();
+      closeSettings();
+    }
+
+    // SIDEBAR & MODELOS
+    function toggleSidebar(show) {
+      document.getElementById('sidebar').classList.toggle('open', show);
+      document.getElementById('overlay').classList.toggle('show', show);
+    }
+
+    function setTab(tab, el) {
+      currentTab = tab;
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      renderModels();
+    }
+
+    function filterByProvider(prov, el) {
+      currentProvider = prov;
+      document.querySelectorAll('.rail-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      renderModels();
+    }
+
+    function renderModels() {
+      const q = document.getElementById('modelSearch').value.toLowerCase().trim();
+      const list = document.getElementById('modelList');
+      list.innerHTML = '';
+
+      const filtered = MODELS.filter(m => {
+        if (currentProvider !== 'all' && m.provider !== currentProvider) return false;
+        if (currentTab === 'dev' && m.cat !== 'dev') return false;
+        if (currentTab === 'free' && m.cat !== 'free') return false;
+        if (q && !(m.name.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q))) return false;
+        return true;
+      });
+
+      filtered.forEach(m => {
+        const btn = document.createElement('button');
+        btn.className = 'model-item' + (m.id === selectedModel.id ? ' selected' : '');
+        btn.innerHTML = `
+          <div class="model-left">
+            <div class="provider-badge">${m.icon}</div>
+            <div class="model-info">
+              <div class="model-name">${m.name}</div>
+              <div class="model-desc">${m.desc}</div>
+            </div>
+          </div>
+          <span class="tag ${m.tagClass}">${m.tag}</span>
+        `;
+        btn.onclick = () => {
+          selectedModel = m;
+          document.getElementById('topModelBadge').textContent = m.icon;
+          document.getElementById('topModelName').textContent = m.name;
+          renderModels();
+          toggleSidebar(false);
+        };
+        list.appendChild(btn);
+      });
+    }
+
+    function switchMode(mode) {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(`view-${mode}`).classList.add('active');
+    }
+
+    // MOTOR UNIFICADO DE CHAMADA IA (OPENROUTER / GEMINI DIRETO / GROQ DIRETO)
+    async function callActiveAI(messages) {
+      const sysPrompt = {
+        role: 'system',
+        content: `Contexto do usuário: ${state.context}. Responda em português do Brasil de forma direta, prática e profissional.`
+      };
+      const fullMessages = [sysPrompt, ...messages];
+
+      // 1. OpenRouter (Libera Claude, Gemini, GPT-6, DeepSeek, Grok, Kimi, GLM)
+      if (state.openrouter) {
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${state.openrouter}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': window.location.href,
+            'X-Title': 'Willian AI Hub'
+          },
+          body: JSON.stringify({
+            model: selectedModel.id,
+            messages: fullMessages,
+            temperature: 0.7
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || `Erro OpenRouter (${res.status})`);
+        return data.choices[0].message.content;
+      }
+
+      // 2. Fallback Google Gemini Direto
+      if (state.gemini) {
+        const userText = fullMessages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.gemini}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: userText }] }] })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || 'Erro na API Gemini');
+        return data.candidates[0].content.parts[0].text;
+      }
+
+      // 3. Fallback Groq Direto (se o usuário já tiver a chave gsk_ salva)
+      if (state.groq) {
+        const modelsRes = await fetch('https://api.groq.com/openai/v1/models', {
+          headers: { 'Authorization': `Bearer ${state.groq}` }
+        });
+        const modelsData = await modelsRes.json();
+        const textModels = (modelsData.data || []).map(m => m.id).filter(id => !/whisper|tts|guard|embed/i.test(id));
+        const groqModel = textModels.find(id => /llama-4|llama-3\.3/i.test(id)) || textModels[0];
+
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${state.groq}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: groqModel, messages: fullMessages, temperature: 0.7 })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || 'Erro na API Groq');
+        return data.choices[0].message.content;
+      }
+
+      openSettings();
+      throw new Error('Cole sua chave da OpenRouter (ou Gemini/Groq) nas configurações para começar.');
+    }
+
+    // FORMATAÇÃO DE MENSAGENS E BLOCOS DE CÓDIGO
+    function formatMarkdown(text) {
+      const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      return escaped
+        .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    }
+
+    function renderChat() {
+      const box = document.getElementById('chatMessages');
+      box.innerHTML = '';
+
+      if (chatHistory.length === 0) {
+        box.innerHTML = `
+          <div class="msg msg-ai">
+            <div class="msg-meta"><span>⚡ HUB MULTI-IA PRONTO</span><span>CLAUDE • GEMINI • DEEPSEEK</span></div>
+            <div class="msg-body">
+              Escolha qualquer modelo no menu lateral (<strong>Claude, Gemini, GPT-6, DeepSeek, Grok</strong>) ou use as abas acima para criar posts do <strong>Instagram</strong> e respostas de <strong>WhatsApp</strong> com 1 toque.<br><br>
+              Se ainda não salvou sua chave de API, toque em <strong>⚙️ Chaves API</strong> no menu lateral.
+            </div>
+          </div>`;
+        return;
+      }
+
+      chatHistory.forEach((m, idx) => {
+        const div = document.createElement('div');
+        div.className = 'msg ' + (m.role === 'user' ? 'msg-user' : 'msg-ai');
+        if (m.role === 'user') {
+          div.textContent = m.content;
+        } else {
+          div.innerHTML = `
+            <div class="msg-meta"><span>${m.model || selectedModel.name}</span></div>
+            <div class="msg-body">${formatMarkdown(m.content)}</div>
+            <div class="msg-actions">
+              <button class="act-btn" onclick="copyRaw(${idx})">📋 Copiar</button>
+              <button class="act-btn act-btn-wa" onclick="pushToWa(${idx})">🟢 Mandar no WhatsApp</button>
+              <button class="act-btn act-btn-ig" onclick="pushToIg(${idx})">📸 Levar p/ Instagram</button>
+            </div>
+          `;
+        }
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    window.copyRaw = (idx) => {
+      navigator.clipboard.writeText(chatHistory[idx].content);
+    };
+
+    window.pushToWa = (idx) => {
+      document.getElementById('waOutput').value = chatHistory[idx].content;
+      switchMode('wa');
+    };
+
+    window.pushToIg = (idx) => {
+      document.getElementById('igOutput').value = chatHistory[idx].content;
+      switchMode('ig');
+    };
+
+    function clearChat() {
+      chatHistory = [];
+      localStorage.removeItem('ai_hub_history');
+      renderChat();
+      toggleSidebar(false);
+    }
+
+    function useQuickPrompt(prefix) {
+      const inp = document.getElementById('chatInput');
+      inp.value = prefix;
+      inp.focus();
+    }
+
+    function handleChatKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChatMessage();
+      }
+    }
+
+    async function sendChatMessage() {
+      const inp = document.getElementById('chatInput');
+      const text = inp.value.trim();
+      if (!text) return;
+
+      inp.value = '';
+      chatHistory.push({ role: 'user', content: text });
+      renderChat();
+
+      const btn = document.getElementById('btnSendChat');
+      btn.disabled = true;
+
+      try {
+        const recent = chatHistory.slice(-10).map(m => ({ role: m.role, content: m.content }));
+        const reply = await callActiveAI(recent);
+        chatHistory.push({ role: 'assistant', content: reply, model: selectedModel.name });
+        localStorage.setItem('ai_hub_history', JSON.stringify(chatHistory.slice(-30)));
+      } catch (err) {
+        chatHistory.push({ role: 'assistant', content: `⚠️ ${err.message}`, model: 'Sistema' });
+      } finally {
+        btn.disabled = false;
+        renderChat();
+      }
+    }
+
+    // ESTÚDIO INSTAGRAM
+    async function generateInstagramPost() {
+      const type = document.getElementById('igType').value;
+      const topic = document.getElementById('igTopic').value.trim();
+      const status = document.getElementById('igStatus');
+      if (!topic) { status.textContent = '⚠️ Escreva ou fale sobre o que é a publicação.'; return; }
+
+      const btn = document.getElementById('btnGenIg');
+      btn.disabled = true;
+      status.textContent = `⏳ Gerando com ${selectedModel.name}...`;
+
+      try {
+        const prompt = `Crie para o Instagram (${state.igUser}): ${type}.\nAssunto: ${topic}.\nEntregue apenas o texto pronto para copiar e colar no Instagram, sem explicações extras.`;
+        const result = await callActiveAI([{ role: 'user', content: prompt }]);
+        document.getElementById('igOutput').value = result.trim();
+        status.textContent = '✅ Texto pronto! Toque em "Copiar e Abrir Instagram".';
+      } catch (err) {
+        status.textContent = `⚠️ ${err.message}`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function openInstagramWithText() {
+      const text = document.getElementById('igOutput').value.trim();
+      if (text) navigator.clipboard.writeText(text);
+      const user = state.igUser.replace('@', '').trim();
+      const url = user ? `https://www.instagram.com/${user}/` : 'https://www.instagram.com/';
+      document.getElementById('igStatus').textContent = '📋 Texto copiado! Abrindo Instagram...';
+      window.open(url, '_blank');
+    }
+
+    // CENTRAL WHATSAPP
+    function setWaPreset(preset) {
+      document.getElementById('waPrompt').value = preset;
+    }
+
+    async function generateWhatsAppReply() {
+      const prompt = document.getElementById('waPrompt').value.trim();
+      const status = document.getElementById('waStatus');
+      if (!prompt) { status.textContent = '⚠️ Digite ou cole a mensagem do cliente.'; return; }
+
+      const btn = document.getElementById('btnGenWa');
+      btn.disabled = true;
+      status.textContent = `⏳ Criando resposta com ${selectedModel.name}...`;
+
+      try {
+        const fullPrompt = `Escreva uma mensagem direta, educada e persuasiva para enviar no WhatsApp.\nSituação: ${prompt}.\nEntregue SOMENTE o texto da mensagem pronto para enviar, sem aspas e sem introduções.`;
+        const result = await callActiveAI([{ role: 'user', content: fullPrompt }]);
+        document.getElementById('waOutput').value = result.trim();
+        status.textContent = '✅ Resposta pronta! Toque em "Enviar no WhatsApp".';
+      } catch (err) {
+        status.textContent = `⚠️ ${err.message}`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function sendToWhatsApp() {
+      const msg = document.getElementById('waOutput').value.trim();
+      if (!msg) {
+        document.getElementById('waStatus').textContent = '⚠️ Gere ou escreva uma mensagem primeiro.';
+        return;
+      }
+      const rawPhone = document.getElementById('waClientPhone').value.replace(/\D/g, '');
+      const phone = rawPhone ? (rawPhone.startsWith('55') ? rawPhone : '55' + rawPhone) : '';
+      const encoded = encodeURIComponent(msg);
+      const url = phone ? `https://wa.me/${phone}?text=${encoded}` : `https://api.whatsapp.com/send?text=${encoded}`;
+      window.open(url, '_blank');
+    }
+
+    function copyText(elId, statusId) {
+      const val = document.getElementById(elId).value;
+      if (!val) return;
+      navigator.clipboard.writeText(val);
+      document.getElementById(statusId).textContent = '📋 Copiado para a área de transferência!';
+    }
+
+    // DITADO POR VOZ NATIVO DO CELULAR
+    function dictateTo(targetId, btn) {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        alert('Seu navegador não suporta ditado por voz.');
+        return;
+      }
+      const rec = new SpeechRec();
+      rec.lang = 'pt-BR';
+      btn.textContent = '🔴';
+      rec.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        const el = document.getElementById(targetId);
+        el.value = el.value ? el.value + ' ' + transcript : transcript;
+      };
+      rec.onend = () => { btn.textContent = '🎙️'; };
+      rec.start();
+    }
+
+    // INICIALIZAR
+    renderModels();
+    renderChat();
+    updateWaLinkDisplay();
+  </script>
+</body>
+</html>
