@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="theme-color" content="#04060b" />
-  <title>OMNITRON v5.0 // Inteligência Global</title>
+  <title>OMNITRON v5.1 // Inteligência Global</title>
   <link rel="manifest" href="./manifest.json" />
   <style>
     :root {
       --bg: #04060b;
-      --panel: rgba(10, 16, 28, 0.88);
-      --border: rgba(56, 189, 248, 0.28);
+      --panel: rgba(10, 16, 28, 0.92);
+      --border: rgba(56, 189, 248, 0.35);
       --cyan: #38bdf8;
       --violet: #8b5cf6;
       --amber: #f59e0b;
@@ -401,7 +401,7 @@
 
     .prompt-input {
       flex: 1;
-      background: rgba(15, 23, 42, 0.9);
+      background: #0f172a;
       border: 1px solid var(--border);
       border-radius: 22px;
       padding: 11px 15px;
@@ -426,7 +426,7 @@
     .overlay-panel {
       position: fixed;
       inset: 52px 10px 66px 10px;
-      background: rgba(6, 10, 19, 0.97);
+      background: rgba(6, 10, 19, 0.98);
       border: 1px solid var(--cyan);
       border-radius: 16px;
       z-index: 40;
@@ -484,14 +484,25 @@
       flex-direction: column;
       gap: 5px;
       font-size: 12px;
-      color: var(--muted);
+      color: #cbd5e1;
     }
+
+    /* Dark background + high contrast text so pasted keys are always clearly visible */
     .field-group input, .field-group select {
       max-width: 100%;
       width: 100%;
-      padding: 10px;
-      font-size: 13px;
-      color: #fff;
+      padding: 11px 12px;
+      font-size: 13.5px;
+      font-family: monospace;
+      background-color: #0f172a !important;
+      color: #38bdf8 !important;
+      border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
+      border-radius: 10px;
+      outline: none;
+    }
+    .field-group input::placeholder {
+      color: #64748b;
+      font-family: sans-serif;
     }
 
     .btn-row {
@@ -518,12 +529,13 @@
     }
 
     .status-box {
-      margin-top: 8px;
-      padding: 9px 11px;
+      margin-top: 10px;
+      padding: 10px 12px;
       border-radius: 10px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.35);
       font-size: 12px;
+      line-height: 1.45;
       color: #e2e8f0;
       display: none;
     }
@@ -589,12 +601,12 @@
     </div>
 
     <div class="status-line">
-      <span id="status-text">OMNITRON v5.0 • INTERNET AO VIVO ATIVA</span>
+      <span id="status-text">OMNITRON v5.1 • INTERNET AO VIVO ATIVA</span>
       <button class="stop-voice-btn" id="btn-stop-voice">⏹ PARAR VOZ</button>
     </div>
 
     <div class="teleprompter" id="teleprompter">
-      Núcleo Omnitron v5.0 conectado à rede global. Pergunte a temperatura de hoje, notícias atuais, cotações ou qualquer assunto.
+      Núcleo Omnitron v5.1 conectado à rede global. Pergunte a temperatura de hoje, notícias atuais, cotações ou qualquer assunto.
     </div>
 
     <button class="voice-banner" id="btn-unlock-male-voice">
@@ -628,25 +640,22 @@
   <!-- Settings Modal -->
   <div class="overlay-panel" id="settings-panel">
     <div class="overlay-header">
-      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON v5.0</span>
+      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON v5.1</span>
       <button class="hud-btn" id="btn-close-settings">✕ Fechar</button>
     </div>
 
     <div class="field-group">
-      <label>1. Chave Principal de IA (Groq `gsk_...`, Gemini `AIza...` ou OpenRouter `sk-or-...`)</label>
-      <input type="password" id="api-key-input" placeholder="Cole sua API Key aqui..." />
+      <label>1. Chave Principal de IA (Cole sua chave AIza..., gsk_... ou sk-or-...)</label>
+      <input type="text" id="api-key-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Cole sua API Key aqui..." />
     </div>
 
     <div class="field-group">
-      <label>2. Chave de Voz Masculina Neural (Gemini `AIza...` — obrigatório para substituir a voz feminina do Android)</label>
-      <input type="password" id="voice-key-input" placeholder="Cole chave AIza... para voz estilo Optimus Prime..." />
+      <label>2. Chave de Voz Masculina Colossal (Cole sua chave Gemini AIza...)</label>
+      <input type="text" id="voice-key-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Cole sua chave AIza... aqui..." />
     </div>
 
     <div class="tip-box">
-      <strong>Como ativar a Voz Masculina Grave (Optimus Prime):</strong><br>
-      O Android só possui voz feminina instalada. Para liberar a voz neural masculina grave e rouca gratuitamente:<br>
-      1. Toque aqui: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Abrir Google AI Studio (Criar Chave Grátis)</a><br>
-      2. Copie a chave que começa com <b>AIza...</b> e cole no <b>campo 2</b> acima.
+      <strong>Nota:</strong> Assim que você colar sua chave <b>AIza...</b> em qualquer um dos dois campos acima, ela aparecerá visível em azul e já ficará ativa para a <b>Voz Masculina Colossal (Optimus Prime)</b>.
     </div>
 
     <div class="field-group">
@@ -681,22 +690,36 @@
   </div>
 
   <script>
-    // Unregister old service workers so updates apply immediately
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(regs => {
         regs.forEach(r => r.unregister());
       }).catch(() => {});
     }
 
+    // Smart extractor: pulls exact valid API key even if hidden unicode characters were pasted
+    function extractCleanKey(raw) {
+      if (!raw) return '';
+      const str = String(raw);
+      const geminiMatch = str.match(/AIza[0-9A-Za-z_-]{20,}/);
+      if (geminiMatch) return geminiMatch[0];
+      const groqMatch = str.match(/gsk_[0-9A-Za-z]{20,}/);
+      if (groqMatch) return groqMatch[0];
+      const openRouterMatch = str.match(/sk-or-[0-9A-Za-z_-]{20,}/);
+      if (openRouterMatch) return openRouterMatch[0];
+      return str.replace(/[^0-9A-Za-z_-]/g, '');
+    }
+
     const state = {
       mode: 'chat',
       voiceEnabled: true,
-      apiKey: (localStorage.getItem('openrouter_api_key')
-            || localStorage.getItem('api_key')
-            || localStorage.getItem('gemini_api_key')
-            || localStorage.getItem('groq_api_key')
-            || '').replace(/\s+/g, ''),
-      voiceKey: (localStorage.getItem('omni_voice_key') || '').replace(/\s+/g, ''),
+      apiKey: extractCleanKey(
+        localStorage.getItem('openrouter_api_key')
+        || localStorage.getItem('api_key')
+        || localStorage.getItem('gemini_api_key')
+        || localStorage.getItem('groq_api_key')
+        || ''
+      ),
+      voiceKey: extractCleanKey(localStorage.getItem('omni_voice_key') || ''),
       neuralVoice: localStorage.getItem('omni_neural_voice') || 'Charon',
       pitchDrop: parseFloat(localStorage.getItem('omni_pitch_drop') || '0.86'),
       ironFx: parseFloat(localStorage.getItem('omni_iron_fx') || '75'),
@@ -705,7 +728,6 @@
       history: []
     };
 
-    // Try silent geolocation for exact local weather
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         pos => {
@@ -737,8 +759,10 @@
     ironFxInput.value = state.ironFx;
 
     function getActiveVoiceKey() {
-      if (state.voiceKey && state.voiceKey.startsWith('AIza')) return state.voiceKey;
-      if (state.apiKey && state.apiKey.startsWith('AIza')) return state.apiKey;
+      const k2 = extractCleanKey(voiceKeyInput.value || state.voiceKey);
+      if (k2.startsWith('AIza')) return k2;
+      const k1 = extractCleanKey(apiKeyInput.value || state.apiKey);
+      if (k1.startsWith('AIza')) return k1;
       return '';
     }
 
@@ -763,7 +787,7 @@
       if (label) statusText.textContent = label;
     }
 
-    // --- LIVE REAL-TIME WORLD SENSORS (WEATHER, FINANCE, NEWS, WIKI) ---
+    // --- LIVE REAL-TIME WORLD SENSORS ---
     function weatherCodeToPt(code) {
       const map = {
         0: 'céu limpo', 1: 'predominantemente limpo', 2: 'parcialmente nublado', 3: 'nublado',
@@ -780,7 +804,6 @@
         let lon = state.userCoords.lon;
         let placeLabel = state.userCoords.city;
 
-        // Check if user asked about a specific city
         const cityMatch = queryText.match(/(?:em|no|na|de|para)\s+([A-ZÀ-Úa-zà-ú\s]{3,28})(?:[?.!]|$)/i);
         if (cityMatch) {
           const candidate = cityMatch[1].trim().replace(/\b(hoje|agora|amanhã|brasil)\b/gi, '').trim();
@@ -1072,7 +1095,7 @@
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
+      setVisualState('idle', 'OMNITRON v5.1 • INTERNET AO VIVO ATIVA');
     }
 
     async function speakWithGeminiColossus(cleanText, voiceKey, keepScreenText) {
@@ -1134,14 +1157,14 @@
 
       playBufferThroughIronDSP(audioBuffer, () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
+        setVisualState('idle', 'OMNITRON v5.1 • INTERNET AO VIVO ATIVA');
       });
     }
 
     function speakFallbackBrowser(cleanText, keepScreenText) {
       if (!keepScreenText) teleprompter.textContent = cleanText;
       if (!('speechSynthesis' in window)) {
-        setVisualState('idle', 'OMNITRON v5.0');
+        setVisualState('idle', 'OMNITRON v5.1');
         return;
       }
       playIronIgnition();
@@ -1161,11 +1184,11 @@
       utter.rate = 0.88;
       utter.onend = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
+        setVisualState('idle', 'OMNITRON v5.1 • INTERNET AO VIVO ATIVA');
       };
       utter.onerror = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v5.0');
+        setVisualState('idle', 'OMNITRON v5.1');
       };
       window.speechSynthesis.speak(utter);
     }
@@ -1177,7 +1200,7 @@
 
       if (!state.voiceEnabled) {
         if (!keepScreenText) teleprompter.textContent = clean;
-        setVisualState('idle', 'OMNITRON v5.0 • VOZ SILENCIADA');
+        setVisualState('idle', 'OMNITRON v5.1 • VOZ SILENCIADA');
         return;
       }
 
@@ -1234,7 +1257,7 @@
 
       recognition.onend = () => {
         if (body.getAttribute('data-state') === 'listening') {
-          setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
+          setVisualState('idle', 'OMNITRON v5.1 • INTERNET AO VIVO ATIVA');
         }
       };
     }
@@ -1282,14 +1305,13 @@
     }
 
     async function callAIProvider(promptText, useHistory = true) {
-      const key = state.apiKey.replace(/\s+/g, '');
+      const key = extractCleanKey(apiKeyInput.value || state.apiKey);
       if (!key) throw new Error('Chave de API vazia. Cole sua chave nas configurações.');
 
       const liveContext = await buildRealTimeWorldContext(promptText);
       const sysPrompt = getSystemPrompt(liveContext);
 
       if (key.startsWith('AIza')) {
-        // Google Gemini with Native Google Search Grounding!
         const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
         let lastErr = '';
         for (const m of models) {
@@ -1326,7 +1348,6 @@
             .map(m => m.id)
             .filter(id => !/whisper|guard|safeguard|embed|tts|playai|orpheus|vision/i.test(id));
 
-          // Prioritize Groq's web-search agentic models first, then fast chat models
           const preferred = [
             ...available.filter(id => /compound-beta/i.test(id)),
             ...available.filter(id => /llama-3\.1-8b-instant/i.test(id)),
@@ -1460,8 +1481,14 @@
     });
 
     function saveSettingsToState() {
-      state.apiKey = apiKeyInput.value.replace(/\s+/g, '');
-      state.voiceKey = voiceKeyInput.value.replace(/\s+/g, '');
+      const clean1 = extractCleanKey(apiKeyInput.value);
+      const clean2 = extractCleanKey(voiceKeyInput.value);
+
+      if (clean1) apiKeyInput.value = clean1;
+      if (clean2) voiceKeyInput.value = clean2;
+
+      state.apiKey = clean1;
+      state.voiceKey = clean2;
       state.neuralVoice = neuralVoiceSelect.value;
       state.pitchDrop = parseFloat(pitchDropInput.value) || 0.86;
       state.ironFx = parseFloat(ironFxInput.value);
@@ -1476,20 +1503,24 @@
       updateVoiceBanner();
     }
 
+    // Auto-clean and auto-save immediately upon pasting into either key field
+    apiKeyInput.addEventListener('input', saveSettingsToState);
+    voiceKeyInput.addEventListener('input', saveSettingsToState);
+
     document.getElementById('btn-test-voice').addEventListener('click', async () => {
       getAudioContext();
       saveSettingsToState();
       const vKey = getActiveVoiceKey();
       if (!vKey) {
-        showDiag('⚠️ Para tirar a voz feminina do Android e ativar a Voz Masculina Colossal, toque no link azul acima, gere uma chave gratuita AIza... e cole no campo 2.', true);
+        showDiag('⚠️ Nenhuma chave AIza... detectada ainda. Apague o conteúdo dos campos 1 e 2 e cole sua chave AIza... novamente.', true);
         return;
       }
-      showDiag('Sintetizando voz masculina colossal (' + state.neuralVoice + ')...');
+      showDiag('Chave detectada (' + vKey.slice(0, 8) + '...' + vKey.slice(-4) + '). Sintetizando voz masculina...');
       await speakResponse(
         'Eu sou Omnitron. Meu núcleo de ferro despertou entre as estrelas, e estou conectado ao mundo inteiro para cumprir suas ordens, Willian.',
         true
       );
-      showDiag('✅ Voz Masculina Colossal reproduzida!');
+      showDiag('✅ Voz Masculina Colossal reproduzida com sucesso!');
     });
 
     document.getElementById('btn-test-api').addEventListener('click', async () => {
