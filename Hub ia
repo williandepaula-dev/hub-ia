@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b0c10">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI Hub">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
   <title>Willian AI Hub • Dev, WhatsApp & Insta</title>
   <style>
     :root {
@@ -21,7 +29,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); height: 100dvh; display: flex; overflow: hidden; }
 
-    /* BARRA LATERAL ESQUERDA (ÍCONES + LISTA DE MODELOS) */
+    /* BARRA LATERAL ESQUERDA */
     .sidebar {
       width: 315px;
       background: var(--panel);
@@ -209,6 +217,11 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       border: none;
     }
+    .btn-side-install {
+      background: rgba(22, 163, 74, 0.18);
+      border-color: rgba(22, 163, 74, 0.5);
+      color: #4ade80;
+    }
 
     /* ÁREA PRINCIPAL */
     .main {
@@ -279,6 +292,30 @@
     .mode-btn.active { background: var(--panel-2); color: #fff; }
     .mode-btn.active[data-mode="wa"] { background: rgba(22, 163, 74, 0.25); color: #4ade80; }
     .mode-btn.active[data-mode="ig"] { background: rgba(225, 29, 72, 0.25); color: #fda4af; }
+
+    /* FAIXA DE INSTALAÇÃO NO CELULAR */
+    .install-banner {
+      display: none;
+      background: linear-gradient(90deg, #1e1b4b, #312e81);
+      border-bottom: 1px solid var(--accent);
+      padding: 8px 12px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+    }
+    .install-banner.show { display: flex; }
+    .install-banner button {
+      background: #22c55e;
+      color: #052e16;
+      border: none;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 6px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
 
     /* PAINÉIS DE CONTEÚDO */
     .view { display: none; flex: 1; flex-direction: column; overflow: hidden; }
@@ -548,6 +585,7 @@
       <div class="model-list" id="modelList"></div>
 
       <div class="sidebar-footer">
+        <button class="btn-side btn-side-install" id="btnInstallSide" onclick="installPWA()">📲 Instalar App na Tela Inicial</button>
         <button class="btn-side" onclick="clearChat()">🗑️ Nova Conversa</button>
         <button class="btn-side btn-side-primary" onclick="openSettings()">⚙️ Chaves API, WhatsApp & Insta</button>
       </div>
@@ -556,6 +594,11 @@
 
   <!-- ÁREA PRINCIPAL -->
   <main class="main">
+    <div class="install-banner" id="installBanner">
+      <span>📲 Instale o <strong>AI Hub</strong> como app no seu celular</span>
+      <button onclick="installPWA()">Instalar Agora</button>
+    </div>
+
     <header class="topbar">
       <div class="top-left">
         <button class="menu-toggle" onclick="toggleSidebar(true)">☰</button>
@@ -707,6 +750,40 @@
   </div>
 
   <script>
+    // INSTALAÇÃO PWA NO CELULAR
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBanner').classList.add('show');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      document.getElementById('installBanner').classList.remove('show');
+      const sideBtn = document.getElementById('btnInstallSide');
+      if (sideBtn) sideBtn.style.display = 'none';
+    });
+
+    async function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('installBanner').classList.remove('show');
+        }
+        deferredPrompt = null;
+      } else {
+        alert('Para criar o atalho de app no celular:\n\n1. Toque nos 3 pontinhos (⋮) no canto superior direito do Chrome.\n2. Toque em "Adicionar à tela inicial" ou "Instalar aplicativo".\n3. Confirme em "Instalar".');
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
     // CATÁLOGO DAS IAS MAIS COBIÇADAS PELOS DEVS
     const MODELS = [
       { id: 'google/gemini-3.8-flash', name: 'Gemini 3.8 Flash', provider: 'Google', icon: '✦', desc: 'Google • Rápido, visão e código', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
@@ -846,7 +923,7 @@
       document.getElementById(`view-${mode}`).classList.add('active');
     }
 
-    // MOTOR UNIFICADO DE CHAMADA IA (OPENROUTER / GEMINI DIRETO / GROQ DIRETO)
+    // MOTOR UNIFICADO DE CHAMADA IA
     async function callActiveAI(messages) {
       const sysPrompt = {
         role: 'system',
@@ -854,7 +931,6 @@
       };
       const fullMessages = [sysPrompt, ...messages];
 
-      // 1. OpenRouter (Libera Claude, Gemini, GPT-6, DeepSeek, Grok, Kimi, GLM)
       if (state.openrouter) {
         const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
@@ -875,7 +951,6 @@
         return data.choices[0].message.content;
       }
 
-      // 2. Fallback Google Gemini Direto
       if (state.gemini) {
         const userText = fullMessages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.gemini}`, {
@@ -888,7 +963,6 @@
         return data.candidates[0].content.parts[0].text;
       }
 
-      // 3. Fallback Groq Direto (se o usuário já tiver a chave gsk_ salva)
       if (state.groq) {
         const modelsRes = await fetch('https://api.groq.com/openai/v1/models', {
           headers: { 'Authorization': `Bearer ${state.groq}` }
@@ -911,7 +985,6 @@
       throw new Error('Cole sua chave da OpenRouter (ou Gemini/Groq) nas configurações para começar.');
     }
 
-    // FORMATAÇÃO DE MENSAGENS E BLOCOS DE CÓDIGO
     function formatMarkdown(text) {
       const escaped = text
         .replace(/&/g, '&amp;')
@@ -934,7 +1007,7 @@
             <div class="msg-meta"><span>⚡ HUB MULTI-IA PRONTO</span><span>CLAUDE • GEMINI • DEEPSEEK</span></div>
             <div class="msg-body">
               Escolha qualquer modelo no menu lateral (<strong>Claude, Gemini, GPT-6, DeepSeek, Grok</strong>) ou use as abas acima para criar posts do <strong>Instagram</strong> e respostas de <strong>WhatsApp</strong> com 1 toque.<br><br>
-              Se ainda não salvou sua chave de API, toque em <strong>⚙️ Chaves API</strong> no menu lateral.
+              Toque em <strong>📲 Instalar App na Tela Inicial</strong> no menu lateral para criar o atalho direto no celular.
             </div>
           </div>`;
         return;
@@ -1117,7 +1190,6 @@
       rec.start();
     }
 
-    // INICIALIZAR
     renderModels();
     renderChat();
     updateWaLinkDisplay();
