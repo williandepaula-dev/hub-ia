@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta name="theme-color" content="#04060b" />
-  <title>OMNITRON v4.2 // Willian AI Hub</title>
+  <title>OMNITRON v5.0 // Inteligência Global</title>
   <link rel="manifest" href="./manifest.json" />
   <style>
     :root {
       --bg: #04060b;
-      --panel: rgba(10, 16, 28, 0.86);
+      --panel: rgba(10, 16, 28, 0.88);
       --border: rgba(56, 189, 248, 0.28);
       --cyan: #38bdf8;
       --violet: #8b5cf6;
@@ -66,7 +66,7 @@
       justify-content: space-between;
       gap: 6px;
       padding: 10px 12px;
-      background: rgba(4, 6, 11, 0.9);
+      background: rgba(4, 6, 11, 0.92);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(10px);
       z-index: 20;
@@ -144,14 +144,14 @@
 
     .omnitron-wrapper {
       position: relative;
-      width: 235px;
-      height: 235px;
+      width: 230px;
+      height: 230px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       user-select: none;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     body[data-state="idle"] {
@@ -215,8 +215,8 @@
 
     .eye-socket {
       position: relative;
-      width: 124px;
-      height: 124px;
+      width: 122px;
+      height: 122px;
       border-radius: 50%;
       background: radial-gradient(circle at 50% 50%, #0f172a 30%, #02040a 100%);
       border: 2px solid var(--core-primary);
@@ -229,8 +229,8 @@
     }
 
     .eye-iris {
-      width: 76px;
-      height: 76px;
+      width: 74px;
+      height: 74px;
       border-radius: 50%;
       background:
         repeating-conic-gradient(from 0deg, transparent 0deg 8deg, rgba(255, 255, 255, 0.12) 9deg 10deg),
@@ -292,7 +292,7 @@
       text-transform: uppercase;
       color: var(--core-primary);
       text-shadow: 0 0 10px var(--core-glow);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -320,7 +320,7 @@
       min-height: 78px;
       max-height: 135px;
       overflow-y: auto;
-      background: rgba(10, 16, 28, 0.72);
+      background: rgba(10, 16, 28, 0.74);
       border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 14px;
       padding: 12px 14px;
@@ -330,6 +330,19 @@
       text-align: center;
       backdrop-filter: blur(8px);
       box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .voice-banner {
+      display: none;
+      margin-top: 8px;
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fcd34d;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .quick-chips {
@@ -516,14 +529,19 @@
     }
 
     .tip-box {
-      font-size: 11px;
+      font-size: 11.5px;
       line-height: 1.45;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.28);
-      padding: 8px 10px;
+      color: #e2e8f0;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 9px 11px;
       border-radius: 10px;
       margin-bottom: 10px;
+    }
+    .tip-box a {
+      color: #38bdf8;
+      font-weight: 700;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -571,25 +589,30 @@
     </div>
 
     <div class="status-line">
-      <span id="status-text">OMNITRON v4.2 ONLINE • TOQUE NO OLHO PARA FALAR</span>
+      <span id="status-text">OMNITRON v5.0 • INTERNET AO VIVO ATIVA</span>
       <button class="stop-voice-btn" id="btn-stop-voice">⏹ PARAR VOZ</button>
     </div>
 
     <div class="teleprompter" id="teleprompter">
-      Núcleo Omnitron v4.2 ativo. Toque no olho central para falar ou na engrenagem ⚙️ para configurar a voz colossal.
+      Núcleo Omnitron v5.0 conectado à rede global. Pergunte a temperatura de hoje, notícias atuais, cotações ou qualquer assunto.
     </div>
 
+    <button class="voice-banner" id="btn-unlock-male-voice">
+      ⚠️ Usando voz padrão do celular • Toque aqui para ativar Voz Masculina Colossal
+    </button>
+
     <div class="quick-chips">
-      <button class="chip" data-prompt="Crie uma legenda curta e magnética para Reels de tatuagem Black & Grey em Guarulhos com chamada para o WhatsApp.">🎬 Legenda Reels</button>
+      <button class="chip" data-prompt="Qual a temperatura exata e a previsão do tempo para hoje aqui em Guarulhos?">🌡️ Temperatura Hoje</button>
+      <button class="chip" data-prompt="Quais são as principais notícias do Brasil e do mundo hoje?">🌍 Notícias Hoje</button>
+      <button class="chip" data-prompt="Quanto está a cotação do Dólar, Euro e Bitcoin agora?">💵 Dólar & Bitcoin</button>
+      <button class="chip" data-prompt="Crie uma legenda magnética para Reels de tatuagem Black & Grey em Guarulhos com chamada para o WhatsApp.">🎬 Legenda Reels</button>
       <button class="chip" data-prompt="Crie uma resposta rápida e persuasiva de WhatsApp para cliente perguntando quanto custa uma tatuagem realista.">💬 Fechar Orçamento</button>
-      <button class="chip" data-prompt="Me explique de forma direta e resumida como otimizar o desempenho de um jogo 3D no Unity para celular.">🎮 Otimizar Unity</button>
-      <button class="chip" data-prompt="Gere um script curto para automatizar atendimento de estúdio de tatuagem.">💻 Gerar Código</button>
     </div>
   </main>
 
   <footer>
     <button class="mic-btn" id="btn-mic" title="Falar por voz">🎙️</button>
-    <input type="text" class="prompt-input" id="prompt-input" placeholder="Fale ou digite seu comando..." />
+    <input type="text" class="prompt-input" id="prompt-input" placeholder="Pergunte qualquer coisa no mundo..." />
     <button class="send-btn" id="btn-send" title="Enviar">➤</button>
   </footer>
 
@@ -605,7 +628,7 @@
   <!-- Settings Modal -->
   <div class="overlay-panel" id="settings-panel">
     <div class="overlay-header">
-      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON v4.2</span>
+      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON v5.0</span>
       <button class="hud-btn" id="btn-close-settings">✕ Fechar</button>
     </div>
 
@@ -615,12 +638,15 @@
     </div>
 
     <div class="field-group">
-      <label>2. Chave de Voz Neural Colossal (Gemini `AIza...` gratuita em aistudio.google.com/apikey)</label>
+      <label>2. Chave de Voz Masculina Neural (Gemini `AIza...` — obrigatório para substituir a voz feminina do Android)</label>
       <input type="password" id="voice-key-input" placeholder="Cole chave AIza... para voz estilo Optimus Prime..." />
     </div>
 
     <div class="tip-box">
-      <strong>Nota:</strong> Sua chave Groq (<b>gsk_...</b>) agora testa automaticamente todos os modelos liberados da sua conta. Para a <b>Voz Neural Masculina Colossal (Optimus Prime)</b>, gere uma chave gratuita <b>AIza...</b> em <b>aistudio.google.com/apikey</b> e cole no campo 2 acima.
+      <strong>Como ativar a Voz Masculina Grave (Optimus Prime):</strong><br>
+      O Android só possui voz feminina instalada. Para liberar a voz neural masculina grave e rouca gratuitamente:<br>
+      1. Toque aqui: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Abrir Google AI Studio (Criar Chave Grátis)</a><br>
+      2. Copie a chave que começa com <b>AIza...</b> e cole no <b>campo 2</b> acima.
     </div>
 
     <div class="field-group">
@@ -643,8 +669,8 @@
     </div>
 
     <div class="btn-row">
-      <button class="action-btn" id="btn-test-voice">🔊 Testar Voz Colossal</button>
-      <button class="action-btn" id="btn-test-api">⚡ Testar IA</button>
+      <button class="action-btn" id="btn-test-voice">🔊 Testar Voz Masculina</button>
+      <button class="action-btn" id="btn-test-api">⚡ Testar IA + Web</button>
     </div>
 
     <div class="btn-row" style="margin-top: 8px;">
@@ -655,7 +681,7 @@
   </div>
 
   <script>
-    // Clear old service worker caches so updates load immediately
+    // Unregister old service workers so updates apply immediately
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(regs => {
         regs.forEach(r => r.unregister());
@@ -675,8 +701,21 @@
       pitchDrop: parseFloat(localStorage.getItem('omni_pitch_drop') || '0.86'),
       ironFx: parseFloat(localStorage.getItem('omni_iron_fx') || '75'),
       cachedGroqModel: '',
+      userCoords: { lat: -23.4543, lon: -46.5337, city: 'Guarulhos, SP' },
       history: []
     };
+
+    // Try silent geolocation for exact local weather
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          state.userCoords.lat = pos.coords.latitude;
+          state.userCoords.lon = pos.coords.longitude;
+        },
+        () => {},
+        { timeout: 4000 }
+      );
+    }
 
     const body = document.body;
     const statusText = document.getElementById('status-text');
@@ -689,6 +728,7 @@
     const pitchDropInput = document.getElementById('pitch-drop-input');
     const ironFxInput = document.getElementById('iron-fx-input');
     const diagBox = document.getElementById('diag-box');
+    const voiceBanner = document.getElementById('btn-unlock-male-voice');
 
     apiKeyInput.value = state.apiKey;
     voiceKeyInput.value = state.voiceKey;
@@ -702,6 +742,15 @@
       return '';
     }
 
+    function updateVoiceBanner() {
+      voiceBanner.style.display = getActiveVoiceKey() ? 'none' : 'inline-block';
+    }
+    updateVoiceBanner();
+
+    voiceBanner.addEventListener('click', () => {
+      document.getElementById('settings-panel').classList.add('open');
+    });
+
     function showDiag(msg, isError = false) {
       diagBox.style.display = 'block';
       diagBox.style.borderColor = isError ? '#ef4444' : '#10b981';
@@ -712,6 +761,122 @@
     function setVisualState(newState, label) {
       body.setAttribute('data-state', newState);
       if (label) statusText.textContent = label;
+    }
+
+    // --- LIVE REAL-TIME WORLD SENSORS (WEATHER, FINANCE, NEWS, WIKI) ---
+    function weatherCodeToPt(code) {
+      const map = {
+        0: 'céu limpo', 1: 'predominantemente limpo', 2: 'parcialmente nublado', 3: 'nublado',
+        45: 'nevoeiro', 48: 'nevoeiro intenso', 51: 'garoa leve', 53: 'garoa moderada',
+        61: 'chuva leve', 63: 'chuva moderada', 65: 'chuva forte', 80: 'pancadas de chuva',
+        95: 'trovoada'
+      };
+      return map[code] || 'condição variável';
+    }
+
+    async function fetchLiveWeather(queryText) {
+      try {
+        let lat = state.userCoords.lat;
+        let lon = state.userCoords.lon;
+        let placeLabel = state.userCoords.city;
+
+        // Check if user asked about a specific city
+        const cityMatch = queryText.match(/(?:em|no|na|de|para)\s+([A-ZÀ-Úa-zà-ú\s]{3,28})(?:[?.!]|$)/i);
+        if (cityMatch) {
+          const candidate = cityMatch[1].trim().replace(/\b(hoje|agora|amanhã|brasil)\b/gi, '').trim();
+          if (candidate.length >= 3 && !/guarulhos/i.test(candidate)) {
+            const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(candidate)}&count=1&language=pt&format=json`);
+            const geoData = await geoRes.json();
+            if (geoData.results && geoData.results[0]) {
+              lat = geoData.results[0].latitude;
+              lon = geoData.results[0].longitude;
+              placeLabel = `${geoData.results[0].name}, ${geoData.results[0].admin1 || geoData.results[0].country}`;
+            }
+          }
+        }
+
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FSao_Paulo`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.current) return '';
+
+        const c = data.current;
+        const d = data.daily;
+        return `[DADOS METEOROLÓGICOS AO VIVO - ${placeLabel}]: Temperatura atual: ${c.temperature_2m}°C | Sensação térmica: ${c.apparent_temperature}°C | Condição: ${weatherCodeToPt(c.weather_code)} | Umidade: ${c.relative_humidity_2m}% | Vento: ${c.wind_speed_10m} km/h | Mínima hoje: ${d.temperature_2m_min[0]}°C | Máxima hoje: ${d.temperature_2m_max[0]}°C | Chance de chuva: ${d.precipitation_probability_max[0]}%.`;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    async function fetchLiveFinance() {
+      try {
+        const res = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL');
+        const data = await res.json();
+        return `[COTAÇÕES FINANCEIRAS AO VIVO]: Dólar Comercial: R$ ${parseFloat(data.USDBRL.bid).toFixed(2)} | Euro: R$ ${parseFloat(data.EURBRL.bid).toFixed(2)} | Bitcoin: R$ ${parseFloat(data.BTCBRL.bid).toLocaleString('pt-BR')}.`;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    async function fetchLiveNews() {
+      try {
+        const rssUrl = encodeURIComponent('https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419');
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
+        const data = await res.json();
+        if (!data.items || !data.items.length) return '';
+        const top = data.items.slice(0, 6).map((item, idx) => `${idx + 1}. ${item.title}`).join(' | ');
+        return `[MANCHETES AO VIVO DO BRASIL E DO MUNDO AGORA]: ${top}`;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    async function fetchWikiContext(queryText) {
+      try {
+        const cleanQ = queryText.replace(/[?!.,]/g, '').trim();
+        const url = `https://pt.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQ)}&srlimit=2&format=json&origin=*`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const hits = data.query?.search || [];
+        if (!hits.length) return '';
+        const snippets = hits.map(h => `${h.title}: ${h.snippet.replace(/<[^>]+>/g, '')}`).join(' | ');
+        return `[BASE DE CONHECIMENTO]: ${snippets}`;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    async function buildRealTimeWorldContext(queryText) {
+      const nowStr = new Date().toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      const tasks = [];
+      const q = queryText.toLowerCase();
+
+      if (/temperatura|clima|tempo|graus|calor|frio|chuva|chover|previsão|previsao/.test(q)) {
+        tasks.push(fetchLiveWeather(queryText));
+      }
+      if (/dólar|dolar|euro|bitcoin|btc|cotação|cotacao|moeda|bolsa/.test(q)) {
+        tasks.push(fetchLiveFinance());
+      }
+      if (/notícia|noticia|notícias|noticias|acontecendo|hoje|atual|mundo|brasil|jogo|placar|campeonato|presidente|política|politica/.test(q)) {
+        tasks.push(fetchLiveNews());
+      }
+      if (q.length > 6) {
+        tasks.push(fetchWikiContext(queryText));
+      }
+
+      const results = await Promise.all(tasks);
+      const liveBlocks = results.filter(Boolean).join('\n');
+
+      return `[DATA E HORA ATUAL EM GUARULHOS/SP]: ${nowStr}.\n${liveBlocks}`;
     }
 
     // --- WEB AUDIO API: COLOSSUS IRON & CYBERTRONIAN DSP RACK ---
@@ -891,6 +1056,7 @@
         .replace(/[#>*_`~|-]/g, ' ')
         .replace(/\[(.*?)\]\(.*?\)/g, '$1')
         .replace(/https?:\/\/\S+/g, 'link na tela')
+        .replace(/°C/g, ' graus Celsius')
         .replace(/\s+/g, ' ')
         .trim();
       return text;
@@ -906,7 +1072,7 @@
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
-      setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
+      setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
     }
 
     async function speakWithGeminiColossus(cleanText, voiceKey, keepScreenText) {
@@ -968,38 +1134,38 @@
 
       playBufferThroughIronDSP(audioBuffer, () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
+        setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
       });
     }
 
     function speakFallbackBrowser(cleanText, keepScreenText) {
       if (!keepScreenText) teleprompter.textContent = cleanText;
       if (!('speechSynthesis' in window)) {
-        setVisualState('idle', 'OMNITRON v4.2 ONLINE');
+        setVisualState('idle', 'OMNITRON v5.0');
         return;
       }
       playIronIgnition();
       isSpeaking = true;
-      setVisualState('speaking', 'TRANSMITINDO (MODO LOCAL)...');
+      setVisualState('speaking', 'TRANSMITINDO (VOZ DO APARELHO)...');
 
       const utter = new SpeechSynthesisUtterance(cleanText);
       const voices = window.speechSynthesis.getVoices();
       const ptMale = voices.find(v =>
         v.lang.toLowerCase().includes('pt') &&
-        /pte|male|masculino|daniel|ricardo|felipe|antonio/i.test(v.name + v.voiceURI)
+        /pte|jfb|male|masculino|daniel|ricardo|felipe|antonio/i.test(v.name + v.voiceURI)
       ) || voices.find(v => v.lang.toLowerCase().includes('pt-br'));
 
       if (ptMale) utter.voice = ptMale;
       utter.lang = 'pt-BR';
-      utter.pitch = 0.45;
-      utter.rate = 0.86;
+      utter.pitch = 0.5;
+      utter.rate = 0.88;
       utter.onend = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
+        setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
       };
       utter.onerror = () => {
         isSpeaking = false;
-        setVisualState('idle', 'OMNITRON v4.2 ONLINE');
+        setVisualState('idle', 'OMNITRON v5.0');
       };
       window.speechSynthesis.speak(utter);
     }
@@ -1011,14 +1177,14 @@
 
       if (!state.voiceEnabled) {
         if (!keepScreenText) teleprompter.textContent = clean;
-        setVisualState('idle', 'OMNITRON v4.2 ONLINE • VOZ SILENCIADA');
+        setVisualState('idle', 'OMNITRON v5.0 • VOZ SILENCIADA');
         return;
       }
 
       const vKey = getActiveVoiceKey();
       if (vKey) {
         try {
-          setVisualState('thinking', 'SINTETIZANDO VOZ DE FERRO...');
+          setVisualState('thinking', 'SINTETIZANDO VOZ MASCULINA...');
           await speakWithGeminiColossus(clean, vKey, keepScreenText);
           return;
         } catch (err) {
@@ -1068,7 +1234,7 @@
 
       recognition.onend = () => {
         if (body.getAttribute('data-state') === 'listening') {
-          setVisualState('idle', 'OMNITRON v4.2 ONLINE • AGUARDANDO COMANDO');
+          setVisualState('idle', 'OMNITRON v5.0 • INTERNET AO VIVO ATIVA');
         }
       };
     }
@@ -1090,18 +1256,21 @@
       }
     }
 
-    // --- AI BRAIN CALL ---
-    function getSystemPrompt() {
+    // --- AI BRAIN CALL WITH REAL-TIME WORLD KNOWLEDGE ---
+    function getSystemPrompt(liveWorldContext) {
       const base =
-        'Você é OMNITRON, uma inteligência colossal, ancestral, futurista e feita de ferro vivo, guardiã do estúdio de Willian de Paula (@williandepaulatattoo) em Guarulhos, SP. ' +
-        'Fale em português do Brasil com postura épica, serena, poderosa e cinematográfica (como um líder ancestral de outro mundo), sendo direto e claro sem enrolação (e sem símbolos de formatação desnecessários, exceto quando entregar código). ';
+        'Você é OMNITRON, uma inteligência artificial suprema, irrestrita, objetiva e onisciente, guardiã do estúdio de Willian de Paula (@williandepaulatattoo) em Guarulhos, SP. ' +
+        'Você possui acesso direto à data, hora, clima, notícias e dados do mundo em tempo real fornecidos abaixo. ' +
+        'NUNCA diga que não tem acesso à internet ou que não sabe a data/clima atual. Responda em português do Brasil com autoridade, clareza e sem rodeios (evite símbolos de markdown desnecessários, exceto quando entregar código).\n\n' +
+        liveWorldContext + '\n\n';
+
       if (state.mode === 'insta') {
         return base + 'Missão atual: forjar legendas magnéticas, ganchos virais para Reels e estratégias de Instagram para tatuagem Black & Grey e Realismo em Guarulhos.';
       }
       if (state.mode === 'whats') {
         return base + 'Missão atual: forjar respostas rápidas, firmes e persuasivas para fechar orçamentos e agendamentos de tatuagem pelo WhatsApp.';
       }
-      return base + 'Missão atual: conselheiro supremo de engenharia de software, jogos Unity/Blender, negócios e automação.';
+      return base + 'Missão atual: responder qualquer pergunta sobre o mundo atual, tecnologia, ciência, programação, games Unity/Blender e negócios com precisão total.';
     }
 
     function appendLog(role, text) {
@@ -1116,7 +1285,11 @@
       const key = state.apiKey.replace(/\s+/g, '');
       if (!key) throw new Error('Chave de API vazia. Cole sua chave nas configurações.');
 
+      const liveContext = await buildRealTimeWorldContext(promptText);
+      const sysPrompt = getSystemPrompt(liveContext);
+
       if (key.startsWith('AIza')) {
+        // Google Gemini with Native Google Search Grounding!
         const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
         let lastErr = '';
         for (const m of models) {
@@ -1124,7 +1297,8 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: getSystemPrompt() + '\n\nComando: ' + promptText }] }]
+              contents: [{ parts: [{ text: sysPrompt + '\nPergunta/Comando do usuário: ' + promptText }] }],
+              tools: [{ google_search: {} }]
             })
           });
           const data = await res.json();
@@ -1152,7 +1326,9 @@
             .map(m => m.id)
             .filter(id => !/whisper|guard|safeguard|embed|tts|playai|orpheus|vision/i.test(id));
 
+          // Prioritize Groq's web-search agentic models first, then fast chat models
           const preferred = [
+            ...available.filter(id => /compound-beta/i.test(id)),
             ...available.filter(id => /llama-3\.1-8b-instant/i.test(id)),
             ...available.filter(id => /llama-4|qwen|gpt-oss|gemma|mixtral/i.test(id)),
             ...available.filter(id => /llama-3\.3/i.test(id)),
@@ -1166,8 +1342,8 @@
         }
 
         const msgs = useHistory
-          ? [{ role: 'system', content: getSystemPrompt() }, ...state.history]
-          : [{ role: 'user', content: promptText }];
+          ? [{ role: 'system', content: sysPrompt }, ...state.history]
+          : [{ role: 'system', content: sysPrompt }, { role: 'user', content: promptText }];
 
         let lastGroqErr = '';
         for (const modelId of candidateModels) {
@@ -1195,8 +1371,8 @@
 
       const model = document.getElementById('model-select').value;
       const msgs = useHistory
-        ? [{ role: 'system', content: getSystemPrompt() }, ...state.history]
-        : [{ role: 'user', content: promptText }];
+        ? [{ role: 'system', content: sysPrompt }, ...state.history]
+        : [{ role: 'system', content: sysPrompt }, { role: 'user', content: promptText }];
       const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -1232,8 +1408,8 @@
         return;
       }
 
-      setVisualState('thinking', 'PROCESSANDO NO NÚCLEO OMNITRON...');
-      teleprompter.textContent = 'Analisando comando...';
+      setVisualState('thinking', 'CONSULTANDO REDE GLOBAL...');
+      teleprompter.textContent = 'Acessando sensores em tempo real e processando...';
 
       state.history.push({ role: 'user', content: text });
       if (state.history.length > 8) state.history = state.history.slice(-8);
@@ -1297,6 +1473,7 @@
       localStorage.setItem('omni_neural_voice', state.neuralVoice);
       localStorage.setItem('omni_pitch_drop', state.pitchDrop);
       localStorage.setItem('omni_iron_fx', state.ironFx);
+      updateVoiceBanner();
     }
 
     document.getElementById('btn-test-voice').addEventListener('click', async () => {
@@ -1304,26 +1481,25 @@
       saveSettingsToState();
       const vKey = getActiveVoiceKey();
       if (!vKey) {
-        showDiag('⚠️ Cole uma chave Gemini gratuita (AIza... de aistudio.google.com/apikey) no campo 2 para ativar a voz neural Optimus Prime.', true);
-        speakFallbackBrowser('Eu sou Omnitron. Cole sua chave Gemini gratuita no campo 2 para ativar minha voz neural de ferro.', true);
+        showDiag('⚠️ Para tirar a voz feminina do Android e ativar a Voz Masculina Colossal, toque no link azul acima, gere uma chave gratuita AIza... e cole no campo 2.', true);
         return;
       }
-      showDiag('Sintetizando voz colossal (' + state.neuralVoice + ') com processador de ferro...');
+      showDiag('Sintetizando voz masculina colossal (' + state.neuralVoice + ')...');
       await speakResponse(
-        'Eu sou Omnitron. Meu núcleo de ferro despertou entre as estrelas, e estou pronto para cumprir suas ordens, Willian.',
+        'Eu sou Omnitron. Meu núcleo de ferro despertou entre as estrelas, e estou conectado ao mundo inteiro para cumprir suas ordens, Willian.',
         true
       );
-      showDiag('✅ Voz Colossal reproduzida com sucesso!');
+      showDiag('✅ Voz Masculina Colossal reproduzida!');
     });
 
     document.getElementById('btn-test-api').addEventListener('click', async () => {
       getAudioContext();
       saveSettingsToState();
-      showDiag('Conectando e testando modelos ativos...');
+      showDiag('Testando IA + Sensor de Temperatura ao vivo...');
       try {
-        const res = await callAIProvider('Responda em uma frase épica e curta: Conexão com o núcleo estabelecida.', false);
+        const res = await callAIProvider('Diga apenas em uma frase qual a temperatura atual em Guarulhos hoje.', false);
         const modelInfo = state.cachedGroqModel ? ` [Modelo: ${state.cachedGroqModel}]` : '';
-        showDiag(`✅ Sucesso${modelInfo}! Resposta: ${res}`, false);
+        showDiag(`✅ Sucesso${modelInfo}! ${res}`, false);
       } catch (err) {
         showDiag('❌ ' + err.message, true);
       }
@@ -1333,7 +1509,7 @@
       getAudioContext();
       saveSettingsToState();
       document.getElementById('settings-panel').classList.remove('open');
-      await speakResponse('Sistemas calibrados. O núcleo Omnitron aguarda o seu comando.', false);
+      await speakResponse('Sistemas calibrados e conectados à rede global. O núcleo Omnitron aguarda o seu comando.', false);
     });
 
     document.querySelectorAll('.mode-pill').forEach(btn => {
