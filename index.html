@@ -1,1198 +1,1066 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0b0c10">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AI Hub">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon.svg">
-  <title>Willian AI Hub • Dev, WhatsApp & Insta</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#04060b" />
+  <title>OMNITRON // Willian AI Hub</title>
+  <link rel="manifest" href="./manifest.json" />
   <style>
     :root {
-      --bg: #0b0c10;
-      --panel: #13151c;
-      --panel-2: #1a1d27;
-      --border: #262a38;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
-      --accent: #6366f1;
-      --accent-2: #8b5cf6;
-      --wa: #16a34a;
-      --ig: #e11d48;
-      --gold: #fbbf24;
+      --bg: #04060b;
+      --panel: rgba(10, 16, 28, 0.78);
+      --border: rgba(56, 189, 248, 0.28);
+      --cyan: #38bdf8;
+      --violet: #8b5cf6;
+      --amber: #f59e0b;
+      --crimson: #ef4444;
+      --emerald: #10b981;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --core-primary: #38bdf8;
+      --core-secondary: #8b5cf6;
+      --core-glow: rgba(56, 189, 248, 0.45);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); height: 100dvh; display: flex; overflow: hidden; }
 
-    /* BARRA LATERAL ESQUERDA */
-    .sidebar {
-      width: 315px;
-      background: var(--panel);
-      border-right: 1px solid var(--border);
-      display: flex;
-      height: 100%;
-      flex-shrink: 0;
-      z-index: 30;
-      transition: transform 0.25s ease;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
-    .icon-rail {
-      width: 52px;
-      background: #0e1016;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 12px 0;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-    .rail-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-    .rail-btn:hover, .rail-btn.active {
-      background: var(--panel-2);
-      color: #fff;
-      border-color: var(--accent);
-    }
-    .rail-sep { width: 24px; height: 1px; background: var(--border); margin: 4px 0; }
 
-    .drawer-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 12px;
-      overflow: hidden;
-    }
-    .search-box {
+    body {
       background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-    .search-box input {
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 13px;
-      width: 100%;
-      outline: none;
-    }
-    .filter-tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 10px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-    }
-    .filter-tab {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 600;
-      padding: 5px 9px;
-      border-radius: 99px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .filter-tab.active {
-      background: var(--panel-2);
-      color: #fff;
-      border-color: var(--accent);
-    }
-    .model-list {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding-right: 2px;
-    }
-    .model-item {
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      padding: 9px 10px;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      transition: all 0.15s;
-    }
-    .model-item:hover { background: var(--panel-2); }
-    .model-item.selected {
-      background: rgba(99, 102, 241, 0.14);
-      border-color: var(--accent);
-    }
-    .model-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
-    .provider-badge {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 800;
-      color: #fff;
-      flex-shrink: 0;
-    }
-    .model-info { min-width: 0; }
-    .model-name {
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .model-desc {
-      font-size: 11px;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .tag {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 3px 6px;
-      border-radius: 6px;
-      letter-spacing: 0.4px;
-      flex-shrink: 0;
-    }
-    .tag-frontier { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.4); }
-    .tag-dev { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
-    .tag-free { background: rgba(22, 163, 74, 0.2); color: #86efac; border: 1px solid rgba(22, 163, 74, 0.4); }
-
-    .sidebar-footer {
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
-      margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .btn-side {
-      width: 100%;
-      padding: 9px 10px;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .btn-side-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border: none;
-    }
-    .btn-side-install {
-      background: rgba(22, 163, 74, 0.18);
-      border-color: rgba(22, 163, 74, 0.5);
-      color: #4ade80;
-    }
-
-    /* ÁREA PRINCIPAL */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-width: 0;
-      background: var(--bg);
-    }
-    .topbar {
-      height: 54px;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 12px;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-    .top-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .menu-toggle {
-      display: none;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: #fff;
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .active-model-pill {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      padding: 5px 10px;
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .nav-modes {
-      display: flex;
-      gap: 5px;
-      background: var(--bg);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-    }
-    .mode-btn {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 6px 9px;
-      border-radius: 7px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .mode-btn.active { background: var(--panel-2); color: #fff; }
-    .mode-btn.active[data-mode="wa"] { background: rgba(22, 163, 74, 0.25); color: #4ade80; }
-    .mode-btn.active[data-mode="ig"] { background: rgba(225, 29, 72, 0.25); color: #fda4af; }
-
-    /* FAIXA DE INSTALAÇÃO NO CELULAR */
-    .install-banner {
-      display: none;
-      background: linear-gradient(90deg, #1e1b4b, #312e81);
-      border-bottom: 1px solid var(--accent);
-      padding: 8px 12px;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 12px;
-    }
-    .install-banner.show { display: flex; }
-    .install-banner button {
-      background: #22c55e;
-      color: #052e16;
-      border: none;
-      font-weight: 800;
-      font-size: 11px;
-      padding: 6px 11px;
-      border-radius: 8px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    /* PAINÉIS DE CONTEÚDO */
-    .view { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-    .view.active { display: flex; }
-
-    /* CHAT */
-    .quick-prompts {
-      display: flex;
-      gap: 6px;
-      padding: 8px 12px;
-      overflow-x: auto;
-      border-bottom: 1px solid var(--border);
-      background: #0e1016;
-      flex-shrink: 0;
-    }
-    .qp-chip {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: #d1d5db;
-      font-size: 11px;
-      padding: 5px 10px;
-      border-radius: 99px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .qp-chip:hover { border-color: var(--accent); color: #fff; }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .msg {
-      max-width: 88%;
-      padding: 11px 13px;
-      border-radius: 14px;
-      font-size: 14px;
-      line-height: 1.5;
-      word-wrap: break-word;
-    }
-    .msg-user {
-      align-self: flex-end;
-      background: var(--accent);
-      color: #fff;
-      border-bottom-right-radius: 4px;
-    }
-    .msg-ai {
-      align-self: flex-start;
-      background: var(--panel);
-      border: 1px solid var(--border);
       color: var(--text);
-      border-bottom-left-radius: 4px;
-      width: 100%;
-      max-width: 680px;
-    }
-    .msg-meta {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--gold);
-      margin-bottom: 5px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      height: 100dvh;
+      overflow: hidden;
       display: flex;
+      flex-direction: column;
+      background-image:
+        radial-gradient(circle at 50% 42%, rgba(56, 189, 248, 0.09) 0%, transparent 60%),
+        linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 28px 28px, 28px 28px;
+    }
+
+    /* HUD Corners */
+    .hud-corner {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border-color: var(--cyan);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+    .tr { top: 8px; right: 8px; border-top: 2px solid; border-right: 2px solid; }
+    .bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; }
+    .br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+
+    /* Top Bar */
+    header {
+      display: flex;
+      align-items: center;
       justify-content: space-between;
-    }
-    .msg-body pre {
-      background: #08090d;
-      border: 1px solid var(--border);
-      padding: 10px;
-      border-radius: 8px;
-      overflow-x: auto;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 12px;
-      margin: 8px 0;
-      color: #a5b4fc;
-    }
-    .msg-body code { font-family: ui-monospace, monospace; background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 4px; }
-    .msg-actions {
-      display: flex;
-      flex-wrap: wrap;
       gap: 6px;
-      margin-top: 9px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
+      padding: 10px 12px;
+      background: rgba(4, 6, 11, 0.85);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      z-index: 20;
     }
-    .act-btn {
-      background: var(--panel-2);
+
+    .hud-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    select, .hud-btn {
+      background: var(--panel);
+      color: var(--text);
       border: 1px solid var(--border);
-      color: #e5e7eb;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select {
+      max-width: 138px;
+      color: var(--cyan);
+    }
+
+    .hud-btn.active {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+      color: #fff;
+    }
+
+    /* Mode Strip */
+    .mode-bar {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px 4px;
+      z-index: 15;
+    }
+
+    .mode-pill {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 999px;
       font-size: 11px;
       font-weight: 700;
-      padding: 5px 9px;
-      border-radius: 7px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
       cursor: pointer;
+      transition: all 0.2s;
     }
-    .act-btn-wa { border-color: rgba(22, 163, 74, 0.5); color: #4ade80; }
-    .act-btn-ig { border-color: rgba(225, 29, 72, 0.5); color: #fda4af; }
 
-    .chat-input-bar {
-      padding: 10px 12px;
-      background: var(--panel);
-      border-top: 1px solid var(--border);
+    .mode-pill.active {
+      color: #fff;
+      border-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.16);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+    }
+
+    /* Center Omnitron Eye Stage */
+    main {
+      flex: 1;
       display: flex;
-      gap: 8px;
-      align-items: flex-end;
-      flex-shrink: 0;
-    }
-    .chat-input-bar textarea {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: #fff;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 14px;
-      resize: none;
-      max-height: 120px;
-      min-height: 42px;
-      outline: none;
-    }
-    .chat-input-bar textarea:focus { border-color: var(--accent); }
-    .icon-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 11px;
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .send-btn {
-      background: var(--accent);
-      border: none;
-      font-weight: 800;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 10px 16px;
+      overflow: hidden;
     }
 
-    /* ESTÚDIOS WHATSAPP & INSTAGRAM */
-    .studio-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px;
-      max-width: 680px;
-      width: 100%;
-      margin: 0 auto;
-    }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
+    .omnitron-wrapper {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
       margin-bottom: 14px;
     }
-    .card h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-    .label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 5px; }
-    .input, .select, .textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 14px;
-      outline: none;
+
+    /* State Color Themes */
+    body[data-state="idle"] {
+      --core-primary: #38bdf8;
+      --core-secondary: #6366f1;
+      --core-glow: rgba(56, 189, 248, 0.42);
     }
-    .textarea { min-height: 90px; resize: vertical; line-height: 1.4; }
-    .btn-full {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
-      margin-top: 10px;
+    body[data-state="listening"] {
+      --core-primary: #10b981;
+      --core-secondary: #34d399;
+      --core-glow: rgba(16, 185, 129, 0.65);
+    }
+    body[data-state="thinking"] {
+      --core-primary: #f59e0b;
+      --core-secondary: #8b5cf6;
+      --core-glow: rgba(245, 158, 11, 0.6);
+    }
+    body[data-state="speaking"] {
+      --core-primary: #ef4444;
+      --core-secondary: #f97316;
+      --core-glow: rgba(239, 68, 68, 0.78);
+    }
+
+    .energy-aura {
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--core-glow) 0%, transparent 70%);
+      filter: blur(12px);
+      animation: breathe 3.4s ease-in-out infinite;
+      transition: background 0.35s ease;
+    }
+
+    .ring-outer {
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      border: 1.5px dashed var(--core-primary);
+      opacity: 0.55;
+      animation: spinCW 22s linear infinite;
+    }
+
+    .ring-mid {
+      position: absolute;
+      inset: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--core-primary);
+      border-bottom-color: var(--core-secondary);
+      animation: spinCCW 9s linear infinite;
+    }
+
+    .ring-inner {
+      position: absolute;
+      inset: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--core-primary);
+      box-shadow: 0 0 24px var(--core-glow), inset 0 0 24px var(--core-glow);
+      animation: spinCW 6s linear infinite;
+    }
+
+    /* Omnitron Eye Sclera & Iris */
+    .eye-socket {
+      position: relative;
+      width: 126px;
+      height: 126px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, #0f172a 30%, #02040a 100%);
+      border: 2px solid var(--core-primary);
+      box-shadow:
+        0 0 35px var(--core-glow),
+        inset 0 0 30px rgba(0, 0, 0, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      overflow: hidden;
+      transition: transform 0.15s ease, border-color 0.3s ease;
     }
-    .btn-wa { background: var(--wa); }
-    .btn-ig { background: linear-gradient(135deg, #e11d48, #9333ea); }
-    .btn-ai { background: var(--accent); }
-    .btn-dark { background: var(--panel-2); border: 1px solid var(--border); }
-    .row { display: flex; gap: 8px; }
-    .status-msg { font-size: 12px; color: var(--gold); text-align: center; margin-top: 8px; }
 
-    /* MODAL DE CONFIGURAÇÃO */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      display: none;
+    .eye-iris {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background:
+        repeating-conic-gradient(
+          from 0deg,
+          transparent 0deg 8deg,
+          rgba(255, 255, 255, 0.12) 9deg 10deg
+        ),
+        radial-gradient(circle, #ffffff 0%, var(--core-primary) 42%, var(--core-secondary) 80%, #000 100%);
+      box-shadow: 0 0 28px var(--core-primary);
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      z-index: 50;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      width: 100%;
-      max-width: 440px;
-      max-height: 90dvh;
-      overflow-y: auto;
+      position: relative;
+      transition: transform 0.12s ease;
     }
 
-    .overlay {
+    .eye-pupil {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #020409;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 14px #fff;
+      position: relative;
+    }
+
+    .eye-pupil::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 5px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    /* Speaking & Thinking Animations */
+    body[data-state="thinking"] .ring-mid { animation-duration: 1.4s; }
+    body[data-state="thinking"] .ring-inner { animation-duration: 1s; }
+    body[data-state="speaking"] .eye-iris { animation: voicePulse 0.34s ease-in-out infinite alternate; }
+    body[data-state="speaking"] .energy-aura { animation: auraSurge 0.42s ease-in-out infinite alternate; }
+    body[data-state="listening"] .eye-socket { transform: scale(1.07); }
+
+    @keyframes spinCW { to { transform: rotate(360deg); } }
+    @keyframes spinCCW { to { transform: rotate(-360deg); } }
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.06); opacity: 1; }
+    }
+    @keyframes voicePulse {
+      from { transform: scale(0.90); }
+      to { transform: scale(1.16); }
+    }
+    @keyframes auraSurge {
+      from { transform: scale(0.96); opacity: 0.78; }
+      to { transform: scale(1.18); opacity: 1; }
+    }
+
+    /* Status & Live Voice Teleprompter */
+    .status-line {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--core-primary);
+      text-shadow: 0 0 10px var(--core-glow);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stop-voice-btn {
       display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 25;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--crimson);
+      color: #fca5a5;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
     }
-    .overlay.show { display: block; }
+    body[data-state="speaking"] .stop-voice-btn {
+      display: inline-block;
+    }
 
-    @media (max-width: 820px) {
-      .sidebar {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        transform: translateX(-100%);
-      }
-      .sidebar.open { transform: translateX(0); }
-      .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    .teleprompter {
+      width: 100%;
+      max-width: 520px;
+      min-height: 76px;
+      max-height: 132px;
+      overflow-y: auto;
+      background: rgba(10, 16, 28, 0.68);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: #f1f5f9;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Quick Chips */
+    .quick-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      width: 100%;
+      max-width: 520px;
+      padding: 10px 0 2px;
+      scrollbar-width: none;
+    }
+    .quick-chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      white-space: nowrap;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--text);
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      cursor: pointer;
+    }
+
+    /* Bottom Controls */
+    footer {
+      padding: 8px 12px 12px;
+      background: rgba(4, 6, 11, 0.92);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    .mic-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1.5px solid var(--cyan);
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.25), rgba(10, 16, 28, 0.95));
+      color: #fff;
+      font-size: 19px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+    }
+
+    body[data-state="listening"] .mic-btn {
+      border-color: var(--emerald);
+      background: rgba(16, 185, 129, 0.3);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+    }
+
+    .prompt-input {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 11px 15px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      color: #fff;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Drawer / Modals */
+    .overlay-panel {
+      position: fixed;
+      inset: 54px 10px 68px 10px;
+      background: rgba(6, 10, 19, 0.96);
+      border: 1px solid var(--cyan);
+      border-radius: 16px;
+      z-index: 40;
+      display: none;
+      flex-direction: column;
+      padding: 14px;
+      backdrop-filter: blur(14px);
+    }
+    .overlay-panel.open { display: flex; }
+
+    .overlay-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .chat-log {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    .msg {
+      padding: 10px 12px;
+      border-radius: 12px;
+      max-width: 92%;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: rgba(56, 189, 248, 0.18);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .msg.ai {
+      align-self: flex-start;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .field-group {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .field-group input, .field-group select {
+      max-width: 100%;
+      width: 100%;
+      padding: 10px;
+      font-size: 13px;
+      color: #fff;
     }
   </style>
 </head>
-<body>
+<body data-state="idle">
+  <div class="hud-corner tl"></div>
+  <div class="hud-corner tr"></div>
+  <div class="hud-corner bl"></div>
+  <div class="hud-corner br"></div>
 
-  <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
-
-  <!-- PAINEL LATERAL MULTIMODELOS -->
-  <aside class="sidebar" id="sidebar">
-    <div class="icon-rail">
-      <button class="rail-btn active" title="Todos" onclick="filterByProvider('all', this)">⚡</button>
-      <button class="rail-btn" title="Anthropic Claude" onclick="filterByProvider('Anthropic', this)">A\</button>
-      <button class="rail-btn" title="Google Gemini" onclick="filterByProvider('Google', this)">✦</button>
-      <button class="rail-btn" title="OpenAI" onclick="filterByProvider('OpenAI', this)">◎</button>
-      <button class="rail-btn" title="DeepSeek" onclick="filterByProvider('DeepSeek', this)">🐋</button>
-      <button class="rail-btn" title="xAI Grok" onclick="filterByProvider('xAI', this)">Ø</button>
-      <button class="rail-btn" title="GLM & Kimi" onclick="filterByProvider('Open', this)">⌘</button>
-      <div class="rail-sep"></div>
-      <button class="rail-btn" title="WhatsApp Hub" onclick="switchMode('wa'); toggleSidebar(false);">🟢</button>
-      <button class="rail-btn" title="Instagram Studio" onclick="switchMode('ig'); toggleSidebar(false);">📸</button>
+  <header>
+    <div class="hud-group">
+      <button class="hud-btn" id="btn-settings" title="Configurar API">⚙️</button>
+      <select id="model-select">
+        <option value="anthropic/claude-opus-4">Claude Opus</option>
+        <option value="google/gemini-2.5-pro-preview">Gemini 2.5 Pro</option>
+        <option value="openai/gpt-4o">GPT-4o / Omni</option>
+        <option value="deepseek/deepseek-r1">DeepSeek R1</option>
+        <option value="x-ai/grok-3">Grok 3</option>
+      </select>
     </div>
 
-    <div class="drawer-content">
-      <div class="search-box">
-        <span>🔍</span>
-        <input type="text" id="modelSearch" placeholder="Modelos de pesquisa..." oninput="renderModels()">
-      </div>
+    <div class="hud-group">
+      <button class="hud-btn active" id="btn-voice-toggle">🔊 Voz ON</button>
+      <button class="hud-btn" id="btn-log-toggle">📜 Texto</button>
+    </div>
+  </header>
 
-      <div class="filter-tabs">
-        <button class="filter-tab active" onclick="setTab('all', this)">Recomendado</button>
-        <button class="filter-tab" onclick="setTab('dev', this)">Dev & Código</button>
-        <button class="filter-tab" onclick="setTab('free', this)">Grátis</button>
-      </div>
+  <div class="mode-bar">
+    <button class="mode-pill active" data-mode="chat">⚡ Núcleo IA</button>
+    <button class="mode-pill" data-mode="insta">📸 Insta Tattoo</button>
+    <button class="mode-pill" data-mode="whats">💬 WhatsApp</button>
+  </div>
 
-      <div class="model-list" id="modelList"></div>
-
-      <div class="sidebar-footer">
-        <button class="btn-side btn-side-install" id="btnInstallSide" onclick="installPWA()">📲 Instalar App na Tela Inicial</button>
-        <button class="btn-side" onclick="clearChat()">🗑️ Nova Conversa</button>
-        <button class="btn-side btn-side-primary" onclick="openSettings()">⚙️ Chaves API, WhatsApp & Insta</button>
+  <main>
+    <div class="omnitron-wrapper" id="omnitron-eye" title="Toque para falar ou parar voz">
+      <div class="energy-aura"></div>
+      <div class="ring-outer"></div>
+      <div class="ring-mid"></div>
+      <div class="ring-inner"></div>
+      <div class="eye-socket">
+        <div class="eye-iris">
+          <div class="eye-pupil"></div>
+        </div>
       </div>
     </div>
-  </aside>
 
-  <!-- ÁREA PRINCIPAL -->
-  <main class="main">
-    <div class="install-banner" id="installBanner">
-      <span>📲 Instale o <strong>AI Hub</strong> como app no seu celular</span>
-      <button onclick="installPWA()">Instalar Agora</button>
+    <div class="status-line">
+      <span id="status-text">OMNITRON ONLINE • TOQUE NO OLHO PARA FALAR</span>
+      <button class="stop-voice-btn" id="btn-stop-voice">⏹ PARAR VOZ</button>
     </div>
 
-    <header class="topbar">
-      <div class="top-left">
-        <button class="menu-toggle" onclick="toggleSidebar(true)">☰</button>
-        <div class="active-model-pill" onclick="toggleSidebar(true)">
-          <span id="topModelBadge">✦</span>
-          <span id="topModelName">Gemini 3.8 Flash</span>
-          <span style="color: var(--muted); font-size: 10px;">▼</span>
-        </div>
-      </div>
+    <div class="teleprompter" id="teleprompter">
+      Núcleo Omnitron ativo, Willian. Toque no olho central e dê o seu comando.
+    </div>
 
-      <div class="nav-modes">
-        <button class="mode-btn active" data-mode="chat" onclick="switchMode('chat')">💬 IA Chat</button>
-        <button class="mode-btn" data-mode="ig" onclick="switchMode('ig')">📸 Insta</button>
-        <button class="mode-btn" data-mode="wa" onclick="switchMode('wa')">🟢 WhatsApp</button>
-      </div>
-    </header>
-
-    <!-- ABA 1: CHAT DEV & MULTI-IA -->
-    <section class="view active" id="view-chat">
-      <div class="quick-prompts">
-        <button class="qp-chip" onclick="useQuickPrompt('Crie o código completo e limpo para: ')">💻 Gerar Código</button>
-        <button class="qp-chip" onclick="useQuickPrompt('Encontre o bug e corrija este código:\n')">🐞 Corrigir Bug</button>
-        <button class="qp-chip" onclick="useQuickPrompt('Crie 3 opções de legenda viral para Instagram Reels sobre: ')">📸 Legenda Reels</button>
-        <button class="qp-chip" onclick="useQuickPrompt('Escreva uma resposta comercial profissional para enviar no WhatsApp para um cliente que perguntou: ')">🟢 Resposta Cliente</button>
-      </div>
-
-      <div class="chat-messages" id="chatMessages"></div>
-
-      <div class="chat-input-bar">
-        <button class="icon-btn" id="btnVoiceChat" title="Falar no microfone" onclick="dictateTo('chatInput', this)">🎙️</button>
-        <textarea id="chatInput" rows="1" placeholder="Pergunte ao Gemini, Claude, DeepSeek..." onkeydown="handleChatKey(event)"></textarea>
-        <button class="icon-btn send-btn" id="btnSendChat" onclick="sendChatMessage()">➤</button>
-      </div>
-    </section>
-
-    <!-- ABA 2: ESTÚDIO INSTAGRAM + IA -->
-    <section class="view" id="view-ig">
-      <div class="studio-scroll">
-        <div class="card">
-          <h3 style="color: #fda4af;">📸 Central Instagram + IA</h3>
-          <p style="font-size: 12px; color: var(--muted); line-height: 1.4;">
-            Gere legendas, roteiros de Reels, sequências de Stories ou respostas de Direct usando a IA selecionada no menu e abra o Instagram com 1 toque.
-          </p>
-
-          <label class="label">Tipo de Conteúdo:</label>
-          <select class="select" id="igType">
-            <option value="Legenda para Reels viral com gancho forte, texto curto, chamada para orçamento no WhatsApp e hashtags locais">🎬 Legenda para Reels Viral</option>
-            <option value="Roteiro falado de 20 segundos para Reels mostrando o processo e o resultado final">🎙️ Roteiro Falado para Vídeo</option>
-            <option value="Sequência de 4 Stories estratégicos para abrir agenda e gerar pedidos de orçamento">📱 Sequência de 4 Stories que Vendem</option>
-            <option value="Resposta simpática e persuasiva para Direct levando o cliente para o WhatsApp">💬 Resposta de Direct (DM)</option>
-          </select>
-
-          <label class="label">Sobre o que é a publicação ou mensagem:</label>
-          <div class="row">
-            <input type="text" class="input" id="igTopic" placeholder="Ex: Fechamento de braço realismo preto e cinza feito hoje">
-            <button class="icon-btn" onclick="dictateTo('igTopic', this)">🎙️</button>
-          </div>
-
-          <button class="btn-full btn-ai" id="btnGenIg" onclick="generateInstagramPost()">✨ Criar Conteúdo com IA Ativa</button>
-
-          <label class="label">Texto Pronto (edite se quiser):</label>
-          <textarea class="textarea" id="igOutput" placeholder="O texto gerado pela IA aparecerá aqui..."></textarea>
-
-          <div class="row">
-            <button class="btn-full btn-dark" onclick="copyText('igOutput', 'igStatus')">📋 Copiar Texto</button>
-            <button class="btn-full btn-ig" onclick="openInstagramWithText()">📸 Copiar e Abrir Instagram</button>
-          </div>
-          <div class="status-msg" id="igStatus"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABA 3: CENTRAL WHATSAPP + IA -->
-    <section class="view" id="view-wa">
-      <div class="studio-scroll">
-        <div class="card">
-          <h3 style="color: #4ade80;">🟢 Central WhatsApp + IA</h3>
-          <p style="font-size: 12px; color: var(--muted); line-height: 1.4;">
-            Cole o que o cliente mandou ou escolha um modelo rápido. A IA escreve a resposta e dispara direto no seu WhatsApp.
-          </p>
-
-          <label class="label">Número do Cliente (opcional — deixe vazio para escolher o contato no WhatsApp):</label>
-          <input type="tel" class="input" id="waClientPhone" placeholder="Ex: 11999999999">
-
-          <label class="label">Mensagem do Cliente ou Objetivo do Contato:</label>
-          <div class="row">
-            <input type="text" class="input" id="waPrompt" placeholder="Ex: Cliente perguntou valor de um leão no antebraço">
-            <button class="icon-btn" onclick="dictateTo('waPrompt', this)">🎙️</button>
-          </div>
-
-          <div class="row" style="margin-top: 8px; flex-wrap: wrap;">
-            <button class="qp-chip" onclick="setWaPreset('Responder pedido de orçamento pedindo tamanho em cm, local do corpo e referência')">💰 Pedir Detalhes p/ Orçamento</button>
-            <button class="qp-chip" onclick="setWaPreset('Enviar mensagem de confirmação de horário da sessão amanhã no estúdio')">📅 Confirmar Sessão</button>
-            <button class="qp-chip" onclick="setWaPreset('Enviar instruções claras de cuidados pós-tatuagem e cicatrização')">🩹 Cuidados Pós-Tattoo</button>
-          </div>
-
-          <button class="btn-full btn-ai" id="btnGenWa" onclick="generateWhatsAppReply()">✨ Gerar Resposta com IA Ativa</button>
-
-          <label class="label">Mensagem Pronta para Enviar:</label>
-          <textarea class="textarea" id="waOutput" placeholder="A mensagem pronta para o WhatsApp aparecerá aqui..."></textarea>
-
-          <div class="row">
-            <button class="btn-full btn-dark" onclick="copyText('waOutput', 'waStatus')">📋 Copiar</button>
-            <button class="btn-full btn-wa" onclick="sendToWhatsApp()">🟢 Enviar no WhatsApp</button>
-          </div>
-          <div class="status-msg" id="waStatus"></div>
-        </div>
-
-        <div class="card">
-          <h3>🔗 Seu Link Direto do WhatsApp</h3>
-          <p style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Use na bio do Instagram para os clientes clicarem e caírem direto no seu atendimento:</p>
-          <input type="text" class="input" id="myWaLinkBox" readonly>
-          <button class="btn-full btn-dark" onclick="copyText('myWaLinkBox', 'waStatus')">📋 Copiar Meu Link wa.me</button>
-        </div>
-      </div>
-    </section>
+    <div class="quick-chips">
+      <button class="chip" data-prompt="Crie uma legenda curta e magnética para Reels de tatuagem Black & Grey em Guarulhos com chamada para o WhatsApp.">🎬 Legenda Reels</button>
+      <button class="chip" data-prompt="Crie uma resposta rápida e persuasiva de WhatsApp para cliente perguntando quanto custa uma tatuagem realista.">💬 Fechar Orçamento</button>
+      <button class="chip" data-prompt="Me explique de forma direta e resumida como otimizar o desempenho de um jogo 3D no Unity para celular.">🎮 Otimizar Unity</button>
+      <button class="chip" data-prompt="Gere um script curto para automatizar atendimento de estúdio de tatuagem.">💻 Gerar Código</button>
+    </div>
   </main>
 
-  <!-- MODAL CONFIGURAÇÕES -->
-  <div class="modal-backdrop" id="settingsModal">
-    <div class="modal">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="font-size: 15px;">⚙️ Configurar IAs e Redes</h3>
-        <button class="icon-btn" style="width: 32px; height: 32px;" onclick="closeSettings()">✕</button>
-      </div>
+  <footer>
+    <button class="mic-btn" id="btn-mic" title="Falar por voz">🎙️</button>
+    <input type="text" class="prompt-input" id="prompt-input" placeholder="Fale ou digite seu comando..." />
+    <button class="send-btn" id="btn-send" title="Enviar">➤</button>
+  </footer>
 
-      <label class="label" style="color: #a5b4fc; font-weight: 700;">1. Chave OpenRouter (1 chave = Claude, Gemini, GPT-6, DeepSeek, Grok):</label>
-      <input type="password" class="input" id="cfgOpenRouter" placeholder="sk-or-v1-...">
-
-      <label class="label">Ou Chave Direta Google Gemini (opcional):</label>
-      <input type="password" class="input" id="cfgGemini" placeholder="AIzaSy...">
-
-      <label class="label">Ou Chave Direta Groq (opcional - ultra rápida):</label>
-      <input type="password" class="input" id="cfgGroq" placeholder="gsk_...">
-
-      <hr style="border: none; border-top: 1px solid var(--border); margin: 14px 0;">
-
-      <label class="label" style="color: #4ade80; font-weight: 700;">2. Seu WhatsApp (com DDD, ex: 11999999999):</label>
-      <input type="tel" class="input" id="cfgWaNumber" placeholder="11999999999">
-
-      <label class="label" style="color: #fda4af; font-weight: 700;">3. Seu @ do Instagram:</label>
-      <input type="text" class="input" id="cfgIgUser" placeholder="@williandepaulatattoo">
-
-      <label class="label">4. Contexto do Seu Negócio (para as IAs já saberem quem você é):</label>
-      <textarea class="textarea" style="min-height: 64px;" id="cfgContext">Sou Willian, tatuador profissional especialista em realismo preto e cinza em Guarulhos - SP (@williandepaulatattoo) e desenvolvedor de software.</textarea>
-
-      <button class="btn-full btn-ai" onclick="saveSettings()">💾 Salvar Tudo</button>
+  <!-- Full Text Transcript Overlay -->
+  <div class="overlay-panel" id="log-panel">
+    <div class="overlay-header">
+      <span>REGISTRO DE TRANSMISSÃO (TEXTO & CÓDIGO)</span>
+      <button class="hud-btn" id="btn-close-log">✕ Fechar</button>
     </div>
+    <div class="chat-log" id="chat-log"></div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="overlay-panel" id="settings-panel">
+    <div class="overlay-header">
+      <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON</span>
+      <button class="hud-btn" id="btn-close-settings">✕ Fechar</button>
+    </div>
+    <div class="field-group">
+      <label>Chave de API (OpenRouter `sk-or-...`, Gemini `AIza...` ou Groq `gsk_...`)</label>
+      <input type="password" id="api-key-input" placeholder="Cole sua API Key aqui..." />
+    </div>
+    <div class="field-group">
+      <label>Perfil de Voz</label>
+      <select id="voice-preset-select">
+        <option value="transformer">🤖 Transformer / Deus (Grave & Robótico)</option>
+        <option value="titan">⚡ Titã Profundo (Ultra Grave)</option>
+        <option value="natural">🎙️ Comando Natural</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Gravidade / Tom da Voz (0.30 = Mega Grave | 0.48 = Transformer | 1.0 = Normal)</label>
+      <input type="number" id="voice-pitch-input" step="0.02" min="0.25" max="1.3" value="0.48" />
+    </div>
+    <div class="field-group">
+      <label>Velocidade da Fala (0.85 = Imponente | 0.90 = Padrão | 1.1 = Rápido)</label>
+      <input type="number" id="voice-rate-input" step="0.05" min="0.65" max="1.5" value="0.90" />
+    </div>
+    <div class="field-group" style="flex-direction: row; align-items: center; gap: 8px;">
+      <input type="checkbox" id="cyber-hum-input" checked style="width: 18px; height: 18px;" />
+      <label for="cyber-hum-input" style="color: #e2e8f0;">Ativar Ressonância Sub-Bass & Som Mecânico ao falar</label>
+    </div>
+    <button class="send-btn" id="btn-save-settings" style="width:100%; border-radius:12px; font-size:14px;">Salvar Configurações</button>
   </div>
 
   <script>
-    // INSTALAÇÃO PWA NO CELULAR
-    let deferredPrompt = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('installBanner').classList.add('show');
-    });
-
-    window.addEventListener('appinstalled', () => {
-      deferredPrompt = null;
-      document.getElementById('installBanner').classList.remove('show');
-      const sideBtn = document.getElementById('btnInstallSide');
-      if (sideBtn) sideBtn.style.display = 'none';
-    });
-
-    async function installPWA() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          document.getElementById('installBanner').classList.remove('show');
-        }
-        deferredPrompt = null;
-      } else {
-        alert('Para criar o atalho de app no celular:\n\n1. Toque nos 3 pontinhos (⋮) no canto superior direito do Chrome.\n2. Toque em "Adicionar à tela inicial" ou "Instalar aplicativo".\n3. Confirme em "Instalar".');
-      }
-    }
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      });
-    }
-
-    // CATÁLOGO DAS IAS MAIS COBIÇADAS PELOS DEVS
-    const MODELS = [
-      { id: 'google/gemini-3.8-flash', name: 'Gemini 3.8 Flash', provider: 'Google', icon: '✦', desc: 'Google • Rápido, visão e código', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
-      { id: 'google/gemini-3.1-pro-preview', name: 'Gemini 3.1 Pro', provider: 'Google', icon: '✦', desc: 'Google • Raciocínio profundo 1M', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
-      { id: 'anthropic/claude-fable-5.1', name: 'Claude Fable 5.1', provider: 'Anthropic', icon: 'A\\', desc: 'Anthropic • Arquitetura e agentes', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
-      { id: 'anthropic/claude-opus-5.5', name: 'Claude Opus 5.5', provider: 'Anthropic', icon: 'A\\', desc: 'Anthropic • Elite em engenharia', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
-      { id: 'anthropic/claude-sonnet-5.5', name: 'Claude Sonnet 5.5', provider: 'Anthropic', icon: 'A\\', desc: 'Anthropic • Velocidade + código', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
-      { id: 'openai/gpt-6-astra', name: 'GPT-6 Astra', provider: 'OpenAI', icon: '◎', desc: 'OpenAI • Top Frontend & Lógica', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
-      { id: 'openai/gpt-6.1-terra', name: 'GPT-6.1 Terra', provider: 'OpenAI', icon: '◎', desc: 'OpenAI • Multimodal 1M contexto', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'all' },
-      { id: 'deepseek/deepseek-v4.1-flash-1017', name: 'DeepSeek V4.1 Flash', provider: 'DeepSeek', icon: '🐋', desc: 'DeepSeek • Mais usado em código', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
-      { id: 'deepseek/deepseek-v4-pro-0813', name: 'DeepSeek V4 Pro', provider: 'DeepSeek', icon: '🐋', desc: 'DeepSeek • Raciocínio pesado', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
-      { id: 'z-ai/glm-5.3', name: 'GLM-5.3', provider: 'Open', icon: '⌘', desc: 'Z.ai • Líder open-weights código', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
-      { id: 'moonshotai/kimi-k3', name: 'Kimi K3', provider: 'Open', icon: '⌘', desc: 'Moonshot • Contexto longo & dev', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'dev' },
-      { id: 'x-ai/grok-4.7', name: 'Grok 4.7', provider: 'xAI', icon: 'Ø', desc: 'xAI • Direto, sem rodeios', tag: 'FRONTEIRA', tagClass: 'tag-frontier', cat: 'all' },
-      { id: 'qwen/qwen3.8-max', name: 'Qwen 3.8 Max', provider: 'Open', icon: '⌘', desc: 'Alibaba • Forte em full-stack', tag: 'DEV #1', tagClass: 'tag-dev', cat: 'dev' },
-      { id: 'google/gemma-4-31b:free', name: 'Gemma 4 31B (Grátis)', provider: 'Google', icon: '✦', desc: 'OpenRouter • Custo zero', tag: 'GRÁTIS', tagClass: 'tag-free', cat: 'free' },
-      { id: 'nvidia/nemotron-3-ultra:free', name: 'Nemotron 3 Ultra (Grátis)', provider: 'Open', icon: '⌘', desc: 'OpenRouter • Custo zero', tag: 'GRÁTIS', tagClass: 'tag-free', cat: 'free' },
-      { id: 'openrouter/auto', name: 'OpenRouter Auto', provider: 'Open', icon: '⚡', desc: 'Escolhe a melhor IA sozinho', tag: 'AUTO', tagClass: 'tag-frontier', cat: 'all' }
-    ];
-
-    let selectedModel = MODELS[0];
-    let currentTab = 'all';
-    let currentProvider = 'all';
-    let chatHistory = JSON.parse(localStorage.getItem('ai_hub_history') || '[]');
-
-    // CONFIGURAÇÕES SALVAS
     const state = {
-      openrouter: localStorage.getItem('hub_or_key') || '',
-      gemini: localStorage.getItem('hub_gem_key') || '',
-      groq: localStorage.getItem('groq_api_key') || localStorage.getItem('hub_groq_key') || '',
-      waNumber: localStorage.getItem('hub_wa_num') || '',
-      igUser: localStorage.getItem('hub_ig_user') || '@williandepaulatattoo',
-      context: localStorage.getItem('hub_context') || 'Sou Willian, tatuador profissional especialista em realismo preto e cinza em Guarulhos - SP (@williandepaulatattoo) e desenvolvedor de software.'
+      mode: 'chat',
+      voiceEnabled: true,
+      apiKey: localStorage.getItem('openrouter_api_key')
+           || localStorage.getItem('api_key')
+           || localStorage.getItem('gemini_api_key')
+           || localStorage.getItem('groq_api_key')
+           || '',
+      voiceRate: parseFloat(localStorage.getItem('omni_rate_v2') || '0.90'),
+      voicePitch: parseFloat(localStorage.getItem('omni_pitch_v2') || '0.48'),
+      cyberHum: localStorage.getItem('omni_hum_v2') !== 'false',
+      history: []
     };
 
-    function updateWaLinkDisplay() {
-      const clean = state.waNumber.replace(/\D/g, '');
-      const fullNum = clean.startsWith('55') ? clean : (clean ? '55' + clean : '5511999999999');
-      const msg = encodeURIComponent('Olá Willian! Vim pelo seu Instagram e gostaria de fazer um orçamento de tattoo.');
-      document.getElementById('myWaLinkBox').value = `https://wa.me/${fullNum}?text=${msg}`;
-    }
+    const body = document.body;
+    const statusText = document.getElementById('status-text');
+    const teleprompter = document.getElementById('teleprompter');
+    const promptInput = document.getElementById('prompt-input');
+    const chatLog = document.getElementById('chat-log');
+    const apiKeyInput = document.getElementById('api-key-input');
+    const voiceRateInput = document.getElementById('voice-rate-input');
+    const voicePitchInput = document.getElementById('voice-pitch-input');
+    const voicePresetSelect = document.getElementById('voice-preset-select');
+    const cyberHumInput = document.getElementById('cyber-hum-input');
 
-    function openSettings() {
-      document.getElementById('cfgOpenRouter').value = state.openrouter;
-      document.getElementById('cfgGemini').value = state.gemini;
-      document.getElementById('cfgGroq').value = state.groq;
-      document.getElementById('cfgWaNumber').value = state.waNumber;
-      document.getElementById('cfgIgUser').value = state.igUser;
-      document.getElementById('cfgContext').value = state.context;
-      document.getElementById('settingsModal').classList.add('open');
-    }
+    apiKeyInput.value = state.apiKey;
+    voiceRateInput.value = state.voiceRate;
+    voicePitchInput.value = state.voicePitch;
+    cyberHumInput.checked = state.cyberHum;
 
-    function closeSettings() {
-      document.getElementById('settingsModal').classList.remove('open');
-    }
-
-    function saveSettings() {
-      state.openrouter = document.getElementById('cfgOpenRouter').value.trim();
-      state.gemini = document.getElementById('cfgGemini').value.trim();
-      state.groq = document.getElementById('cfgGroq').value.trim();
-      state.waNumber = document.getElementById('cfgWaNumber').value.trim();
-      state.igUser = document.getElementById('cfgIgUser').value.trim() || '@williandepaulatattoo';
-      state.context = document.getElementById('cfgContext').value.trim();
-
-      localStorage.setItem('hub_or_key', state.openrouter);
-      localStorage.setItem('hub_gem_key', state.gemini);
-      localStorage.setItem('hub_groq_key', state.groq);
-      if (state.groq) localStorage.setItem('groq_api_key', state.groq);
-      localStorage.setItem('hub_wa_num', state.waNumber);
-      localStorage.setItem('hub_ig_user', state.igUser);
-      localStorage.setItem('hub_context', state.context);
-
-      updateWaLinkDisplay();
-      closeSettings();
-    }
-
-    // SIDEBAR & MODELOS
-    function toggleSidebar(show) {
-      document.getElementById('sidebar').classList.toggle('open', show);
-      document.getElementById('overlay').classList.toggle('show', show);
-    }
-
-    function setTab(tab, el) {
-      currentTab = tab;
-      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-      el.classList.add('active');
-      renderModels();
-    }
-
-    function filterByProvider(prov, el) {
-      currentProvider = prov;
-      document.querySelectorAll('.rail-btn').forEach(b => b.classList.remove('active'));
-      el.classList.add('active');
-      renderModels();
-    }
-
-    function renderModels() {
-      const q = document.getElementById('modelSearch').value.toLowerCase().trim();
-      const list = document.getElementById('modelList');
-      list.innerHTML = '';
-
-      const filtered = MODELS.filter(m => {
-        if (currentProvider !== 'all' && m.provider !== currentProvider) return false;
-        if (currentTab === 'dev' && m.cat !== 'dev') return false;
-        if (currentTab === 'free' && m.cat !== 'free') return false;
-        if (q && !(m.name.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q))) return false;
-        return true;
-      });
-
-      filtered.forEach(m => {
-        const btn = document.createElement('button');
-        btn.className = 'model-item' + (m.id === selectedModel.id ? ' selected' : '');
-        btn.innerHTML = `
-          <div class="model-left">
-            <div class="provider-badge">${m.icon}</div>
-            <div class="model-info">
-              <div class="model-name">${m.name}</div>
-              <div class="model-desc">${m.desc}</div>
-            </div>
-          </div>
-          <span class="tag ${m.tagClass}">${m.tag}</span>
-        `;
-        btn.onclick = () => {
-          selectedModel = m;
-          document.getElementById('topModelBadge').textContent = m.icon;
-          document.getElementById('topModelName').textContent = m.name;
-          renderModels();
-          toggleSidebar(false);
-        };
-        list.appendChild(btn);
-      });
-    }
-
-    function switchMode(mode) {
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById(`view-${mode}`).classList.add('active');
-    }
-
-    // MOTOR UNIFICADO DE CHAMADA IA
-    async function callActiveAI(messages) {
-      const sysPrompt = {
-        role: 'system',
-        content: `Contexto do usuário: ${state.context}. Responda em português do Brasil de forma direta, prática e profissional.`
-      };
-      const fullMessages = [sysPrompt, ...messages];
-
-      if (state.openrouter) {
-        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${state.openrouter}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': window.location.href,
-            'X-Title': 'Willian AI Hub'
-          },
-          body: JSON.stringify({
-            model: selectedModel.id,
-            messages: fullMessages,
-            temperature: 0.7
-          })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || `Erro OpenRouter (${res.status})`);
-        return data.choices[0].message.content;
+    voicePresetSelect.addEventListener('change', () => {
+      if (voicePresetSelect.value === 'transformer') {
+        voicePitchInput.value = '0.48';
+        voiceRateInput.value = '0.90';
+      } else if (voicePresetSelect.value === 'titan') {
+        voicePitchInput.value = '0.32';
+        voiceRateInput.value = '0.84';
+      } else {
+        voicePitchInput.value = '0.95';
+        voiceRateInput.value = '1.05';
       }
+    });
 
-      if (state.gemini) {
-        const userText = fullMessages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.gemini}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: userText }] }] })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || 'Erro na API Gemini');
-        return data.candidates[0].content.parts[0].text;
-      }
-
-      if (state.groq) {
-        const modelsRes = await fetch('https://api.groq.com/openai/v1/models', {
-          headers: { 'Authorization': `Bearer ${state.groq}` }
-        });
-        const modelsData = await modelsRes.json();
-        const textModels = (modelsData.data || []).map(m => m.id).filter(id => !/whisper|tts|guard|embed/i.test(id));
-        const groqModel = textModels.find(id => /llama-4|llama-3\.3/i.test(id)) || textModels[0];
-
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${state.groq}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: groqModel, messages: fullMessages, temperature: 0.7 })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error?.message || 'Erro na API Groq');
-        return data.choices[0].message.content;
-      }
-
-      openSettings();
-      throw new Error('Cole sua chave da OpenRouter (ou Gemini/Groq) nas configurações para começar.');
+    function setVisualState(newState, label) {
+      body.setAttribute('data-state', newState);
+      if (label) statusText.textContent = label;
     }
 
-    function formatMarkdown(text) {
-      const escaped = text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      return escaped
-        .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>');
+    // --- CYBERNETIC SUB-BASS & TRANSFORMER SERVO AUDIO (WEB AUDIO API) ---
+    let audioCtx = null;
+    let droneNodes = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (Ctx) audioCtx = new Ctx();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      return audioCtx;
     }
 
-    function renderChat() {
-      const box = document.getElementById('chatMessages');
-      box.innerHTML = '';
+    function playServoIgnition() {
+      if (!state.cyberHum) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
 
-      if (chatHistory.length === 0) {
-        box.innerHTML = `
-          <div class="msg msg-ai">
-            <div class="msg-meta"><span>⚡ HUB MULTI-IA PRONTO</span><span>CLAUDE • GEMINI • DEEPSEEK</span></div>
-            <div class="msg-body">
-              Escolha qualquer modelo no menu lateral (<strong>Claude, Gemini, GPT-6, DeepSeek, Grok</strong>) ou use as abas acima para criar posts do <strong>Instagram</strong> e respostas de <strong>WhatsApp</strong> com 1 toque.<br><br>
-              Toque em <strong>📲 Instalar App na Tela Inicial</strong> no menu lateral para criar o atalho direto no celular.
-            </div>
-          </div>`;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(52, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
+        osc.frequency.exponentialRampToValueAtTime(48, now + 0.36);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(320, now);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.11, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } catch (e) {}
+    }
+
+    function startCyberDrone() {
+      if (!state.cyberHum || droneNodes) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        const subOsc = ctx.createOscillator();
+        const modOsc = ctx.createOscillator();
+        const filter = ctx.createBiquadFilter();
+        const masterGain = ctx.createGain();
+
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(54, now);
+
+        modOsc.type = 'sawtooth';
+        modOsc.frequency.setValueAtTime(108, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(165, now);
+
+        masterGain.gain.setValueAtTime(0.001, now);
+        masterGain.gain.linearRampToValueAtTime(0.055, now + 0.25);
+
+        subOsc.connect(filter);
+        modOsc.connect(filter);
+        filter.connect(masterGain);
+        masterGain.connect(ctx.destination);
+
+        subOsc.start(now);
+        modOsc.start(now);
+        droneNodes = { subOsc, modOsc, masterGain };
+      } catch (e) {}
+    }
+
+    function stopCyberDrone() {
+      if (!droneNodes) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx ? ctx.currentTime : 0;
+        if (ctx) {
+          droneNodes.masterGain.gain.setTargetAtTime(0.0001, now, 0.08);
+        }
+        const nodes = droneNodes;
+        droneNodes = null;
+        setTimeout(() => {
+          try { nodes.subOsc.stop(); nodes.modOsc.stop(); } catch (e) {}
+        }, 220);
+      } catch (e) {
+        droneNodes = null;
+      }
+    }
+
+    // --- VOICE SYNTHESIS (TTS) ENGINE ---
+    let speechQueue = [];
+    let isSpeaking = false;
+
+    function cleanTextForSpeech(raw) {
+      let text = raw.replace(/```[\s\S]*?```/g, '. Gerei o bloco de código completo na tela. Toque em Texto no topo para copiar. ');
+      text = text
+        .replace(/[#>*_`~|-]/g, ' ')
+        .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+        .replace(/https?:\/\/\S+/g, 'link na tela')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return text;
+    }
+
+    function splitIntoChunks(text) {
+      const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
+      const chunks = [];
+      let current = '';
+      for (const s of sentences) {
+        if ((current + s).length > 165 && current.length > 0) {
+          chunks.push(current.trim());
+          current = s;
+        } else {
+          current += ' ' + s;
+        }
+      }
+      if (current.trim()) chunks.push(current.trim());
+      return chunks;
+    }
+
+    function getPtBrVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      const ptVoices = voices.filter(v => v.lang.toLowerCase().includes('pt'));
+      return (
+        ptVoices.find(v => /male|masculino|daniel|felipe|ricardo|antonio/i.test(v.name)) ||
+        ptVoices.find(v => v.lang.toLowerCase().includes('pt-br') && v.name.toLowerCase().includes('google')) ||
+        ptVoices.find(v => v.lang.toLowerCase().includes('pt-br')) ||
+        ptVoices[0] ||
+        null
+      );
+    }
+
+    function stopSpeech() {
+      speechQueue = [];
+      isSpeaking = false;
+      stopCyberDrone();
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+    }
+
+    function speakNextChunk() {
+      if (!state.voiceEnabled || speechQueue.length === 0) {
+        isSpeaking = false;
+        stopCyberDrone();
+        setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
         return;
       }
+      isSpeaking = true;
+      startCyberDrone();
+      setVisualState('speaking', 'NÚCLEO OMNITRON TRANSMITINDO...');
+      const chunk = speechQueue.shift();
+      teleprompter.textContent = chunk;
 
-      chatHistory.forEach((m, idx) => {
-        const div = document.createElement('div');
-        div.className = 'msg ' + (m.role === 'user' ? 'msg-user' : 'msg-ai');
-        if (m.role === 'user') {
-          div.textContent = m.content;
-        } else {
-          div.innerHTML = `
-            <div class="msg-meta"><span>${m.model || selectedModel.name}</span></div>
-            <div class="msg-body">${formatMarkdown(m.content)}</div>
-            <div class="msg-actions">
-              <button class="act-btn" onclick="copyRaw(${idx})">📋 Copiar</button>
-              <button class="act-btn act-btn-wa" onclick="pushToWa(${idx})">🟢 Mandar no WhatsApp</button>
-              <button class="act-btn act-btn-ig" onclick="pushToIg(${idx})">📸 Levar p/ Instagram</button>
-            </div>
-          `;
+      const utter = new SpeechSynthesisUtterance(chunk);
+      const voice = getPtBrVoice();
+      if (voice) utter.voice = voice;
+      utter.lang = 'pt-BR';
+      utter.rate = state.voiceRate;
+      utter.pitch = state.voicePitch;
+
+      utter.onend = () => speakNextChunk();
+      utter.onerror = () => speakNextChunk();
+
+      window.speechSynthesis.speak(utter);
+    }
+
+    function speakResponse(fullText) {
+      stopSpeech();
+      if (!state.voiceEnabled || !('speechSynthesis' in window)) {
+        teleprompter.textContent = cleanTextForSpeech(fullText);
+        setVisualState('idle', 'OMNITRON ONLINE • VOZ SILENCIADA');
+        return;
+      }
+      playServoIgnition();
+      const clean = cleanTextForSpeech(fullText);
+      speechQueue = splitIntoChunks(clean);
+      speakNextChunk();
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => getPtBrVoice();
+    }
+
+    // --- SPEECH RECOGNITION (STT) ---
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+
+    if (SpeechRec) {
+      recognition = new SpeechRec();
+      recognition.lang = 'pt-BR';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        getAudioContext();
+        stopSpeech();
+        setVisualState('listening', 'OUVINDO SUA VOZ... FALE AGORA');
+      };
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
         }
-        box.appendChild(div);
-      });
-      box.scrollTop = box.scrollHeight;
+        promptInput.value = transcript;
+        teleprompter.textContent = '“' + transcript + '”';
+        if (event.results[event.results.length - 1].isFinal) {
+          sendMessage(transcript);
+        }
+      };
+
+      recognition.onerror = () => {
+        setVisualState('idle', 'MICROFONE INDISPONÍVEL • DIGITE OU TENTE DE NOVO');
+      };
+
+      recognition.onend = () => {
+        if (body.getAttribute('data-state') === 'listening') {
+          setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+        }
+      };
     }
 
-    window.copyRaw = (idx) => {
-      navigator.clipboard.writeText(chatHistory[idx].content);
-    };
-
-    window.pushToWa = (idx) => {
-      document.getElementById('waOutput').value = chatHistory[idx].content;
-      switchMode('wa');
-    };
-
-    window.pushToIg = (idx) => {
-      document.getElementById('igOutput').value = chatHistory[idx].content;
-      switchMode('ig');
-    };
-
-    function clearChat() {
-      chatHistory = [];
-      localStorage.removeItem('ai_hub_history');
-      renderChat();
-      toggleSidebar(false);
-    }
-
-    function useQuickPrompt(prefix) {
-      const inp = document.getElementById('chatInput');
-      inp.value = prefix;
-      inp.focus();
-    }
-
-    function handleChatKey(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendChatMessage();
+    function toggleListening() {
+      getAudioContext();
+      if (isSpeaking) {
+        stopSpeech();
+        return;
+      }
+      if (!recognition) {
+        alert('Reconhecimento de voz não suportado neste navegador. Use o Google Chrome.');
+        return;
+      }
+      try {
+        recognition.start();
+      } catch (e) {
+        recognition.stop();
       }
     }
 
-    async function sendChatMessage() {
-      const inp = document.getElementById('chatInput');
-      const text = inp.value.trim();
+    // --- AI API CALL ---
+    function getSystemPrompt() {
+      const base = 'Você é OMNITRON, uma inteligência artificial suprema, poderosa, precisa e imponente do estúdio de Willian de Paula (@williandepaulatattoo) em Guarulhos, SP. Responda em português do Brasil com autoridade, clareza e frases bem estruturadas para serem faladas em voz alta (sem símbolos desnecessários, a menos que seja código). ';
+      if (state.mode === 'insta') {
+        return base + 'Foco atual: criar legendas de alto impacto, ganchos virais para Reels e estratégias de Instagram para atrair clientes de tatuagem Black & Grey e Realismo em Guarulhos.';
+      }
+      if (state.mode === 'whats') {
+        return base + 'Foco atual: criar respostas rápidas, educadas e persuasivas para fechar orçamentos e agendamentos de tatuagem pelo WhatsApp.';
+      }
+      return base + 'Foco atual: assistente técnico e estratégico multifuncional (programação, games Unity/Blender, negócios e automação).';
+    }
+
+    function appendLog(role, text) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.textContent = text;
+      chatLog.appendChild(div);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    async function sendMessage(customText) {
+      getAudioContext();
+      const text = (customText || promptInput.value).trim();
       if (!text) return;
 
-      inp.value = '';
-      chatHistory.push({ role: 'user', content: text });
-      renderChat();
+      promptInput.value = '';
+      appendLog('user', text);
 
-      const btn = document.getElementById('btnSendChat');
-      btn.disabled = true;
-
-      try {
-        const recent = chatHistory.slice(-10).map(m => ({ role: m.role, content: m.content }));
-        const reply = await callActiveAI(recent);
-        chatHistory.push({ role: 'assistant', content: reply, model: selectedModel.name });
-        localStorage.setItem('ai_hub_history', JSON.stringify(chatHistory.slice(-30)));
-      } catch (err) {
-        chatHistory.push({ role: 'assistant', content: `⚠️ ${err.message}`, model: 'Sistema' });
-      } finally {
-        btn.disabled = false;
-        renderChat();
-      }
-    }
-
-    // ESTÚDIO INSTAGRAM
-    async function generateInstagramPost() {
-      const type = document.getElementById('igType').value;
-      const topic = document.getElementById('igTopic').value.trim();
-      const status = document.getElementById('igStatus');
-      if (!topic) { status.textContent = '⚠️ Escreva ou fale sobre o que é a publicação.'; return; }
-
-      const btn = document.getElementById('btnGenIg');
-      btn.disabled = true;
-      status.textContent = `⏳ Gerando com ${selectedModel.name}...`;
-
-      try {
-        const prompt = `Crie para o Instagram (${state.igUser}): ${type}.\nAssunto: ${topic}.\nEntregue apenas o texto pronto para copiar e colar no Instagram, sem explicações extras.`;
-        const result = await callActiveAI([{ role: 'user', content: prompt }]);
-        document.getElementById('igOutput').value = result.trim();
-        status.textContent = '✅ Texto pronto! Toque em "Copiar e Abrir Instagram".';
-      } catch (err) {
-        status.textContent = `⚠️ ${err.message}`;
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function openInstagramWithText() {
-      const text = document.getElementById('igOutput').value.trim();
-      if (text) navigator.clipboard.writeText(text);
-      const user = state.igUser.replace('@', '').trim();
-      const url = user ? `https://www.instagram.com/${user}/` : 'https://www.instagram.com/';
-      document.getElementById('igStatus').textContent = '📋 Texto copiado! Abrindo Instagram...';
-      window.open(url, '_blank');
-    }
-
-    // CENTRAL WHATSAPP
-    function setWaPreset(preset) {
-      document.getElementById('waPrompt').value = preset;
-    }
-
-    async function generateWhatsAppReply() {
-      const prompt = document.getElementById('waPrompt').value.trim();
-      const status = document.getElementById('waStatus');
-      if (!prompt) { status.textContent = '⚠️ Digite ou cole a mensagem do cliente.'; return; }
-
-      const btn = document.getElementById('btnGenWa');
-      btn.disabled = true;
-      status.textContent = `⏳ Criando resposta com ${selectedModel.name}...`;
-
-      try {
-        const fullPrompt = `Escreva uma mensagem direta, educada e persuasiva para enviar no WhatsApp.\nSituação: ${prompt}.\nEntregue SOMENTE o texto da mensagem pronto para enviar, sem aspas e sem introduções.`;
-        const result = await callActiveAI([{ role: 'user', content: fullPrompt }]);
-        document.getElementById('waOutput').value = result.trim();
-        status.textContent = '✅ Resposta pronta! Toque em "Enviar no WhatsApp".';
-      } catch (err) {
-        status.textContent = `⚠️ ${err.message}`;
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function sendToWhatsApp() {
-      const msg = document.getElementById('waOutput').value.trim();
-      if (!msg) {
-        document.getElementById('waStatus').textContent = '⚠️ Gere ou escreva uma mensagem primeiro.';
+      if (!state.apiKey) {
+        const warn = 'Nenhuma chave de API configurada. Toque na engrenagem no canto superior esquerdo e cole sua chave OpenRouter, Gemini ou Groq.';
+        teleprompter.textContent = warn;
+        speakResponse(warn);
+        document.getElementById('settings-panel').classList.add('open');
         return;
       }
-      const rawPhone = document.getElementById('waClientPhone').value.replace(/\D/g, '');
-      const phone = rawPhone ? (rawPhone.startsWith('55') ? rawPhone : '55' + rawPhone) : '';
-      const encoded = encodeURIComponent(msg);
-      const url = phone ? `https://wa.me/${phone}?text=${encoded}` : `https://api.whatsapp.com/send?text=${encoded}`;
-      window.open(url, '_blank');
-    }
 
-    function copyText(elId, statusId) {
-      const val = document.getElementById(elId).value;
-      if (!val) return;
-      navigator.clipboard.writeText(val);
-      document.getElementById(statusId).textContent = '📋 Copiado para a área de transferência!';
-    }
+      setVisualState('thinking', 'PROCESSANDO NO NÚCLEO OMNITRON...');
+      teleprompter.textContent = 'Analisando comando...';
 
-    // DITADO POR VOZ NATIVO DO CELULAR
-    function dictateTo(targetId, btn) {
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRec) {
-        alert('Seu navegador não suporta ditado por voz.');
-        return;
+      state.history.push({ role: 'user', content: text });
+      if (state.history.length > 8) state.history = state.history.slice(-8);
+
+      try {
+        let reply = '';
+        const key = state.apiKey.trim();
+
+        if (key.startsWith('AIza')) {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: getSystemPrompt() + '\n\nPergunta: ' + text }] }]
+            })
+          });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message);
+          reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta do núcleo.';
+        } else if (key.startsWith('gsk_')) {
+          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${key}`
+            },
+            body: JSON.stringify({
+              model: 'llama-3.3-70b-versatile',
+              messages: [{ role: 'system', content: getSystemPrompt() }, ...state.history]
+            })
+          });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message);
+          reply = data.choices?.[0]?.message?.content || 'Sem resposta do núcleo.';
+        } else {
+          const model = document.getElementById('model-select').value;
+          const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${key}`,
+              'HTTP-Referer': window.location.href,
+              'X-Title': 'Omnitron AI Hub'
+            },
+            body: JSON.stringify({
+              model,
+              messages: [{ role: 'system', content: getSystemPrompt() }, ...state.history]
+            })
+          });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message);
+          reply = data.choices?.[0]?.message?.content || 'Sem resposta do núcleo.';
+        }
+
+        state.history.push({ role: 'assistant', content: reply });
+        appendLog('ai', reply);
+        speakResponse(reply);
+      } catch (err) {
+        const errMsg = 'Falha na conexão com a IA: ' + err.message;
+        appendLog('ai', errMsg);
+        teleprompter.textContent = errMsg;
+        speakResponse('Falha de comunicação com o servidor. Verifique sua chave de acesso.');
       }
-      const rec = new SpeechRec();
-      rec.lang = 'pt-BR';
-      btn.textContent = '🔴';
-      rec.onresult = (e) => {
-        const transcript = e.results[0][0].transcript;
-        const el = document.getElementById(targetId);
-        el.value = el.value ? el.value + ' ' + transcript : transcript;
-      };
-      rec.onend = () => { btn.textContent = '🎙️'; };
-      rec.start();
     }
 
-    renderModels();
-    renderChat();
-    updateWaLinkDisplay();
+    // --- UI EVENT LISTENERS ---
+    document.getElementById('omnitron-eye').addEventListener('click', toggleListening);
+    document.getElementById('btn-mic').addEventListener('click', toggleListening);
+    document.getElementById('btn-send').addEventListener('click', () => sendMessage());
+    document.getElementById('btn-stop-voice').addEventListener('click', stopSpeech);
+
+    promptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    document.getElementById('btn-voice-toggle').addEventListener('click', (e) => {
+      state.voiceEnabled = !state.voiceEnabled;
+      e.target.textContent = state.voiceEnabled ? '🔊 Voz ON' : '🔇 Mudo';
+      e.target.classList.toggle('active', state.voiceEnabled);
+      if (!state.voiceEnabled) stopSpeech();
+    });
+
+    document.getElementById('btn-log-toggle').addEventListener('click', () => {
+      document.getElementById('log-panel').classList.toggle('open');
+    });
+    document.getElementById('btn-close-log').addEventListener('click', () => {
+      document.getElementById('log-panel').classList.remove('open');
+    });
+
+    document.getElementById('btn-settings').addEventListener('click', () => {
+      document.getElementById('settings-panel').classList.add('open');
+    });
+    document.getElementById('btn-close-settings').addEventListener('click', () => {
+      document.getElementById('settings-panel').classList.remove('open');
+    });
+
+    document.getElementById('btn-save-settings').addEventListener('click', () => {
+      state.apiKey = apiKeyInput.value.trim();
+      state.voiceRate = parseFloat(voiceRateInput.value) || 0.90;
+      state.voicePitch = parseFloat(voicePitchInput.value) || 0.48;
+      state.cyberHum = cyberHumInput.checked;
+      localStorage.setItem('openrouter_api_key', state.apiKey);
+      localStorage.setItem('omni_rate_v2', state.voiceRate);
+      localStorage.setItem('omni_pitch_v2', state.voicePitch);
+      localStorage.setItem('omni_hum_v2', state.cyberHum);
+      document.getElementById('settings-panel').classList.remove('open');
+      speakResponse('Sistemas vocais do núcleo Omnitron calibrados. Aguardando suas ordens, Willian.');
+    });
+
+    document.querySelectorAll('.mode-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.mode = btn.dataset.mode;
+      });
+    });
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => sendMessage(chip.dataset.prompt));
+    });
   </script>
 </body>
 </html>
