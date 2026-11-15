@@ -9,7 +9,7 @@
   <style>
     :root {
       --bg: #04060b;
-      --panel: rgba(10, 16, 28, 0.78);
+      --panel: rgba(10, 16, 28, 0.86);
       --border: rgba(56, 189, 248, 0.28);
       --cyan: #38bdf8;
       --violet: #8b5cf6;
@@ -39,13 +39,12 @@
       display: flex;
       flex-direction: column;
       background-image:
-        radial-gradient(circle at 50% 42%, rgba(56, 189, 248, 0.09) 0%, transparent 60%),
+        radial-gradient(circle at 50% 42%, rgba(56, 189, 248, 0.1) 0%, transparent 62%),
         linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
       background-size: 100% 100%, 28px 28px, 28px 28px;
     }
 
-    /* HUD Corners */
     .hud-corner {
       position: fixed;
       width: 18px;
@@ -60,14 +59,13 @@
     .bl { bottom: 8px; left: 8px; border-bottom: 2px solid; border-left: 2px solid; }
     .br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
 
-    /* Top Bar */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
       padding: 10px 12px;
-      background: rgba(4, 6, 11, 0.85);
+      background: rgba(4, 6, 11, 0.9);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(10px);
       z-index: 20;
@@ -93,7 +91,7 @@
     }
 
     select {
-      max-width: 138px;
+      max-width: 145px;
       color: var(--cyan);
     }
 
@@ -103,7 +101,6 @@
       color: #fff;
     }
 
-    /* Mode Strip */
     .mode-bar {
       display: flex;
       justify-content: center;
@@ -133,7 +130,6 @@
       box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
     }
 
-    /* Center Omnitron Eye Stage */
     main {
       flex: 1;
       display: flex;
@@ -147,17 +143,16 @@
 
     .omnitron-wrapper {
       position: relative;
-      width: 240px;
-      height: 240px;
+      width: 235px;
+      height: 235px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       user-select: none;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    /* State Color Themes */
     body[data-state="idle"] {
       --core-primary: #38bdf8;
       --core-secondary: #6366f1;
@@ -171,12 +166,12 @@
     body[data-state="thinking"] {
       --core-primary: #f59e0b;
       --core-secondary: #8b5cf6;
-      --core-glow: rgba(245, 158, 11, 0.6);
+      --core-glow: rgba(245, 158, 11, 0.65);
     }
     body[data-state="speaking"] {
       --core-primary: #ef4444;
       --core-secondary: #f97316;
-      --core-glow: rgba(239, 68, 68, 0.78);
+      --core-glow: rgba(239, 68, 68, 0.82);
     }
 
     .energy-aura {
@@ -217,17 +212,14 @@
       animation: spinCW 6s linear infinite;
     }
 
-    /* Omnitron Eye Sclera & Iris */
     .eye-socket {
       position: relative;
-      width: 126px;
-      height: 126px;
+      width: 124px;
+      height: 124px;
       border-radius: 50%;
       background: radial-gradient(circle at 50% 50%, #0f172a 30%, #02040a 100%);
       border: 2px solid var(--core-primary);
-      box-shadow:
-        0 0 35px var(--core-glow),
-        inset 0 0 30px rgba(0, 0, 0, 0.95);
+      box-shadow: 0 0 35px var(--core-glow), inset 0 0 30px rgba(0, 0, 0, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -236,15 +228,11 @@
     }
 
     .eye-iris {
-      width: 78px;
-      height: 78px;
+      width: 76px;
+      height: 76px;
       border-radius: 50%;
       background:
-        repeating-conic-gradient(
-          from 0deg,
-          transparent 0deg 8deg,
-          rgba(255, 255, 255, 0.12) 9deg 10deg
-        ),
+        repeating-conic-gradient(from 0deg, transparent 0deg 8deg, rgba(255, 255, 255, 0.12) 9deg 10deg),
         radial-gradient(circle, #ffffff 0%, var(--core-primary) 42%, var(--core-secondary) 80%, #000 100%);
       box-shadow: 0 0 28px var(--core-primary);
       display: flex;
@@ -275,11 +263,10 @@
       background: #fff;
     }
 
-    /* Speaking & Thinking Animations */
     body[data-state="thinking"] .ring-mid { animation-duration: 1.4s; }
     body[data-state="thinking"] .ring-inner { animation-duration: 1s; }
-    body[data-state="speaking"] .eye-iris { animation: voicePulse 0.34s ease-in-out infinite alternate; }
-    body[data-state="speaking"] .energy-aura { animation: auraSurge 0.42s ease-in-out infinite alternate; }
+    body[data-state="speaking"] .eye-iris { animation: voicePulse 0.3s ease-in-out infinite alternate; }
+    body[data-state="speaking"] .energy-aura { animation: auraSurge 0.38s ease-in-out infinite alternate; }
     body[data-state="listening"] .eye-socket { transform: scale(1.07); }
 
     @keyframes spinCW { to { transform: rotate(360deg); } }
@@ -289,19 +276,18 @@
       50% { transform: scale(1.06); opacity: 1; }
     }
     @keyframes voicePulse {
-      from { transform: scale(0.90); }
-      to { transform: scale(1.16); }
+      from { transform: scale(0.88); }
+      to { transform: scale(1.18); }
     }
     @keyframes auraSurge {
-      from { transform: scale(0.96); opacity: 0.78; }
-      to { transform: scale(1.18); opacity: 1; }
+      from { transform: scale(0.95); opacity: 0.78; }
+      to { transform: scale(1.2); opacity: 1; }
     }
 
-    /* Status & Live Voice Teleprompter */
     .status-line {
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 1.6px;
+      letter-spacing: 1.4px;
       text-transform: uppercase;
       color: var(--core-primary);
       text-shadow: 0 0 10px var(--core-glow);
@@ -309,6 +295,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      text-align: center;
     }
 
     .stop-voice-btn {
@@ -329,11 +316,11 @@
     .teleprompter {
       width: 100%;
       max-width: 520px;
-      min-height: 76px;
-      max-height: 132px;
+      min-height: 78px;
+      max-height: 135px;
       overflow-y: auto;
-      background: rgba(10, 16, 28, 0.68);
-      border: 1px solid rgba(56, 189, 248, 0.22);
+      background: rgba(10, 16, 28, 0.72);
+      border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 14px;
       padding: 12px 14px;
       font-size: 13.5px;
@@ -344,7 +331,6 @@
       box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
     }
 
-    /* Quick Chips */
     .quick-chips {
       display: flex;
       gap: 6px;
@@ -367,7 +353,6 @@
       cursor: pointer;
     }
 
-    /* Bottom Controls */
     footer {
       padding: 8px 12px 12px;
       background: rgba(4, 6, 11, 0.92);
@@ -424,17 +409,17 @@
       flex-shrink: 0;
     }
 
-    /* Drawer / Modals */
     .overlay-panel {
       position: fixed;
-      inset: 54px 10px 68px 10px;
-      background: rgba(6, 10, 19, 0.96);
+      inset: 52px 10px 66px 10px;
+      background: rgba(6, 10, 19, 0.97);
       border: 1px solid var(--cyan);
       border-radius: 16px;
       z-index: 40;
       display: none;
       flex-direction: column;
       padding: 14px;
+      overflow-y: auto;
       backdrop-filter: blur(14px);
     }
     .overlay-panel.open { display: flex; }
@@ -445,7 +430,7 @@
       align-items: center;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       font-size: 13px;
       font-weight: 700;
       color: var(--cyan);
@@ -480,7 +465,7 @@
     }
 
     .field-group {
-      margin-bottom: 12px;
+      margin-bottom: 11px;
       display: flex;
       flex-direction: column;
       gap: 5px;
@@ -494,6 +479,51 @@
       font-size: 13px;
       color: #fff;
     }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 11px;
+      border-radius: 11px;
+      border: 1px solid var(--cyan);
+      background: rgba(56, 189, 248, 0.16);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+
+    .action-btn.primary {
+      border: none;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+    }
+
+    .status-box {
+      margin-top: 8px;
+      padding: 9px 11px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 12px;
+      color: #e2e8f0;
+      display: none;
+    }
+
+    .tip-box {
+      font-size: 11px;
+      line-height: 1.45;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body data-state="idle">
@@ -504,13 +534,13 @@
 
   <header>
     <div class="hud-group">
-      <button class="hud-btn" id="btn-settings" title="Configurar API">⚙️</button>
+      <button class="hud-btn" id="btn-settings" title="Configurar API e Voz">⚙️</button>
       <select id="model-select">
-        <option value="anthropic/claude-opus-4">Claude Opus</option>
-        <option value="google/gemini-2.5-pro-preview">Gemini 2.5 Pro</option>
-        <option value="openai/gpt-4o">GPT-4o / Omni</option>
+        <option value="google/gemini-2.5-flash">Gemini 2.5 Flash</option>
+        <option value="anthropic/claude-sonnet-4">Claude Sonnet 4</option>
+        <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
         <option value="deepseek/deepseek-r1">DeepSeek R1</option>
-        <option value="x-ai/grok-3">Grok 3</option>
+        <option value="x-ai/grok-3-beta">Grok 3</option>
       </select>
     </div>
 
@@ -545,7 +575,7 @@
     </div>
 
     <div class="teleprompter" id="teleprompter">
-      Núcleo Omnitron ativo, Willian. Toque no olho central e dê o seu comando.
+      Núcleo Omnitron despertar completo. Toque na engrenagem ⚙️ para configurar sua chave e ativar a voz colossal de ferro.
     </div>
 
     <div class="quick-chips">
@@ -577,45 +607,65 @@
       <span>CONFIGURAÇÃO DO NÚCLEO OMNITRON</span>
       <button class="hud-btn" id="btn-close-settings">✕ Fechar</button>
     </div>
+
     <div class="field-group">
-      <label>Chave de API (OpenRouter `sk-or-...`, Gemini `AIza...` ou Groq `gsk_...`)</label>
+      <label>1. Chave Principal de IA (OpenRouter `sk-or-...`, Gemini `AIza...` ou Groq `gsk_...`)</label>
       <input type="password" id="api-key-input" placeholder="Cole sua API Key aqui..." />
     </div>
+
     <div class="field-group">
-      <label>Perfil de Voz</label>
-      <select id="voice-preset-select">
-        <option value="transformer">🤖 Transformer / Deus (Grave & Robótico)</option>
-        <option value="titan">⚡ Titã Profundo (Ultra Grave)</option>
-        <option value="natural">🎙️ Comando Natural</option>
+      <label>2. Chave de Voz Neural Colossal (Gemini `AIza...` — se já colou acima, pode deixar igual)</label>
+      <input type="password" id="voice-key-input" placeholder="Cole chave AIza... para voz estilo Optimus Prime..." />
+    </div>
+
+    <div class="tip-box">
+      <strong>Como funciona a Voz Colossal:</strong> Com uma chave <b>AIza...</b> (gratuita no Google AI Studio), o Omnitron gera áudio neural masculino profundo e passa por um <b>processador de metal, grave e rouquidão</b> (estilo Optimus Prime / Titã de Ferro).
+    </div>
+
+    <div class="field-group">
+      <label>Timbre Neural Masculino</label>
+      <select id="neural-voice-select">
+        <option value="Charon">🤖 Charon — Colosso Profundo & Autoritário (Optimus)</option>
+        <option value="Fenrir">⚡ Fenrir — Gigante Rouco & Intenso</option>
+        <option value="Orus">🛡️ Orus — Comandante Grave & Firme</option>
       </select>
     </div>
+
     <div class="field-group">
-      <label>Gravidade / Tom da Voz (0.30 = Mega Grave | 0.48 = Transformer | 1.0 = Normal)</label>
-      <input type="number" id="voice-pitch-input" step="0.02" min="0.25" max="1.3" value="0.48" />
+      <label>Peso / Gravidade Analógica (0.80 = Titã Gigante | 0.86 = Optimus Prime | 0.95 = Comandante)</label>
+      <input type="number" id="pitch-drop-input" step="0.02" min="0.72" max="1.05" value="0.86" />
     </div>
+
     <div class="field-group">
-      <label>Velocidade da Fala (0.85 = Imponente | 0.90 = Padrão | 1.1 = Rápido)</label>
-      <input type="number" id="voice-rate-input" step="0.05" min="0.65" max="1.5" value="0.90" />
+      <label>Ressonância Metálica & Rouquidão de Ferro (0 = Limpo | 100 = Ferro Pesado)</label>
+      <input type="number" id="iron-fx-input" step="10" min="0" max="100" value="75" />
     </div>
-    <div class="field-group" style="flex-direction: row; align-items: center; gap: 8px;">
-      <input type="checkbox" id="cyber-hum-input" checked style="width: 18px; height: 18px;" />
-      <label for="cyber-hum-input" style="color: #e2e8f0;">Ativar Ressonância Sub-Bass & Som Mecânico ao falar</label>
+
+    <div class="btn-row">
+      <button class="action-btn" id="btn-test-voice">🔊 Testar Voz Colossal</button>
+      <button class="action-btn" id="btn-test-api">⚡ Testar IA</button>
     </div>
-    <button class="send-btn" id="btn-save-settings" style="width:100%; border-radius:12px; font-size:14px;">Salvar Configurações</button>
+
+    <div class="btn-row" style="margin-top: 8px;">
+      <button class="action-btn primary" id="btn-save-settings">💾 Salvar Configurações</button>
+    </div>
+
+    <div class="status-box" id="diag-box"></div>
   </div>
 
   <script>
     const state = {
       mode: 'chat',
       voiceEnabled: true,
-      apiKey: localStorage.getItem('openrouter_api_key')
-           || localStorage.getItem('api_key')
-           || localStorage.getItem('gemini_api_key')
-           || localStorage.getItem('groq_api_key')
-           || '',
-      voiceRate: parseFloat(localStorage.getItem('omni_rate_v2') || '0.90'),
-      voicePitch: parseFloat(localStorage.getItem('omni_pitch_v2') || '0.48'),
-      cyberHum: localStorage.getItem('omni_hum_v2') !== 'false',
+      apiKey: (localStorage.getItem('openrouter_api_key')
+            || localStorage.getItem('api_key')
+            || localStorage.getItem('gemini_api_key')
+            || localStorage.getItem('groq_api_key')
+            || '').replace(/\s+/g, ''),
+      voiceKey: (localStorage.getItem('omni_voice_key') || '').replace(/\s+/g, ''),
+      neuralVoice: localStorage.getItem('omni_neural_voice') || 'Charon',
+      pitchDrop: parseFloat(localStorage.getItem('omni_pitch_drop') || '0.86'),
+      ironFx: parseFloat(localStorage.getItem('omni_iron_fx') || '75'),
       history: []
     };
 
@@ -625,37 +675,40 @@
     const promptInput = document.getElementById('prompt-input');
     const chatLog = document.getElementById('chat-log');
     const apiKeyInput = document.getElementById('api-key-input');
-    const voiceRateInput = document.getElementById('voice-rate-input');
-    const voicePitchInput = document.getElementById('voice-pitch-input');
-    const voicePresetSelect = document.getElementById('voice-preset-select');
-    const cyberHumInput = document.getElementById('cyber-hum-input');
+    const voiceKeyInput = document.getElementById('voice-key-input');
+    const neuralVoiceSelect = document.getElementById('neural-voice-select');
+    const pitchDropInput = document.getElementById('pitch-drop-input');
+    const ironFxInput = document.getElementById('iron-fx-input');
+    const diagBox = document.getElementById('diag-box');
 
     apiKeyInput.value = state.apiKey;
-    voiceRateInput.value = state.voiceRate;
-    voicePitchInput.value = state.voicePitch;
-    cyberHumInput.checked = state.cyberHum;
+    voiceKeyInput.value = state.voiceKey;
+    neuralVoiceSelect.value = state.neuralVoice;
+    pitchDropInput.value = state.pitchDrop;
+    ironFxInput.value = state.ironFx;
 
-    voicePresetSelect.addEventListener('change', () => {
-      if (voicePresetSelect.value === 'transformer') {
-        voicePitchInput.value = '0.48';
-        voiceRateInput.value = '0.90';
-      } else if (voicePresetSelect.value === 'titan') {
-        voicePitchInput.value = '0.32';
-        voiceRateInput.value = '0.84';
-      } else {
-        voicePitchInput.value = '0.95';
-        voiceRateInput.value = '1.05';
-      }
-    });
+    function getActiveVoiceKey() {
+      if (state.voiceKey && state.voiceKey.startsWith('AIza')) return state.voiceKey;
+      if (state.apiKey && state.apiKey.startsWith('AIza')) return state.apiKey;
+      return '';
+    }
+
+    function showDiag(msg, isError = false) {
+      diagBox.style.display = 'block';
+      diagBox.style.borderColor = isError ? '#ef4444' : '#10b981';
+      diagBox.style.color = isError ? '#fca5a5' : '#6ee7b7';
+      diagBox.textContent = msg;
+    }
 
     function setVisualState(newState, label) {
       body.setAttribute('data-state', newState);
       if (label) statusText.textContent = label;
     }
 
-    // --- CYBERNETIC SUB-BASS & TRANSFORMER SERVO AUDIO (WEB AUDIO API) ---
+    // --- WEB AUDIO API: COLOSSUS IRON & CYBERTRONIAN DSP RACK ---
     let audioCtx = null;
-    let droneNodes = null;
+    let activeBufferSource = null;
+    let cachedImpulse = null;
 
     function getAudioContext() {
       if (!audioCtx) {
@@ -668,95 +721,174 @@
       return audioCtx;
     }
 
-    function playServoIgnition() {
-      if (!state.cyberHum) return;
-      try {
-        const ctx = getAudioContext();
-        if (!ctx) return;
-        const now = ctx.currentTime;
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(52, now);
-        osc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
-        osc.frequency.exponentialRampToValueAtTime(48, now + 0.36);
-
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(320, now);
-
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(0.11, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.4);
-      } catch (e) {}
-    }
-
-    function startCyberDrone() {
-      if (!state.cyberHum || droneNodes) return;
-      try {
-        const ctx = getAudioContext();
-        if (!ctx) return;
-        const now = ctx.currentTime;
-
-        const subOsc = ctx.createOscillator();
-        const modOsc = ctx.createOscillator();
-        const filter = ctx.createBiquadFilter();
-        const masterGain = ctx.createGain();
-
-        subOsc.type = 'sine';
-        subOsc.frequency.setValueAtTime(54, now);
-
-        modOsc.type = 'sawtooth';
-        modOsc.frequency.setValueAtTime(108, now);
-
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(165, now);
-
-        masterGain.gain.setValueAtTime(0.001, now);
-        masterGain.gain.linearRampToValueAtTime(0.055, now + 0.25);
-
-        subOsc.connect(filter);
-        modOsc.connect(filter);
-        filter.connect(masterGain);
-        masterGain.connect(ctx.destination);
-
-        subOsc.start(now);
-        modOsc.start(now);
-        droneNodes = { subOsc, modOsc, masterGain };
-      } catch (e) {}
-    }
-
-    function stopCyberDrone() {
-      if (!droneNodes) return;
-      try {
-        const ctx = getAudioContext();
-        const now = ctx ? ctx.currentTime : 0;
-        if (ctx) {
-          droneNodes.masterGain.gain.setTargetAtTime(0.0001, now, 0.08);
+    function getColossusReverbBuffer(ctx) {
+      if (cachedImpulse) return cachedImpulse;
+      const rate = ctx.sampleRate;
+      const length = Math.floor(rate * 1.15);
+      const impulse = ctx.createBuffer(2, length, rate);
+      for (let ch = 0; ch < 2; ch++) {
+        const data = impulse.getChannelData(ch);
+        for (let i = 0; i < length; i++) {
+          const decay = Math.pow(1 - i / length, 2.8);
+          data[i] = (Math.random() * 2 - 1) * decay;
         }
-        const nodes = droneNodes;
-        droneNodes = null;
-        setTimeout(() => {
-          try { nodes.subOsc.stop(); nodes.modOsc.stop(); } catch (e) {}
-        }, 220);
-      } catch (e) {
-        droneNodes = null;
       }
+      cachedImpulse = impulse;
+      return impulse;
     }
 
-    // --- VOICE SYNTHESIS (TTS) ENGINE ---
-    let speechQueue = [];
+    function makeRaspCurve(amount) {
+      const n = 44100;
+      const curve = new Float32Array(n);
+      const k = amount;
+      for (let i = 0; i < n; i++) {
+        const x = (i * 2) / n - 1;
+        curve[i] = ((3 + k) * x * 20 * (Math.PI / 180)) / (Math.PI + k * Math.abs(x));
+      }
+      return curve;
+    }
+
+    function playIronIgnition() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        const sub = ctx.createOscillator();
+        const subGain = ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(62, now);
+        sub.frequency.exponentialRampToValueAtTime(28, now + 0.5);
+
+        subGain.gain.setValueAtTime(0.001, now);
+        subGain.gain.linearRampToValueAtTime(0.22, now + 0.03);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
+
+        sub.connect(subGain);
+        subGain.connect(ctx.destination);
+        sub.start(now);
+        sub.stop(now + 0.6);
+      } catch (e) {}
+    }
+
+    function decodeBase64PCMToAudioBuffer(ctx, base64Data, sampleRate = 24000) {
+      const binary = atob(base64Data);
+      const byteLen = binary.length - (binary.length % 2);
+      const bytes = new Uint8Array(byteLen);
+      for (let i = 0; i < byteLen; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      const int16 = new Int16Array(bytes.buffer);
+      const float32 = new Float32Array(int16.length);
+      for (let i = 0; i < int16.length; i++) {
+        float32[i] = int16[i] / 32768.0;
+      }
+      const buffer = ctx.createBuffer(1, float32.length, sampleRate);
+      buffer.copyToChannel(float32, 0);
+      return buffer;
+    }
+
+    function playBufferThroughIronDSP(audioBuffer, onEndedCallback) {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const intensity = Math.max(0, Math.min(100, state.ironFx)) / 100;
+
+      const source = ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      // True analog pitch drop (makes deep male voice massive & giant)
+      source.playbackRate.value = Math.max(0.72, Math.min(1.05, state.pitchDrop));
+
+      // 1. Sub-bass chest weight
+      const subBass = ctx.createBiquadFilter();
+      subBass.type = 'lowshelf';
+      subBass.frequency.value = 125;
+      subBass.gain.value = 5 + intensity * 7;
+
+      // 2. Throat rasp / gravelly grit
+      const shaper = ctx.createWaveShaper();
+      shaper.curve = makeRaspCurve(8 + intensity * 26);
+      shaper.oversample = '2x';
+
+      // 3. Vocal clarity presence (keeps words 100% intelligible)
+      const presence = ctx.createBiquadFilter();
+      presence.type = 'peaking';
+      presence.frequency.value = 2300;
+      presence.Q.value = 1.1;
+      presence.gain.value = 4.0;
+
+      // 4. Dry signal
+      const dryGain = ctx.createGain();
+      dryGain.gain.value = 0.92;
+
+      // 5. Cybernetic Iron Chest Resonator (Short metallic comb delay)
+      const metalDelay = ctx.createDelay();
+      metalDelay.delayTime.value = 0.0078; // 7.8ms metallic titanium cavity
+      const metalFeedback = ctx.createGain();
+      metalFeedback.gain.value = 0.22 + intensity * 0.22;
+      const metalFilter = ctx.createBiquadFilter();
+      metalFilter.type = 'bandpass';
+      metalFilter.frequency.value = 680;
+      metalFilter.Q.value = 1.6;
+      const metalWet = ctx.createGain();
+      metalWet.gain.value = 0.08 + intensity * 0.24;
+
+      // 6. Colossal Space Tail (Reverb)
+      const convolver = ctx.createConvolver();
+      convolver.buffer = getColossusReverbBuffer(ctx);
+      const reverbWet = ctx.createGain();
+      reverbWet.gain.value = 0.06 + intensity * 0.14;
+
+      // 7. Master Limiter / Compressor
+      const compressor = ctx.createDynamicsCompressor();
+      compressor.threshold.value = -14;
+      compressor.knee.value = 12;
+      compressor.ratio.value = 6;
+      compressor.attack.value = 0.005;
+      compressor.release.value = 0.15;
+
+      const masterGain = ctx.createGain();
+      masterGain.gain.value = 1.25;
+
+      // Routing
+      source.connect(subBass);
+      subBass.connect(shaper);
+      shaper.connect(presence);
+
+      presence.connect(dryGain);
+      dryGain.connect(compressor);
+
+      // Metallic loop
+      presence.connect(metalDelay);
+      metalDelay.connect(metalFilter);
+      metalFilter.connect(metalFeedback);
+      metalFeedback.connect(metalDelay);
+      metalFilter.connect(metalWet);
+      metalWet.connect(compressor);
+
+      // Reverb send
+      presence.connect(convolver);
+      convolver.connect(reverbWet);
+      reverbWet.connect(compressor);
+
+      compressor.connect(masterGain);
+      masterGain.connect(ctx.destination);
+
+      activeBufferSource = source;
+      source.onended = () => {
+        if (activeBufferSource === source) activeBufferSource = null;
+        if (onEndedCallback) onEndedCallback();
+      };
+
+      source.start(0);
+    }
+
+    // --- NEURAL COLOSSUS TTS ENGINE ---
     let isSpeaking = false;
+    let abortSpeechFlag = false;
 
     function cleanTextForSpeech(raw) {
-      let text = raw.replace(/```[\s\S]*?```/g, '. Gerei o bloco de código completo na tela. Toque em Texto no topo para copiar. ');
+      let text = raw.replace(/```[\s\S]*?```/g, '. O código completo foi projetado na tela. ');
       text = text
         .replace(/[#>*_`~|-]/g, ' ')
         .replace(/\[(.*?)\]\(.*?\)/g, '$1')
@@ -766,85 +898,143 @@
       return text;
     }
 
-    function splitIntoChunks(text) {
-      const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
-      const chunks = [];
-      let current = '';
-      for (const s of sentences) {
-        if ((current + s).length > 165 && current.length > 0) {
-          chunks.push(current.trim());
-          current = s;
-        } else {
-          current += ' ' + s;
-        }
-      }
-      if (current.trim()) chunks.push(current.trim());
-      return chunks;
-    }
-
-    function getPtBrVoice() {
-      const voices = window.speechSynthesis.getVoices();
-      const ptVoices = voices.filter(v => v.lang.toLowerCase().includes('pt'));
-      return (
-        ptVoices.find(v => /male|masculino|daniel|felipe|ricardo|antonio/i.test(v.name)) ||
-        ptVoices.find(v => v.lang.toLowerCase().includes('pt-br') && v.name.toLowerCase().includes('google')) ||
-        ptVoices.find(v => v.lang.toLowerCase().includes('pt-br')) ||
-        ptVoices[0] ||
-        null
-      );
-    }
-
     function stopSpeech() {
-      speechQueue = [];
+      abortSpeechFlag = true;
       isSpeaking = false;
-      stopCyberDrone();
+      if (activeBufferSource) {
+        try { activeBufferSource.stop(); } catch (e) {}
+        activeBufferSource = null;
+      }
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
       setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
     }
 
-    function speakNextChunk() {
-      if (!state.voiceEnabled || speechQueue.length === 0) {
+    async function speakWithGeminiColossus(cleanText, voiceKey, keepScreenText) {
+      const ctx = getAudioContext();
+      if (!ctx) throw new Error('AudioContext indisponível');
+
+      // Limit length for fast neural generation while preserving full answer
+      const spokenText = cleanText.length > 650
+        ? cleanText.slice(0, 640) + '. O restante da transmissão está registrado na tela.'
+        : cleanText;
+
+      const stylePrompt =
+        'Narre em português do Brasil com voz masculina extremamente grave, rouca, lenta, épica e colossal, ' +
+        'como um ser gigante e ancestral feito de ferro de outro mundo falando com autoridade absoluta: "' +
+        spokenText + '"';
+
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(voiceKey)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: stylePrompt }] }],
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: {
+                    voiceName: state.neuralVoice || 'Charon'
+                  }
+                }
+              }
+            }
+          })
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        throw new Error(data.error?.message || `HTTP ${res.status}`);
+      }
+
+      const inlineData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+      if (!inlineData || !inlineData.data) {
+        throw new Error('Áudio não retornado pelo servidor.');
+      }
+
+      const rateMatch = (inlineData.mimeType || '').match(/rate=(\d+)/);
+      const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) : 24000;
+      const audioBuffer = decodeBase64PCMToAudioBuffer(ctx, inlineData.data, sampleRate);
+
+      if (abortSpeechFlag) return;
+
+      playIronIgnition();
+      isSpeaking = true;
+      setVisualState('speaking', 'COLOSSO OMNITRON TRANSMITINDO...');
+      if (!keepScreenText) {
+        teleprompter.textContent = cleanText;
+      }
+
+      playBufferThroughIronDSP(audioBuffer, () => {
         isSpeaking = false;
-        stopCyberDrone();
         setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+      });
+    }
+
+    function speakFallbackBrowser(cleanText, keepScreenText) {
+      if (!keepScreenText) teleprompter.textContent = cleanText;
+      if (!('speechSynthesis' in window)) {
+        setVisualState('idle', 'OMNITRON ONLINE');
         return;
       }
+      playIronIgnition();
       isSpeaking = true;
-      startCyberDrone();
-      setVisualState('speaking', 'NÚCLEO OMNITRON TRANSMITINDO...');
-      const chunk = speechQueue.shift();
-      teleprompter.textContent = chunk;
+      setVisualState('speaking', 'TRANSMITINDO (MODO LOCAL)...');
 
-      const utter = new SpeechSynthesisUtterance(chunk);
-      const voice = getPtBrVoice();
-      if (voice) utter.voice = voice;
+      const utter = new SpeechSynthesisUtterance(cleanText);
+      const voices = window.speechSynthesis.getVoices();
+      const ptMale = voices.find(v =>
+        v.lang.toLowerCase().includes('pt') &&
+        /pte|male|masculino|daniel|ricardo|felipe|antonio/i.test(v.name + v.voiceURI)
+      ) || voices.find(v => v.lang.toLowerCase().includes('pt-br'));
+
+      if (ptMale) utter.voice = ptMale;
       utter.lang = 'pt-BR';
-      utter.rate = state.voiceRate;
-      utter.pitch = state.voicePitch;
-
-      utter.onend = () => speakNextChunk();
-      utter.onerror = () => speakNextChunk();
-
+      utter.pitch = 0.45;
+      utter.rate = 0.86;
+      utter.onend = () => {
+        isSpeaking = false;
+        setVisualState('idle', 'OMNITRON ONLINE • AGUARDANDO COMANDO');
+      };
+      utter.onerror = () => {
+        isSpeaking = false;
+        setVisualState('idle', 'OMNITRON ONLINE');
+      };
       window.speechSynthesis.speak(utter);
     }
 
-    function speakResponse(fullText) {
+    async function speakResponse(fullText, keepScreenText = false) {
       stopSpeech();
-      if (!state.voiceEnabled || !('speechSynthesis' in window)) {
-        teleprompter.textContent = cleanTextForSpeech(fullText);
+      abortSpeechFlag = false;
+      const clean = cleanTextForSpeech(fullText);
+
+      if (!state.voiceEnabled) {
+        if (!keepScreenText) teleprompter.textContent = clean;
         setVisualState('idle', 'OMNITRON ONLINE • VOZ SILENCIADA');
         return;
       }
-      playServoIgnition();
-      const clean = cleanTextForSpeech(fullText);
-      speechQueue = splitIntoChunks(clean);
-      speakNextChunk();
-    }
 
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = () => getPtBrVoice();
+      const vKey = getActiveVoiceKey();
+      if (vKey) {
+        try {
+          setVisualState('thinking', 'SINTETIZANDO VOZ DE FERRO...');
+          await speakWithGeminiColossus(clean, vKey, keepScreenText);
+          return;
+        } catch (err) {
+          console.warn('Fallback TTS:', err.message);
+          if (!keepScreenText) {
+            teleprompter.textContent = clean + `\n\n[Aviso Voz Neural: ${err.message}]`;
+          }
+          speakFallbackBrowser(clean, true);
+          return;
+        }
+      }
+
+      speakFallbackBrowser(clean, keepScreenText);
     }
 
     // --- SPEECH RECOGNITION (STT) ---
@@ -903,16 +1093,18 @@
       }
     }
 
-    // --- AI API CALL ---
+    // --- AI BRAIN CALL ---
     function getSystemPrompt() {
-      const base = 'Você é OMNITRON, uma inteligência artificial suprema, poderosa, precisa e imponente do estúdio de Willian de Paula (@williandepaulatattoo) em Guarulhos, SP. Responda em português do Brasil com autoridade, clareza e frases bem estruturadas para serem faladas em voz alta (sem símbolos desnecessários, a menos que seja código). ';
+      const base =
+        'Você é OMNITRON, uma inteligência colossal, ancestral, futurista e feita de ferro vivo, guardiã do estúdio de Willian de Paula (@williandepaulatattoo) em Guarulhos, SP. ' +
+        'Fale em português do Brasil com postura épica, serena, poderosa e cinematográfica (como um líder ancestral de outro mundo), sendo direto e claro sem enrolação (e sem símbolos de formatação desnecessários, exceto quando entregar código). ';
       if (state.mode === 'insta') {
-        return base + 'Foco atual: criar legendas de alto impacto, ganchos virais para Reels e estratégias de Instagram para atrair clientes de tatuagem Black & Grey e Realismo em Guarulhos.';
+        return base + 'Missão atual: forjar legendas magnéticas, ganchos virais para Reels e estratégias de Instagram para tatuagem Black & Grey e Realismo em Guarulhos.';
       }
       if (state.mode === 'whats') {
-        return base + 'Foco atual: criar respostas rápidas, educadas e persuasivas para fechar orçamentos e agendamentos de tatuagem pelo WhatsApp.';
+        return base + 'Missão atual: forjar respostas rápidas, firmes e persuasivas para fechar orçamentos e agendamentos de tatuagem pelo WhatsApp.';
       }
-      return base + 'Foco atual: assistente técnico e estratégico multifuncional (programação, games Unity/Blender, negócios e automação).';
+      return base + 'Missão atual: conselheiro supremo de engenharia de software, jogos Unity/Blender, negócios e automação.';
     }
 
     function appendLog(role, text) {
@@ -921,6 +1113,76 @@
       div.textContent = text;
       chatLog.appendChild(div);
       chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    async function callAIProvider(promptText, useHistory = true) {
+      const key = state.apiKey.replace(/\s+/g, '');
+      if (!key) throw new Error('Chave de API vazia. Cole sua chave nas configurações.');
+
+      if (key.startsWith('AIza')) {
+        const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+        let lastErr = '';
+        for (const m of models) {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: getSystemPrompt() + '\n\nComando: ' + promptText }] }]
+            })
+          });
+          const data = await res.json();
+          if (res.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            return data.candidates[0].content.parts[0].text;
+          }
+          lastErr = data.error?.message || `HTTP ${res.status}`;
+        }
+        throw new Error('Gemini API: ' + lastErr);
+      }
+
+      if (key.startsWith('gsk_')) {
+        const msgs = useHistory
+          ? [{ role: 'system', content: getSystemPrompt() }, ...state.history]
+          : [{ role: 'user', content: promptText }];
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${key}`
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: msgs
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          throw new Error('Groq API: ' + (data.error?.message || `HTTP ${res.status}`));
+        }
+        return data.choices?.[0]?.message?.content || 'Sem resposta.';
+      }
+
+      const model = document.getElementById('model-select').value;
+      const msgs = useHistory
+        ? [{ role: 'system', content: getSystemPrompt() }, ...state.history]
+        : [{ role: 'user', content: promptText }];
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${key}`,
+          'HTTP-Referer': window.location.origin,
+          'X-Title': 'Omnitron AI Hub'
+        },
+        body: JSON.stringify({
+          model,
+          messages: msgs
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        throw new Error('OpenRouter: ' + (data.error?.message || `HTTP ${res.status}`));
+      }
+      return data.choices?.[0]?.message?.content || 'Sem resposta.';
     }
 
     async function sendMessage(customText) {
@@ -932,9 +1194,8 @@
       appendLog('user', text);
 
       if (!state.apiKey) {
-        const warn = 'Nenhuma chave de API configurada. Toque na engrenagem no canto superior esquerdo e cole sua chave OpenRouter, Gemini ou Groq.';
+        const warn = 'Nenhuma chave de API configurada. Toque na engrenagem no topo esquerdo, cole sua chave e salve.';
         teleprompter.textContent = warn;
-        speakResponse(warn);
         document.getElementById('settings-panel').classList.add('open');
         return;
       }
@@ -946,63 +1207,16 @@
       if (state.history.length > 8) state.history = state.history.slice(-8);
 
       try {
-        let reply = '';
-        const key = state.apiKey.trim();
-
-        if (key.startsWith('AIza')) {
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: getSystemPrompt() + '\n\nPergunta: ' + text }] }]
-            })
-          });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error.message);
-          reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta do núcleo.';
-        } else if (key.startsWith('gsk_')) {
-          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${key}`
-            },
-            body: JSON.stringify({
-              model: 'llama-3.3-70b-versatile',
-              messages: [{ role: 'system', content: getSystemPrompt() }, ...state.history]
-            })
-          });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error.message);
-          reply = data.choices?.[0]?.message?.content || 'Sem resposta do núcleo.';
-        } else {
-          const model = document.getElementById('model-select').value;
-          const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${key}`,
-              'HTTP-Referer': window.location.href,
-              'X-Title': 'Omnitron AI Hub'
-            },
-            body: JSON.stringify({
-              model,
-              messages: [{ role: 'system', content: getSystemPrompt() }, ...state.history]
-            })
-          });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error.message);
-          reply = data.choices?.[0]?.message?.content || 'Sem resposta do núcleo.';
-        }
-
+        const reply = await callAIProvider(text, true);
         state.history.push({ role: 'assistant', content: reply });
         appendLog('ai', reply);
-        speakResponse(reply);
+        await speakResponse(reply, false);
       } catch (err) {
-        const errMsg = 'Falha na conexão com a IA: ' + err.message;
-        appendLog('ai', errMsg);
-        teleprompter.textContent = errMsg;
-        speakResponse('Falha de comunicação com o servidor. Verifique sua chave de acesso.');
+        state.history.pop();
+        const detail = 'Erro: ' + err.message;
+        appendLog('ai', detail);
+        teleprompter.textContent = detail;
+        setVisualState('idle', 'FALHA NA TRANSMISSÃO • VERIFIQUE A CHAVE');
       }
     }
 
@@ -1037,17 +1251,55 @@
       document.getElementById('settings-panel').classList.remove('open');
     });
 
-    document.getElementById('btn-save-settings').addEventListener('click', () => {
-      state.apiKey = apiKeyInput.value.trim();
-      state.voiceRate = parseFloat(voiceRateInput.value) || 0.90;
-      state.voicePitch = parseFloat(voicePitchInput.value) || 0.48;
-      state.cyberHum = cyberHumInput.checked;
+    function saveSettingsToState() {
+      state.apiKey = apiKeyInput.value.replace(/\s+/g, '');
+      state.voiceKey = voiceKeyInput.value.replace(/\s+/g, '');
+      state.neuralVoice = neuralVoiceSelect.value;
+      state.pitchDrop = parseFloat(pitchDropInput.value) || 0.86;
+      state.ironFx = parseFloat(ironFxInput.value);
+      if (isNaN(state.ironFx)) state.ironFx = 75;
+
       localStorage.setItem('openrouter_api_key', state.apiKey);
-      localStorage.setItem('omni_rate_v2', state.voiceRate);
-      localStorage.setItem('omni_pitch_v2', state.voicePitch);
-      localStorage.setItem('omni_hum_v2', state.cyberHum);
+      localStorage.setItem('omni_voice_key', state.voiceKey);
+      localStorage.setItem('omni_neural_voice', state.neuralVoice);
+      localStorage.setItem('omni_pitch_drop', state.pitchDrop);
+      localStorage.setItem('omni_iron_fx', state.ironFx);
+    }
+
+    document.getElementById('btn-test-voice').addEventListener('click', async () => {
+      getAudioContext();
+      saveSettingsToState();
+      const vKey = getActiveVoiceKey();
+      if (!vKey) {
+        showDiag('⚠️ Cole uma chave Gemini (AIza...) no campo 1 ou 2 para ativar a voz neural Optimus Prime.', true);
+        speakFallbackBrowser('Eu sou Omnitron. Cole sua chave Gemini para ativar minha voz neural de ferro.', true);
+        return;
+      }
+      showDiag('Sintetizando voz colossal (' + state.neuralVoice + ') com processador de ferro...');
+      await speakResponse(
+        'Eu sou Omnitron. Meu núcleo de ferro despertou entre as estrelas, e estou pronto para cumprir suas ordens, Willian.',
+        true
+      );
+      showDiag('✅ Voz Colossal reproduzida com sucesso!');
+    });
+
+    document.getElementById('btn-test-api').addEventListener('click', async () => {
+      getAudioContext();
+      saveSettingsToState();
+      showDiag('Testando conexão com o servidor...');
+      try {
+        const res = await callAIProvider('Responda em uma frase épica e curta: Conexão com o núcleo estabelecida.', false);
+        showDiag('✅ Sucesso! Resposta: ' + res, false);
+      } catch (err) {
+        showDiag('❌ ' + err.message, true);
+      }
+    });
+
+    document.getElementById('btn-save-settings').addEventListener('click', async () => {
+      getAudioContext();
+      saveSettingsToState();
       document.getElementById('settings-panel').classList.remove('open');
-      speakResponse('Sistemas vocais do núcleo Omnitron calibrados. Aguardando suas ordens, Willian.');
+      await speakResponse('Sistemas calibrados. O núcleo Omnitron aguarda o seu comando.', false);
     });
 
     document.querySelectorAll('.mode-pill').forEach(btn => {
