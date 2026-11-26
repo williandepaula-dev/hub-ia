@@ -15,14 +15,12 @@
     :root {
       --bg-main: #0b0b0c;
       --bg-card: #151518;
-      --bg-card-hover: #1c1c20;
       --border: #27272a;
       --text-main: #f4f4f5;
       --text-muted: #9ca3af;
       --accent-orange: #ea580c;
       --accent-red: #dc2626;
       --accent-green: #10b981;
-      --accent-purple: #7e22ce;
     }
 
     * {
@@ -46,7 +44,6 @@
       margin: 0 auto;
     }
 
-    /* API Key Banner */
     .api-card {
       background: #141417;
       border: 1px solid #2a2a30;
@@ -69,9 +66,6 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #f59e0b;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .api-link {
@@ -114,7 +108,6 @@
       cursor: pointer;
     }
 
-    /* Install Banner */
     .install-card {
       background: linear-gradient(135deg, rgba(234, 88, 12, 0.14), rgba(220, 38, 38, 0.08));
       border: 1px solid rgba(234, 88, 12, 0.35);
@@ -173,7 +166,6 @@
       flex-shrink: 0;
     }
 
-    /* Header */
     .header {
       text-align: center;
       margin-bottom: 22px;
@@ -223,7 +215,6 @@
       font-weight: 700;
     }
 
-    /* Section Card */
     .section-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -244,7 +235,6 @@
       align-items: center;
     }
 
-    /* Upload Zone - Native Touch Overlay Fix */
     .upload-zone {
       position: relative;
       border: 2px dashed #3f3f46;
@@ -253,15 +243,8 @@
       padding: 30px 18px;
       text-align: center;
       overflow: hidden;
-      transition: border-color 0.2s, background 0.2s;
     }
 
-    .upload-zone.dragover {
-      border-color: var(--accent-orange);
-      background: rgba(234, 88, 12, 0.08);
-    }
-
-    /* Input cobre 100% da área de toque sem display:none */
     .native-file-overlay {
       position: absolute;
       inset: 0;
@@ -313,7 +296,6 @@
       box-shadow: 0 6px 20px rgba(234, 88, 12, 0.35);
     }
 
-    /* Preview Box when image loaded */
     .preview-loaded {
       display: none;
       position: relative;
@@ -351,7 +333,6 @@
       gap: 6px;
     }
 
-    /* Mode Cards */
     .modes-list {
       display: flex;
       flex-direction: column;
@@ -368,7 +349,6 @@
       gap: 12px;
       cursor: pointer;
       text-align: left;
-      transition: border-color 0.2s, background 0.2s;
     }
 
     .mode-card.active {
@@ -386,8 +366,6 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: #fb923c;
-      font-weight: 800;
       font-size: 18px;
     }
 
@@ -433,7 +411,6 @@
       font-weight: 600;
     }
 
-    /* Generate Button */
     .btn-generate {
       width: 100%;
       margin-top: 14px;
@@ -459,7 +436,18 @@
       cursor: not-allowed;
     }
 
-    /* Result & Comparator */
+    .error-banner {
+      display: none;
+      margin-top: 12px;
+      background: rgba(220, 38, 38, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #fca5a5;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
     .result-section {
       display: none;
     }
@@ -570,7 +558,6 @@
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
     }
 
-    /* Variation Floating Controls */
     .variation-bar {
       position: absolute;
       bottom: 12px;
@@ -625,7 +612,6 @@
       border-color: #fff;
     }
 
-    /* Studio Controls */
     .controls-box {
       margin-top: 14px;
       background: #111114;
@@ -696,7 +682,6 @@
       accent-color: var(--accent-orange);
     }
 
-    /* Action Buttons */
     .action-row {
       display: grid;
       grid-template-columns: 1.4fr 1fr;
@@ -739,7 +724,6 @@
       justify-content: center;
     }
 
-    /* Loading Overlay */
     .loading-overlay {
       display: none;
       position: fixed;
@@ -787,7 +771,8 @@
       z-index: 1000;
       opacity: 0;
       transition: all 0.25s ease;
-      white-space: nowrap;
+      max-width: 92vw;
+      text-align: center;
     }
 
     .toast.show {
@@ -798,19 +783,17 @@
 </head>
 <body>
   <div class="container">
-    <!-- Configuração Chave Google AI Studio -->
     <div class="api-card">
       <div class="api-header">
         <div class="api-title">● CONFIGURE SUA CHAVE GOOGLE AI STUDIO</div>
         <a class="api-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Pegar chave grátis ↗</a>
       </div>
       <div class="api-row">
-        <input type="password" id="apiKeyInput" class="api-input" placeholder="Cole sua chave AIzaSy..." />
+        <input type="text" id="apiKeyInput" class="api-input" placeholder="Cole sua chave AIzaSy..." autocomplete="off" spellcheck="false" />
         <button type="button" id="saveKeyBtn" class="btn-save-key">Salvar</button>
       </div>
     </div>
 
-    <!-- Instalar PWA -->
     <div class="install-card">
       <div class="install-left">
         <div class="install-icon">✒️</div>
@@ -822,14 +805,12 @@
       <button type="button" id="installAppBtn" class="btn-install">INSTALAR APP</button>
     </div>
 
-    <!-- Cabeçalho -->
     <header class="header">
       <div class="badge-top"><span class="dot-green"></span> STUDIO PRO STENCIL AI</div>
       <h1 class="main-title">GERADOR DE DECALQUE</h1>
       <p class="subtitle">Seu <span>decalque</span> pronto em <span>segundos.</span></p>
     </header>
 
-    <!-- Etapa 1: Upload -->
     <section class="section-card">
       <div class="section-label">
         <span>1. IMAGEM DE REFERÊNCIA</span>
@@ -837,7 +818,6 @@
       </div>
 
       <div id="uploadZone" class="upload-zone">
-        <!-- Input nativo cobrindo 100% da área para abrir galeria direto no Android/iOS -->
         <input type="file" id="fileInput" class="native-file-overlay" accept="image/*" />
         <div class="upload-icon-box">⬆️</div>
         <div class="upload-title">Toque para abrir a galeria</div>
@@ -854,7 +834,6 @@
       </div>
     </section>
 
-    <!-- Etapa 2: Modos -->
     <section class="section-card">
       <div class="section-label">2. ESCOLHA O MODO DE EXTRAÇÃO</div>
       <div class="modes-list">
@@ -896,13 +875,13 @@
       <button type="button" id="generateBtn" class="btn-generate" disabled>
         ⚡ GERAR DECALQUE AGORA
       </button>
+      <div id="errorBanner" class="error-banner"></div>
     </section>
 
-    <!-- Etapa 3: Resultado & Comparador -->
     <section id="resultSection" class="section-card result-section">
       <div class="section-label">
         <span>3. SEU DECALQUE PRONTO</span>
-        <span style="color:#a1a1aa;">Arraste a barra vermelha</span>
+        <span id="engineBadge" style="color:#a1a1aa;">Arraste a barra vermelha</span>
       </div>
 
       <div id="comparator" class="comparator-wrap">
@@ -920,14 +899,12 @@
           <div class="slider-handle">↔</div>
         </div>
 
-        <!-- Botão circular de variações -->
         <div class="variation-bar">
           <button type="button" id="newVariationBtn" class="btn-var-refresh" title="Gerar nova variação">↻</button>
           <div id="variationDots" class="var-dots"></div>
         </div>
       </div>
 
-      <!-- Ajustes Finos -->
       <div class="controls-box">
         <div class="controls-header">
           <span>⚙️ AJUSTES FINOS PARA IMPRESSÃO</span>
@@ -964,7 +941,6 @@
         </div>
       </div>
 
-      <!-- Botões Finais -->
       <div class="action-row">
         <button type="button" id="downloadBtn" class="btn-download">⬇️ Baixar PNG</button>
         <div class="new-img-wrap">
@@ -975,7 +951,6 @@
     </section>
   </div>
 
-  <!-- Loading -->
   <div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
     <h3 style="font-family:'Anton',sans-serif;font-size:24px;letter-spacing:0.05em;margin-bottom:6px;">PROCESSANDO DECALQUE...</h3>
@@ -986,7 +961,7 @@
 
   <script>
     const state = {
-      apiKey: localStorage.getItem('gemini_stencil_api_key') || '',
+      apiKey: (localStorage.getItem('gemini_stencil_api_key') || '').trim(),
       refDataUrl: null,
       refMime: 'image/jpeg',
       mode: 'tattoo_to_drawing',
@@ -1010,6 +985,7 @@
     const previewLoaded = document.getElementById('previewLoaded');
     const refPreviewImg = document.getElementById('refPreviewImg');
     const generateBtn = document.getElementById('generateBtn');
+    const errorBanner = document.getElementById('errorBanner');
     const resultSection = document.getElementById('resultSection');
     const compOriginalImg = document.getElementById('compOriginalImg');
     const stencilCanvas = document.getElementById('stencilCanvas');
@@ -1027,21 +1003,22 @@
       toastEl.textContent = msg;
       toastEl.classList.add('show');
       clearTimeout(window._toastTimer);
-      window._toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+      window._toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3200);
     }
 
     saveKeyBtn.addEventListener('click', () => {
-      const val = apiKeyInput.value.trim();
-      if (!val) {
-        showToast('Cole sua chave do Google AI Studio primeiro.');
+      const val = apiKeyInput.value.replace(/\s+/g, '');
+      if (!val || !val.startsWith('AIza')) {
+        showToast('Chave inválida. Ela deve começar com AIza...');
         return;
       }
+      apiKeyInput.value = val;
       state.apiKey = val;
       localStorage.setItem('gemini_stencil_api_key', val);
+      errorBanner.style.display = 'none';
       showToast('Chave salva com sucesso!');
     });
 
-    // PWA Install
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       state.deferredPrompt = e;
@@ -1057,20 +1034,13 @@
       }
     });
 
-    // Leitura segura da imagem selecionada da galeria
     function handleSelectedFile(file) {
       if (!file) return;
-      if (!file.type.startsWith('image/') && !/\.(jpe?g|png|webp|heic|heif)$/i.test(file.name)) {
-        showToast('Selecione um arquivo de imagem válido.');
-        return;
-      }
-
       const reader = new FileReader();
       reader.onload = (ev) => {
         const img = new Image();
         img.onload = () => {
-          // Redimensiona mantendo alta qualidade (max 1600px) para envio rápido e estável
-          const maxDim = 1600;
+          const maxDim = 1536;
           let w = img.width;
           let h = img.height;
           if (w > maxDim || h > maxDim) {
@@ -1098,6 +1068,7 @@
           previewLoaded.style.display = 'block';
           document.getElementById('fileStatus').textContent = '✓ Imagem pronta';
           generateBtn.disabled = false;
+          errorBanner.style.display = 'none';
           showToast('Imagem carregada da galeria!');
         };
         img.onerror = () => showToast('Não foi possível abrir essa imagem.');
@@ -1114,7 +1085,6 @@
       });
     });
 
-    // Seleção de Modo
     document.querySelectorAll('.mode-card').forEach((card) => {
       card.addEventListener('click', () => {
         document.querySelectorAll('.mode-card').forEach((c) => c.classList.remove('active'));
@@ -1133,293 +1103,55 @@
 
       const strictPoseRule = `
 CRITICAL GEOMETRY & POSE PRESERVATION RULE:
-- DO NOT rotate or turn the subject's head, face, gaze, or body orientation! If the tiger/lion/subject is looking to the side or in a 3/4 angle, keep that EXACT 3/4 or side pose and expression.
-- ONLY correct the camera perspective to a flat perpendicular top-down 2D view (as if photographed straight from above on flat white paper) and gently unwrap the cylindrical curvature of the arm/leg so the artwork is flat, unwarped, and complete.
-- Remove all human skin texture, pores, arm/leg edges, plastic wrap, tablet/phone screens, and social media icons.
-- Output ONLY the isolated tattoo artwork centered on a pure solid white background (#FFFFFF) with clean margins.`;
+- DO NOT rotate or turn the subject's head, face, gaze, or body orientation! Keep the EXACT original 3/4 or side pose and expression.
+- ONLY correct the camera perspective to a flat perpendicular top-down 2D view and gently unwrap the cylindrical curvature of the limb so the artwork is flat and complete.
+- Remove all skin texture, pores, arm/leg edges, plastic wrap, tablet screens, and social media icons.
+- Output ONLY the isolated tattoo artwork centered on a pure solid white background (#FFFFFF).`;
 
       if (state.mode === 'lines') {
-        return `Convert this reference into a clean black-and-white fine-line tattoo stencil outline on pure white background (#FFFFFF). Extract only crisp, continuous contour lines and small lettering with zero solid shading. ${strictPoseRule}`;
+        return `Convert this reference into a clean black-and-white fine-line tattoo stencil outline on pure white background (#FFFFFF). Extract only crisp contour lines and small lettering with zero solid shading. ${strictPoseRule}`;
       }
       if (state.mode === 'lines_shade') {
         return `Convert this reference into a professional black-and-gray tattoo stencil combining crisp outlines and mapped shadow zones on pure white background (#FFFFFF). ${strictPoseRule} ${nuance}`;
       }
-      return `Extract the tattoo design from the skin in this photo and reconstruct it into a flat, high-definition black-and-gray tattoo flash sheet illustration on a pure solid white background (#FFFFFF). Enhance fur, whiskers, eyes, foliage, and smooth surrounding background shading to studio-grade quality. ${strictPoseRule} ${nuance}`;
+      return `Extract the tattoo design from the skin in this photo and reconstruct it into a flat, high-definition black-and-gray tattoo flash sheet illustration on a pure solid white background (#FFFFFF). Enhance fur, whiskers, eyes, foliage, and smooth surrounding shading to studio-grade quality. ${strictPoseRule} ${nuance}`;
     }
 
-    async function callGeminiImage(variationIndex) {
-      const key = apiKeyInput.value.trim() || state.apiKey;
-      if (!key) {
-        showToast('Cole e salve sua chave do Google AI Studio no topo.');
-        apiKeyInput.focus();
-        return null;
-      }
+    // Fallback local de alta precisão caso a conta gratuita do AI Studio bloqueie geração de imagem
+    function buildLocalStencilFallback(variationIndex) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const w = img.width;
+          const h = img.height;
+          const c = document.createElement('canvas');
+          c.width = w;
+          c.height = h;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
 
-      const base64Data = state.refDataUrl.split(',')[1];
-      const promptText = buildPrompt(variationIndex);
+          const src = ctx.getImageData(0, 0, w, h);
+          const blurCanvas = document.createElement('canvas');
+          blurCanvas.width = w;
+          blurCanvas.height = h;
+          const bCtx = blurCanvas.getContext('2d');
+          const radius = state.mode === 'lines' ? 4 + variationIndex * 2 : 14 + variationIndex * 4;
+          bCtx.filter = `grayscale(100%) blur(${radius}px)`;
+          bCtx.drawImage(img, 0, 0, w, h);
+          const blur = bCtx.getImageData(0, 0, w, h);
 
-      // Tenta primeiro gemini-2.5-flash-image e faz fallback para gemini-2.0-flash-exp-image-generation
-      const models = ['gemini-2.5-flash-image', 'gemini-2.0-flash-exp-image-generation'];
+          const out = ctx.createImageData(w, h);
+          const s = src.data;
+          const b = blur.data;
+          const d = out.data;
 
-      for (const model of models) {
-        try {
-          const res = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    parts: [
-                      { text: promptText },
-                      {
-                        inline_data: {
-                          mime_type: state.refMime,
-                          data: base64Data
-                        }
-                      }
-                    ]
-                  }
-                ],
-                generationConfig: {
-                  responseModalities: ['IMAGE', 'TEXT']
-                }
-              })
-            }
-          );
-
-          if (!res.ok) continue;
-          const data = await res.json();
-          const parts = data?.candidates?.[0]?.content?.parts || [];
-          const imgPart = parts.find((p) => p.inlineData || p.inline_data);
-          if (imgPart) {
-            const inline = imgPart.inlineData || imgPart.inline_data;
-            return `data:${inline.mimeType || inline.mime_type || 'image/png'};base64,${inline.data}`;
-          }
-        } catch (err) {
-          console.warn('Falha no modelo', model, err);
-        }
-      }
-      return null;
-    }
-
-    async function runGeneration(isNewVariation = false) {
-      if (!state.refDataUrl) {
-        showToast('Selecione uma imagem da galeria primeiro.');
-        return;
-      }
-
-      loadingOverlay.classList.add('active');
-      const nextIndex = isNewVariation ? state.variations.length : 0;
-
-      const generatedUrl = await callGeminiImage(nextIndex);
-      loadingOverlay.classList.remove('active');
-
-      if (!generatedUrl) {
-        showToast('Erro ao gerar. Verifique sua chave API no topo.');
-        return;
-      }
-
-      if (!isNewVariation) {
-        state.variations = [generatedUrl];
-        state.activeVarIndex = 0;
-      } else {
-        state.variations.push(generatedUrl);
-        state.activeVarIndex = state.variations.length - 1;
-      }
-
-      renderVariationDots();
-      resultSection.classList.add('visible');
-      renderCanvas();
-      resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    generateBtn.addEventListener('click', () => runGeneration(false));
-    document.getElementById('newVariationBtn').addEventListener('click', () => runGeneration(true));
-
-    function renderVariationDots() {
-      const container = document.getElementById('variationDots');
-      container.innerHTML = '';
-      state.variations.forEach((_, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'var-dot' + (idx === state.activeVarIndex ? ' active' : '');
-        btn.textContent = idx + 1;
-        btn.addEventListener('click', () => {
-          state.activeVarIndex = idx;
-          renderVariationDots();
-          renderCanvas();
-        });
-        container.appendChild(btn);
-      });
-    }
-
-    function renderCanvas(targetCanvas = stencilCanvas, exportHighRes = false) {
-      const src = state.variations[state.activeVarIndex];
-      if (!src) return;
-
-      const img = new Image();
-      img.onload = () => {
-        const scale = exportHighRes ? Math.max(1, 1600 / Math.max(img.width, img.height)) : 1;
-        const w = Math.round(img.width * scale);
-        const h = Math.round(img.height * scale);
-
-        targetCanvas.width = w;
-        targetCanvas.height = h;
-        const ctx = targetCanvas.getContext('2d');
-
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
-
-        ctx.save();
-        ctx.translate(w / 2, h / 2);
-        if (state.mirror) ctx.scale(-1, 1);
-        ctx.rotate((state.angle * Math.PI) / 180);
-        ctx.scale(state.stretch / 100, 1);
-        ctx.filter = `grayscale(100%) contrast(${state.contrast}%)`;
-        ctx.drawImage(img, -w / 2, -h / 2, w, h);
-        ctx.restore();
-
-        if (state.purple) {
-          const imgData = ctx.getImageData(0, 0, w, h);
-          const d = imgData.data;
-          for (let i = 0; i < d.length; i += 4) {
-            const lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
-            const ink = 255 - lum;
-            d[i] = Math.round(255 - ink * 0.62);     // R
-            d[i + 1] = Math.round(255 - ink * 0.92); // G
-            d[i + 2] = Math.round(255 - ink * 0.25); // B (roxo hectográfico)
-          }
-          ctx.putImageData(imgData, 0, 0);
-        }
-      };
-      img.src = src;
-    }
-
-    // Controles de Estúdio
-    document.getElementById('mirrorBtn').addEventListener('click', function () {
-      state.mirror = !state.mirror;
-      this.classList.toggle('active', state.mirror);
-      renderCanvas();
-    });
-
-    document.getElementById('purpleBtn').addEventListener('click', function () {
-      state.purple = !state.purple;
-      this.classList.toggle('active', state.purple);
-      renderCanvas();
-    });
-
-    document.getElementById('contrastSlider').addEventListener('input', (e) => {
-      state.contrast = Number(e.target.value);
-      document.getElementById('contrastVal').textContent = `${state.contrast}%`;
-      renderCanvas();
-    });
-
-    document.getElementById('angleSlider').addEventListener('input', (e) => {
-      state.angle = Number(e.target.value);
-      document.getElementById('angleVal').textContent = `${state.angle}°`;
-      renderCanvas();
-    });
-
-    document.getElementById('stretchSlider').addEventListener('input', (e) => {
-      state.stretch = Number(e.target.value);
-      document.getElementById('stretchVal').textContent = `${state.stretch}%`;
-      renderCanvas();
-    });
-
-    document.getElementById('resetControlsBtn').addEventListener('click', () => {
-      state.mirror = false;
-      state.purple = false;
-      state.contrast = 105;
-      state.angle = 0;
-      state.stretch = 100;
-      document.getElementById('mirrorBtn').classList.remove('active');
-      document.getElementById('purpleBtn').classList.remove('active');
-      document.getElementById('contrastSlider').value = 105;
-      document.getElementById('contrastVal').textContent = '105%';
-      document.getElementById('angleSlider').value = 0;
-      document.getElementById('angleVal').textContent = '0°';
-      document.getElementById('stretchSlider').value = 100;
-      document.getElementById('stretchVal').textContent = '100%';
-      renderCanvas();
-    });
-
-    // Comparador Deslizante
-    function updateSlider(clientX) {
-      const rect = comparator.getBoundingClientRect();
-      let pct = ((clientX - rect.left) / rect.width) * 100;
-      pct = Math.max(0, Math.min(100, pct));
-      state.sliderPct = pct;
-      sliderLine.style.left = `${pct}%`;
-      compStencilLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-    }
-
-    let dragging = false;
-    comparator.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('.variation-bar')) return;
-      dragging = true;
-      updateSlider(e.clientX);
-    });
-    window.addEventListener('pointermove', (e) => {
-      if (dragging) updateSlider(e.clientX);
-    });
-    window.addEventListener('pointerup', () => {
-      dragging = false;
-    });
-
-    // Download direto na Galeria / Downloads do Chrome Android
-    document.getElementById('downloadBtn').addEventListener('click', () => {
-      if (!state.variations.length) return;
-      const exportCanvas = document.createElement('canvas');
-      const src = state.variations[state.activeVarIndex];
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.max(1, 1600 / Math.max(img.width, img.height));
-        const w = Math.round(img.width * scale);
-        const h = Math.round(img.height * scale);
-        exportCanvas.width = w;
-        exportCanvas.height = h;
-        const ctx = exportCanvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
-        ctx.save();
-        ctx.translate(w / 2, h / 2);
-        if (state.mirror) ctx.scale(-1, 1);
-        ctx.rotate((state.angle * Math.PI) / 180);
-        ctx.scale(state.stretch / 100, 1);
-        ctx.filter = `grayscale(100%) contrast(${state.contrast}%)`;
-        ctx.drawImage(img, -w / 2, -h / 2, w, h);
-        ctx.restore();
-
-        if (state.purple) {
-          const imgData = ctx.getImageData(0, 0, w, h);
-          const d = imgData.data;
-          for (let i = 0; i < d.length; i += 4) {
-            const lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
-            const ink = 255 - lum;
-            d[i] = Math.round(255 - ink * 0.62);
-            d[i + 1] = Math.round(255 - ink * 0.92);
-            d[i + 2] = Math.round(255 - ink * 0.25);
-          }
-          ctx.putImageData(imgData, 0, 0);
-        }
-
-        exportCanvas.toBlob((blob) => {
-          const fileName = `decalque-studio-${Date.now()}.png`;
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(url), 4000);
-          showToast('Decalque salvo na Galeria / Downloads!');
-        }, 'image/png', 1.0);
-      };
-      img.src = src;
-    });
-  </script>
-</body>
-</html>
+          for (let i = 0; i < s.length; i += 4) {
+            const lum = 0.299 * s[i] + 0.587 * s[i + 1] + 0.114 * s[i + 2];
+            const bLum = b[i];
+            // Color Dodge (extrapolação de traço e sombra limpa)
+            let dodge = bLum >= 254 ? 255 : Math.min(255, (lum * 255) / Math.max(1, 255 - (255 - bLum)));
+            if (state.mode === 'lines') {
+              dodge = dodge < 210 ? Math.max(0, (dodge - 120) * 2.2) : 255;
+            } else {
+              const mixed = dodge * 0.72 + (lum > 155 ? 255 : lum * 1.15) * 0.28;
+              dodge = mixed > 228 ? 255 : Math.max(0, Math.min(255, (mixed
