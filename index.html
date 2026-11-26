@@ -1,2123 +1,1425 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0a0c">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Decalque Pro">
-    <title>Gerador de Decalque — Studio Pro Stencil AI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
-    <!-- Manifest PWA será injetado dinamicamente via Data URI para instalação na tela inicial -->
-    <link id="pwaManifestLink" rel="manifest" href="">
-    <style>
-        /* =====================================================================
-           RESET & DESIGN TOKENS (100% EMBUTIDO PARA RENDERIZAÇÃO INSTANTÂNEA)
-        ===================================================================== */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --bg-main: #0a0a0c;
-            --bg-card: #141417;
-            --bg-card-elevated: #1b1b20;
-            --border-subtle: #27272e;
-            --border-strong: #383842;
-            --text-primary: #f4f4f6;
-            --text-secondary: #a1a1aa;
-            --text-muted: #71717a;
-            --accent-red: #ff3b30;
-            --accent-orange: #ff5722;
-            --accent-emerald: #10b981;
-            --accent-purple: #8b5cf6;
-            --radius-lg: 18px;
-            --radius-md: 14px;
-            --radius-sm: 10px;
-        }
-
-        html, body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            min-height: 100vh;
-            line-height: 1.45;
-            overflow-x: hidden;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 560px;
-            margin: 0 auto;
-            padding: 18px 16px 56px;
-        }
-
-        /* =====================================================================
-           BANNER PWA DE INSTALAÇÃO NO CELULAR
-        ===================================================================== */
-        .pwa-install-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            background: linear-gradient(135deg, rgba(255, 59, 48, 0.14), rgba(255, 87, 34, 0.08));
-            border: 1px solid rgba(255, 87, 34, 0.35);
-            border-radius: 14px;
-            padding: 10px 12px;
-            margin-bottom: 18px;
-        }
-
-        .pwa-bar-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .pwa-app-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.35);
-        }
-
-        .pwa-bar-text {
-            min-width: 0;
-        }
-
-        .pwa-bar-title {
-            font-size: 12px;
-            font-weight: 800;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .pwa-bar-sub {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .pwa-bar-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .pwa-install-btn {
-            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
-            border: none;
-            color: #ffffff;
-            font-size: 11px;
-            font-weight: 800;
-            padding: 8px 12px;
-            border-radius: 999px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.35);
-        }
-
-        .pwa-save-html-btn {
-            background: var(--bg-card-elevated);
-            border: 1px solid var(--border-strong);
-            color: var(--text-primary);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 8px 10px;
-            border-radius: 999px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* =====================================================================
-           CABEÇALHO STUDIO PRO
-        ===================================================================== */
-        .app-header {
-            text-align: center;
-            margin-bottom: 22px;
-        }
-
-        .studio-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-subtle);
-            padding: 6px 14px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-
-        .studio-badge .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: var(--accent-emerald);
-            box-shadow: 0 0 8px var(--accent-emerald);
-        }
-
-        .app-title {
-            font-family: 'Oswald', sans-serif;
-            font-size: clamp(32px, 8vw, 42px);
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            line-height: 1.05;
-            color: #ffffff;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .app-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .app-subtitle .hl {
-            color: var(--accent-emerald);
-            font-weight: 700;
-        }
-
-        /* =====================================================================
-           CARTÕES E SEÇÕES
-        ===================================================================== */
-        .panel-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 18px;
-            margin-bottom: 16px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-        }
-
-        .section-header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .section-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* =====================================================================
-           INPUT DE ARQUIVO NATIVO (COMPATÍVEL COM ANDROID/IOS WEBVIEW)
-        ===================================================================== */
-        .offscreen-file-input {
-            position: fixed;
-            top: -9999px;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-            opacity: 0.01;
-        }
-
-        .upload-dropzone {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background-color: var(--bg-card-elevated);
-            border: 2px dashed var(--border-strong);
-            border-radius: var(--radius-md);
-            padding: 30px 20px;
-            cursor: pointer;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
-            user-select: none;
-        }
-
-        .upload-dropzone.drag-over {
-            border-color: var(--accent-orange);
-            background-color: rgba(255, 87, 34, 0.08);
-        }
-
-        .upload-dropzone:active {
-            border-color: var(--accent-orange);
-            transform: scale(0.995);
-        }
-
-        .upload-icon-circle {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            background: rgba(255, 87, 34, 0.12);
-            border: 1px solid rgba(255, 87, 34, 0.35);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-orange);
-            margin-bottom: 14px;
-        }
-
-        .upload-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .upload-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-
-        .upload-pill-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 10px 18px;
-            border-radius: 999px;
-            box-shadow: 0 4px 14px rgba(255, 59, 48, 0.35);
-        }
-
-        /* Prévia da imagem carregada */
-        .preview-box {
-            display: none;
-            position: relative;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            background: #0d0d10;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .preview-box.active {
-            display: block;
-        }
-
-        .preview-box img {
-            display: block;
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            margin: 0 auto;
-        }
-
-        .change-photo-label {
-            display: none;
-            align-items: center;
-            gap: 6px;
-            background: var(--bg-card-elevated);
-            border: 1px solid var(--border-strong);
-            color: var(--text-primary);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .change-photo-label.active {
-            display: inline-flex;
-        }
-
-        /* =====================================================================
-           CARDS DOS 3 MODOS DE EXTRAÇÃO
-        ===================================================================== */
-        .modes-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .mode-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background-color: var(--bg-card-elevated);
-            border: 1.5px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 14px;
-            cursor: pointer;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
-            text-align: left;
-            width: 100%;
-            color: inherit;
-        }
-
-        .mode-card.selected {
-            border-color: var(--accent-red);
-            background: linear-gradient(180deg, rgba(255, 59, 48, 0.1) 0%, rgba(20, 20, 23, 0.95) 100%);
-        }
-
-        .mode-thumb {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            background: #ffffff;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 1px solid var(--border-strong);
-        }
-
-        .mode-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .mode-title-row {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .mode-title {
-            font-family: 'Oswald', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.03em;
-            color: #ffffff;
-            text-transform: uppercase;
-        }
-
-        .badge-popular {
-            background-color: rgba(16, 185, 129, 0.18);
-            border: 1px solid rgba(16, 185, 129, 0.5);
-            color: #34d399;
-            font-size: 9px;
-            font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 999px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-
-        .mode-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-
-        .mode-subnote {
-            font-size: 11px;
-            color: #fb923c;
-            font-weight: 500;
-        }
-
-        .radio-circle {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid var(--border-strong);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .mode-card.selected .radio-circle {
-            border-color: var(--accent-red);
-        }
-
-        .mode-card.selected .radio-circle::after {
-            content: '';
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--accent-red);
-        }
-
-        /* =====================================================================
-           BOTÃO PRINCIPAL DE AÇÃO (CTA)
-        ===================================================================== */
-        .primary-cta-btn {
-            width: 100%;
-            border: none;
-            border-radius: var(--radius-md);
-            padding: 16px 20px;
-            font-family: 'Oswald', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            color: #ffffff;
-            background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-orange) 100%);
-            box-shadow: 0 8px 24px rgba(255, 59, 48, 0.35);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: opacity 0.2s ease, transform 0.15s ease;
-        }
-
-        .primary-cta-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .primary-cta-btn:not(:disabled):active {
-            transform: scale(0.985);
-        }
-
-        /* =====================================================================
-           OVERLAY DE PROCESSAMENTO / SCANNER LASER
-        ===================================================================== */
-        .processing-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 10, 12, 0.92);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .processing-overlay.active {
-            display: flex;
-        }
-
-        .scanner-card {
-            width: 100%;
-            max-width: 380px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-strong);
-            border-radius: var(--radius-lg);
-            padding: 22px;
-            text-align: center;
-        }
-
-        .scanner-frame {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            background: #09090b;
-            border: 1px solid var(--border-subtle);
-            margin-bottom: 18px;
-        }
-
-        .scanner-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            opacity: 0.7;
-        }
-
-        .laser-line {
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent-red), #ff9f43, var(--accent-red), transparent);
-            box-shadow: 0 0 16px 3px rgba(255, 59, 48, 0.85);
-            animation: scanMove 2s ease-in-out infinite;
-        }
-
-        @keyframes scanMove {
-            0% { top: 4%; }
-            50% { top: 94%; }
-            100% { top: 4%; }
-        }
-
-        .scanner-title {
-            font-family: 'Oswald', sans-serif;
-            font-size: 20px;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .scanner-status {
-            font-size: 13px;
-            color: var(--accent-emerald);
-            font-weight: 600;
-            min-height: 20px;
-        }
-
-        /* =====================================================================
-           TELA 2: RESULTADO "SEU DECALQUE" & COMPARADOR INTERATIVO
-        ===================================================================== */
-        .hidden {
-            display: none !important;
-        }
-
-        .result-top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .result-heading {
-            font-family: 'Oswald', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            color: #ffffff;
-        }
-
-        .back-edit-btn {
-            background: var(--bg-card-elevated);
-            border: 1px solid var(--border-strong);
-            color: var(--text-primary);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 7px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .comparator-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 3 / 4;
-            max-height: 480px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            background-color: #ffffff;
-            border: 2px solid var(--border-strong);
-            user-select: none;
-            touch-action: pan-y;
-            margin-bottom: 14px;
-        }
-
-        .comp-layer {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .comp-original-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: #121215;
-            display: block;
-        }
-
-        .comp-stencil-clip {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            background: #ffffff;
-            clip-path: inset(0 50% 0 0);
-        }
-
-        .comp-stencil-canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-            background: #ffffff;
-        }
-
-        .comp-badge {
-            position: absolute;
-            top: 12px;
-            z-index: 15;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            padding: 4px 10px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            pointer-events: none;
-        }
-
-        .badge-decalque {
-            left: 12px;
-            background-color: var(--accent-red);
-            color: #ffffff;
-            box-shadow: 0 2px 8px rgba(255, 59, 48, 0.45);
-        }
-
-        .badge-original {
-            right: 12px;
-            background-color: rgba(20, 20, 24, 0.88);
-            color: #e4e4e7;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        /* Divisor Vertical Vermelho e Botão Circular Laranja <-> */
-        .slider-divider {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 3px;
-            background-color: var(--accent-red);
-            box-shadow: 0 0 10px rgba(255, 59, 48, 0.8);
-            z-index: 20;
-            transform: translateX(-50%);
-            pointer-events: none;
-        }
-
-        .slider-handle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
-            border: 3px solid #ffffff;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-            pointer-events: auto;
-            cursor: ew-resize;
-        }
-
-        /* =====================================================================
-           BOTÃO CIRCULAR DE VARIAÇÕES (↻) & BOLINHAS NUMERADAS (1, 2, 3...)
-        ===================================================================== */
-        .variations-dock {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            z-index: 25;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            pointer-events: auto;
-        }
-
-        .cycle-circle-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 2.5px solid #ffffff;
-            background: linear-gradient(135deg, #18181b, #27272f);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
-
-        .cycle-circle-btn:active {
-            transform: scale(0.92);
-        }
-
-        .cycle-circle-btn.spinning svg {
-            animation: spinOnce 0.7s linear infinite;
-        }
-
-        @keyframes spinOnce {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .variation-dots-bar {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(15, 15, 19, 0.85);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            padding: 5px 8px;
-            border-radius: 999px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-        }
-
-        .var-dot-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(255, 255, 255, 0.25);
-            background: rgba(255, 255, 255, 0.08);
-            color: #e4e4e7;
-            font-size: 11px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .var-dot-btn.active {
-            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
-            border-color: #ffffff;
-            color: #ffffff;
-            transform: scale(1.08);
-        }
-
-        /* =====================================================================
-           BARRA DE AÇÕES DO ESTÚDIO (ESPELHAR, TOM ROXO, BAIXAR, NOVA IMAGEM)
-        ===================================================================== */
-        .studio-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .studio-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 13px 10px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-strong);
-            background-color: var(--bg-card-elevated);
-            color: var(--text-primary);
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            user-select: none;
-        }
-
-        .studio-btn.active-mirror {
-            border-color: var(--accent-orange);
-            background-color: rgba(255, 87, 34, 0.15);
-            color: #fdba74;
-        }
-
-        .studio-btn.active-purple {
-            border-color: var(--accent-purple);
-            background-color: rgba(139, 92, 246, 0.18);
-            color: #c4b5fd;
-        }
-
-        .studio-btn.btn-download {
-            background: linear-gradient(135deg, #059669, #10b981);
-            border-color: #10b981;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
-        }
-
-        .studio-btn.btn-download:active {
-            transform: scale(0.98);
-        }
-
-        /* =====================================================================
-           PAINEL DE AJUSTES FINOS PARA IMPRESSÃO TÉRMICA
-        ===================================================================== */
-        .fine-tune-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-            gap: 8px;
-        }
-
-        .fine-tune-title {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-primary);
-        }
-
-        .reset-link-btn {
-            background: none;
-            border: none;
-            color: var(--accent-orange);
-            font-size: 12px;
-            font-weight: 600;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        .slider-control-group {
-            margin-bottom: 14px;
-        }
-
-        .slider-control-group:last-child {
-            margin-bottom: 0;
-        }
-
-        .slider-label-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .slider-val {
-            color: #ffffff;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 6px;
-            background: #27272f;
-            border-radius: 999px;
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--accent-orange);
-            border: 2px solid #ffffff;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-        }
-
-        /* =====================================================================
-           MODAL DE INSTRUÇÃO DE INSTALAÇÃO PWA (iOS / ANDROID)
-        ===================================================================== */
-        .pwa-guide-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 10, 12, 0.92);
-            backdrop-filter: blur(8px);
-            z-index: 180;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .pwa-guide-modal.active {
-            display: flex;
-        }
-
-        .pwa-guide-card {
-            width: 100%;
-            max-width: 400px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-strong);
-            border-radius: 20px;
-            padding: 22px;
-            text-align: left;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
-        }
-
-        .pwa-guide-title {
-            font-family: 'Oswald', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #ffffff;
-            margin-bottom: 10px;
-        }
-
-        .pwa-step-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 18px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .pwa-step-item {
-            background: var(--bg-card-elevated);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 10px 12px;
-            line-height: 1.4;
-        }
-
-        .pwa-step-item strong {
-            color: #ffffff;
-        }
-
-        .pwa-guide-close {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-
-        /* Toast de notificação discreto */
-        .toast-msg {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1f1f26;
-            border: 1px solid var(--border-strong);
-            color: #ffffff;
-            padding: 11px 18px;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65);
-            z-index: 220;
-            transition: transform 0.25s ease;
-            white-space: nowrap;
-            max-width: 92vw;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .toast-msg.show {
-            transform: translateX(-50%) translateY(0);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b0b0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Decalque Pro" />
+  <title>GERADOR DE DECALQUE — Studio Pro Stencil AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-main: #0b0b0c;
+      --bg-card: #151518;
+      --bg-card-hover: #1c1c20;
+      --border: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #9ca3af;
+      --accent-orange: #ea580c;
+      --accent-red: #dc2626;
+      --accent-green: #10b981;
+      --accent-purple: #7e22ce;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      padding: 14px 14px 48px;
+      line-height: 1.45;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* API Key Banner */
+    .api-card {
+      background: #141417;
+      border: 1px solid #2a2a30;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .api-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .api-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .api-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: #d1d5db;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .api-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .api-input {
+      flex: 1;
+      min-width: 0;
+      background: #0d0d10;
+      border: 1px solid #2e2e35;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .api-input:focus {
+      border-color: var(--accent-orange);
+    }
+
+    .btn-save-key {
+      background: #27272a;
+      color: #fff;
+      border: 1px solid #3f3f46;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Install Banner */
+    .install-card {
+      background: linear-gradient(135deg, rgba(234, 88, 12, 0.14), rgba(220, 38, 38, 0.08));
+      border: 1px solid rgba(234, 88, 12, 0.35);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .install-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .install-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .install-text strong {
+      display: block;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .install-text span {
+      display: block;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .btn-install {
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #a1a1aa;
+      margin-bottom: 12px;
+    }
+
+    .dot-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    .main-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(38px, 9vw, 54px);
+      letter-spacing: 0.03em;
+      line-height: 1.02;
+      color: #ffffff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #d4d4d8;
+      font-weight: 500;
+    }
+
+    .subtitle span {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    /* Section Card */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Upload Zone - Native Touch Overlay Fix */
+    .upload-zone {
+      position: relative;
+      border: 2px dashed #3f3f46;
+      border-radius: 16px;
+      background: #111114;
+      padding: 30px 18px;
+      text-align: center;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .upload-zone.dragover {
+      border-color: var(--accent-orange);
+      background: rgba(234, 88, 12, 0.08);
+    }
+
+    /* Input cobre 100% da área de toque sem display:none */
+    .native-file-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 10;
+      font-size: 100px;
+    }
+
+    .upload-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(234, 88, 12, 0.14);
+      border: 1px solid rgba(234, 88, 12, 0.35);
+      color: #fb923c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+
+    .upload-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+
+    .btn-gallery-visual {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 999px;
+      box-shadow: 0 6px 20px rgba(234, 88, 12, 0.35);
+    }
+
+    /* Preview Box when image loaded */
+    .preview-loaded {
+      display: none;
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #09090b;
+      border: 1px solid #27272a;
+      text-align: center;
+    }
+
+    .preview-loaded img {
+      max-height: 290px;
+      width: 100%;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .change-photo-wrap {
+      position: relative;
+      display: inline-block;
+      margin: 10px auto;
+    }
+
+    .btn-change-photo {
+      background: #27272a;
+      color: #fff;
+      border: 1px solid #3f3f46;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Mode Cards */
+    .modes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mode-card {
+      background: #111114;
+      border: 1.5px solid #27272a;
+      border-radius: 14px;
+      padding: 13px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .mode-card.active {
+      border-color: var(--accent-orange);
+      background: rgba(234, 88, 12, 0.08);
+    }
+
+    .mode-thumb {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      background: #1f1f24;
+      border: 1px solid #32323a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #fb923c;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .mode-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mode-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .mode-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+
+    .badge-popular {
+      background: var(--accent-green);
+      color: #042f2e;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .mode-desc {
+      font-size: 12px;
+      color: #d4d4d8;
+      margin-bottom: 4px;
+    }
+
+    .mode-tip {
+      font-size: 11px;
+      color: #f87171;
+      font-weight: 600;
+    }
+
+    /* Generate Button */
+    .btn-generate {
+      width: 100%;
+      margin-top: 14px;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 15px 20px;
+      font-family: 'Anton', sans-serif;
+      font-size: 19px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Result & Comparator */
+    .result-section {
+      display: none;
+    }
+
+    .result-section.visible {
+      display: block;
+    }
+
+    .comparator-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      max-height: 520px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      border: 2px solid #27272a;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .comp-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .comp-original {
+      background: #141417;
+    }
+
+    .comp-original img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .comp-stencil {
+      background: #ffffff;
+      clip-path: inset(0 50% 0 0);
+    }
+
+    .comp-stencil canvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .comp-label {
+      position: absolute;
+      top: 12px;
+      z-index: 6;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 7px;
+      text-transform: uppercase;
+    }
+
+    .label-stencil {
+      left: 12px;
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .label-original {
+      right: 12px;
+      background: rgba(24, 24, 27, 0.85);
+      color: #fff;
+      border: 1px solid #3f3f46;
+    }
+
+    .slider-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+      z-index: 8;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ea580c;
+      border: 3px solid #fff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Variation Floating Controls */
+    .variation-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(17, 17, 20, 0.88);
+      backdrop-filter: blur(6px);
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid #3f3f46;
+    }
+
+    .btn-var-refresh {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .var-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .var-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid #52525b;
+      background: #27272a;
+      color: #e4e4e7;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .var-dot.active {
+      background: #fff;
+      color: #09090b;
+      border-color: #fff;
+    }
+
+    /* Studio Controls */
+    .controls-box {
+      margin-top: 14px;
+      background: #111114;
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .controls-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #fb923c;
+      text-transform: uppercase;
+    }
+
+    .btn-reset {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      text-decoration: underline;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .toggle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .btn-toggle {
+      background: #1c1c21;
+      border: 1px solid #32323a;
+      color: #e4e4e7;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-toggle.active {
+      background: rgba(234, 88, 12, 0.16);
+      border-color: var(--accent-orange);
+      color: #fb923c;
+    }
+
+    .slider-group {
+      margin-bottom: 10px;
+    }
+
+    .slider-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #d4d4d8;
+      margin-bottom: 4px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-orange);
+    }
+
+    /* Action Buttons */
+    .action-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn-download {
+      background: var(--accent-green);
+      color: #042f2e;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .new-img-wrap {
+      position: relative;
+      display: flex;
+    }
+
+    .btn-new-img {
+      width: 100%;
+      background: #27272a;
+      color: #fff;
+      border: 1px solid #3f3f46;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 9, 11, 0.88);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 4px solid #27272a;
+      border-top-color: var(--accent-orange);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #18181b;
+      color: #fff;
+      border: 1px solid #3f3f46;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-
-    <!-- Input de arquivo único posicionado fora da tela com opacity:0.01 para compatibilidade nativa com Android/iOS WebView -->
-    <input type="file" id="fileInput" accept="image/*" class="offscreen-file-input">
-
-    <div class="app-container">
-        <!-- BARRA DE INSTALAÇÃO PWA NO CELULAR + SALVAR APP OFFLINE -->
-        <div class="pwa-install-bar" id="pwaInstallBar">
-            <div class="pwa-bar-info">
-                <div class="pwa-app-icon" aria-hidden="true">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-                </div>
-                <div class="pwa-bar-text">
-                    <div class="pwa-bar-title">Instalar no Celular</div>
-                    <div class="pwa-bar-sub">Acesso rápido na tela inicial</div>
-                </div>
-            </div>
-            <div class="pwa-bar-actions">
-                <button type="button" id="installPwaBtn" class="pwa-install-btn">Instalar App</button>
-                <button type="button" id="saveAppHtmlBtn" class="pwa-save-html-btn" title="Baixar arquivo HTML offline">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span>App Offline</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- CABEÇALHO -->
-        <header class="app-header">
-            <div class="studio-badge">
-                <span class="dot"></span>
-                <span>STUDIO PRO STENCIL AI</span>
-            </div>
-            <h1 class="app-title">GERADOR DE DECALQUE</h1>
-            <p class="app-subtitle">Seu <span class="hl">decalque</span> pronto em <span class="hl">segundos.</span></p>
-        </header>
-
-        <!-- =================================================================
-             TELA 1: UPLOAD DE REFERÊNCIA E ESCOLHA DO ESTILO
-        ================================================================== -->
-        <main id="setupScreen">
-            <!-- Cartão 1: Upload da Imagem -->
-            <section class="panel-card">
-                <div class="section-header-row">
-                    <span class="section-label">1. Imagem de Referência</span>
-                    <label for="fileInput" id="changePhotoLabel" class="change-photo-label">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
-                        Trocar Foto
-                    </label>
-                </div>
-
-                <!-- Área nativa <label for="fileInput"> para abrir galeria ao tocar -->
-                <label for="fileInput" id="uploadDropzone" class="upload-dropzone">
-                    <div class="upload-icon-circle">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    </div>
-                    <div class="upload-title">Toque ou arraste sua imagem de referência</div>
-                    <div class="upload-hint">Suporta JPG, PNG, WEBP</div>
-                    <span class="upload-pill-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                        Abrir Galeria
-                    </span>
-                </label>
-
-                <!-- Miniatura após seleção -->
-                <div id="previewBox" class="preview-box">
-                    <img id="originalThumbImg" src="" alt="Referência carregada">
-                </div>
-            </section>
-
-            <!-- Cartão 2: Seleção dos 3 Modos -->
-            <section class="panel-card">
-                <div class="section-header-row">
-                    <span class="section-label">2. Escolha o Estilo de Decalque</span>
-                </div>
-
-                <div class="modes-list" id="modesList">
-                    <!-- Modo 1: DECALQUE LINHAS -->
-                    <button type="button" class="mode-card" data-mode="lines">
-                        <div class="mode-thumb">
-                            <svg width="32" height="32" viewBox="0 0 36 36" fill="none" stroke="#111" stroke-width="1.6">
-                                <path d="M18 5C12 10 9 16 18 31C27 16 24 10 18 5Z"/>
-                                <path d="M12 17C15 15 21 15 24 17"/>
-                                <circle cx="18" cy="12" r="2.2"/>
-                            </svg>
-                        </div>
-                        <div class="mode-content">
-                            <div class="mode-title-row">
-                                <span class="mode-title">DECALQUE LINHAS</span>
-                            </div>
-                            <p class="mode-desc">Cria finelines limpas a partir de desenhos prontos ou fotos.</p>
-                            <p class="mode-subnote">Use para extrair somente as linhas do desenho e para PEQUENAS ESCRITAS e frases.</p>
-                        </div>
-                        <div class="radio-circle"></div>
-                    </button>
-
-                    <!-- Modo 2: LINHAS + SOMBRA -->
-                    <button type="button" class="mode-card" data-mode="lines_shadow">
-                        <div class="mode-thumb">
-                            <svg width="32" height="32" viewBox="0 0 36 36">
-                                <defs>
-                                    <radialGradient id="shGrad" cx="50%" cy="45%" r="50%">
-                                        <stop offset="0%" stop-color="#111"/>
-                                        <stop offset="70%" stop-color="#777"/>
-                                        <stop offset="100%" stop-color="#fff"/>
-                                    </radialGradient>
-                                </defs>
-                                <circle cx="18" cy="18" r="12" fill="url(#shGrad)" stroke="#111" stroke-width="1.5"/>
-                            </svg>
-                        </div>
-                        <div class="mode-content">
-                            <div class="mode-title-row">
-                                <span class="mode-title">LINHAS + SOMBRA</span>
-                            </div>
-                            <p class="mode-desc">Ideal para fotos, artes digitais e realismos, preservando linhas e detalhes de sombra.</p>
-                            <p class="mode-subnote">Não indicado para desenho no papel.</p>
-                        </div>
-                        <div class="radio-circle"></div>
-                    </button>
-
-                    <!-- Modo 3: TATUAGEM -> DESENHO (Selecionado por padrão) -->
-                    <button type="button" class="mode-card selected" data-mode="tattoo_to_art">
-                        <div class="mode-thumb">
-                            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-                                <path d="M18 4L28 13L24 30H12L8 13L18 4Z" fill="#e5e7eb" stroke="#111" stroke-width="1.8"/>
-                                <path d="M13 15L18 11L23 15M15 22H21" stroke="#111" stroke-width="1.6" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <div class="mode-content">
-                            <div class="mode-title-row">
-                                <span class="mode-title">TATUAGEM → DESENHO</span>
-                                <span class="badge-popular">MAIS UTILIZADO</span>
-                            </div>
-                            <p class="mode-desc">Extrai a tatuagem da pele e recria a arte limpa em fundo branco.</p>
-                            <p class="mode-subnote">Envie a foto da tatuagem na pele.</p>
-                        </div>
-                        <div class="radio-circle"></div>
-                    </button>
-                </div>
-            </section>
-
-            <!-- Botão Principal -->
-            <button type="button" id="generateBtn" class="primary-cta-btn" disabled>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                <span>GERAR DECALQUE AGORA</span>
-            </button>
-        </main>
-
-        <!-- =================================================================
-             TELA 2: RESULTADO "SEU DECALQUE" & COMPARADOR INTERATIVO
-        ================================================================== -->
-        <section id="resultScreen" class="hidden">
-            <div class="panel-card">
-                <div class="result-top-bar">
-                    <h2 class="result-heading">Seu Decalque</h2>
-                    <button type="button" id="backToModesBtn" class="back-edit-btn">← Trocar Estilo</button>
-                </div>
-
-                <!-- Comparador Antes / Depois -->
-                <div class="comparator-wrapper" id="comparatorBox">
-                    <span class="comp-badge badge-decalque">DECALQUE</span>
-                    <span class="comp-badge badge-original">ORIGINAL</span>
-
-                    <!-- Camada Direita: Foto Original -->
-                    <div class="comp-layer">
-                        <img id="compOriginalImg" class="comp-original-img" src="" alt="Original">
-                    </div>
-
-                    <!-- Camada Esquerda: Decalque Processado -->
-                    <div class="comp-stencil-clip" id="stencilClipLayer">
-                        <canvas id="resultCanvas" class="comp-stencil-canvas"></canvas>
-                    </div>
-
-                    <!-- Linha Vermelha Divisória + Botão Laranja <-> -->
-                    <div class="slider-divider" id="sliderDivider">
-                        <div class="slider-handle" id="sliderHandle" aria-label="Deslizar comparação">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 21 12 15 6"/><polyline points="9 6 3 12 9 18"/></svg>
-                        </div>
-                    </div>
-
-                    <!-- Botão Circular de Variação (↻) e Bolinhas Numeradas (1, 2, 3...) -->
-                    <div class="variations-dock" id="variationsDock">
-                        <button type="button" id="cycleVariationBtn" class="cycle-circle-btn" title="Gerar nova variação de rosto/traço" aria-label="Gerar nova variação">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/></svg>
-                        </button>
-                        <div class="variation-dots-bar" id="variationDotsBar"></div>
-                    </div>
-                </div>
-
-                <!-- Botões de Ação do Estúdio -->
-                <div class="studio-actions-grid">
-                    <button type="button" id="mirrorBtn" class="studio-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/><line x1="12" y1="20" x2="12" y2="4"/></svg>
-                        <span>Espelhar</span>
-                    </button>
-
-                    <button type="button" id="purpleBtn" class="studio-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-                        <span>Tom Roxo</span>
-                    </button>
-
-                    <button type="button" id="downloadBtn" class="studio-btn btn-download">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        <span>Baixar PNG</span>
-                    </button>
-
-                    <label for="fileInput" class="studio-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        <span>+ Nova Imagem</span>
-                    </label>
-                </div>
-
-                <!-- Painel de Ajustes Finos -->
-                <div style="background: var(--bg-card-elevated); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px;">
-                    <div class="fine-tune-header">
-                        <span class="fine-tune-title">AJUSTES FINOS PARA IMPRESSÃO TÉRMICA</span>
-                        <button type="button" id="resetAdjustBtn" class="reset-link-btn">Resetar ajustes</button>
-                    </div>
-
-                    <div class="slider-control-group">
-                        <div class="slider-label-row">
-                            <span>Intensidade do Traço / Contraste</span>
-                            <span class="slider-val" id="contrastVal">115%</span>
-                        </div>
-                        <input type="range" id="contrastSlider" min="60" max="190" value="115">
-                    </div>
-
-                    <div class="slider-control-group">
-                        <div class="slider-label-row">
-                            <span>Ângulo / Alinhamento Vertical</span>
-                            <span class="slider-val" id="angleVal">0°</span>
-                        </div>
-                        <input type="range" id="angleSlider" min="-45" max="45" value="0">
-                    </div>
-
-                    <div class="slider-control-group">
-                        <div class="slider-label-row">
-                            <span>Expansão Lateral (Descurvar)</span>
-                            <span class="slider-val" id="uncurveVal">100%</span>
-                        </div>
-                        <input type="range" id="uncurveSlider" min="85" max="135" value="100">
-                    </div>
-
-                    <div class="slider-control-group">
-                        <div class="slider-label-row">
-                            <span>Suavidade da Sombra</span>
-                            <span class="slider-val" id="shadowVal">100%</span>
-                        </div>
-                        <input type="range" id="shadowSlider" min="50" max="160" value="100">
-                    </div>
-                </div>
-            </div>
-        </section>
+  <div class="container">
+    <!-- Configuração Chave Google AI Studio -->
+    <div class="api-card">
+      <div class="api-header">
+        <div class="api-title">● CONFIGURE SUA CHAVE GOOGLE AI STUDIO</div>
+        <a class="api-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Pegar chave grátis ↗</a>
+      </div>
+      <div class="api-row">
+        <input type="password" id="apiKeyInput" class="api-input" placeholder="Cole sua chave AIzaSy..." />
+        <button type="button" id="saveKeyBtn" class="btn-save-key">Salvar</button>
+      </div>
     </div>
 
-    <!-- OVERLAY DE PROCESSAMENTO -->
-    <div id="processingOverlay" class="processing-overlay">
-        <div class="scanner-card">
-            <div class="scanner-frame">
-                <img id="scannerPreviewImg" src="" alt="Processando">
-                <div class="laser-line"></div>
-            </div>
-            <div class="scanner-title">PROCESSANDO DECALQUE</div>
-            <div class="scanner-status" id="scannerStatusText">Analisando plano da foto...</div>
+    <!-- Instalar PWA -->
+    <div class="install-card">
+      <div class="install-left">
+        <div class="install-icon">✒️</div>
+        <div class="install-text">
+          <strong>Instalar no Celular</strong>
+          <span>Acesso direto na tela inicial</span>
         </div>
+      </div>
+      <button type="button" id="installAppBtn" class="btn-install">INSTALAR APP</button>
     </div>
 
-    <!-- MODAL DE INSTRUÇÃO PARA INSTALAR NA TELA INICIAL (iOS / ANDROID MANUAL) -->
-    <div id="pwaGuideModal" class="pwa-guide-modal">
-        <div class="pwa-guide-card">
-            <div class="pwa-guide-title">Adicionar à Tela Inicial</div>
-            <div class="pwa-step-list">
-                <div class="pwa-step-item">
-                    <strong>No Android (Chrome):</strong> Toque nos <strong>3 pontinhos (⋮)</strong> no canto superior direito e selecione <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar aplicativo"</strong>.
-                </div>
-                <div class="pwa-step-item">
-                    <strong>No iPhone (Safari):</strong> Toque no ícone de <strong>Compartilhar (□↑)</strong> na barra inferior e escolha <strong>"Adicionar à Tela de Início"</strong>.
-                </div>
-                <div class="pwa-step-item">
-                    <strong>Dica:</strong> Se estiver dentro do app do Gemini, toque em <strong>⋮ → Abrir no navegador</strong> primeiro para liberar o instalador e downloads diretos.
-                </div>
-            </div>
-            <button type="button" id="closePwaGuideBtn" class="pwa-guide-close">Entendi</button>
+    <!-- Cabeçalho -->
+    <header class="header">
+      <div class="badge-top"><span class="dot-green"></span> STUDIO PRO STENCIL AI</div>
+      <h1 class="main-title">GERADOR DE DECALQUE</h1>
+      <p class="subtitle">Seu <span>decalque</span> pronto em <span>segundos.</span></p>
+    </header>
+
+    <!-- Etapa 1: Upload -->
+    <section class="section-card">
+      <div class="section-label">
+        <span>1. IMAGEM DE REFERÊNCIA</span>
+        <span id="fileStatus" style="color:#10b981;"></span>
+      </div>
+
+      <div id="uploadZone" class="upload-zone">
+        <!-- Input nativo cobrindo 100% da área para abrir galeria direto no Android/iOS -->
+        <input type="file" id="fileInput" class="native-file-overlay" accept="image/*" />
+        <div class="upload-icon-box">⬆️</div>
+        <div class="upload-title">Toque para abrir a galeria</div>
+        <div class="upload-hint">Suporta JPG, PNG, WEBP</div>
+        <div class="btn-gallery-visual">🖼️ Escolher da Galeria</div>
+      </div>
+
+      <div id="previewLoaded" class="preview-loaded">
+        <img id="refPreviewImg" alt="Referência carregada" />
+        <div class="change-photo-wrap">
+          <input type="file" id="fileInputChange" class="native-file-overlay" accept="image/*" />
+          <div class="btn-change-photo">🔄 Trocar Foto da Galeria</div>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <!-- TOAST -->
-    <div id="toastMsg" class="toast-msg"></div>
+    <!-- Etapa 2: Modos -->
+    <section class="section-card">
+      <div class="section-label">2. ESCOLHA O MODO DE EXTRAÇÃO</div>
+      <div class="modes-list">
+        <div class="mode-card" data-mode="lines">
+          <div class="mode-thumb">✒️</div>
+          <div class="mode-info">
+            <div class="mode-title-row">
+              <span class="mode-title">DECALQUE LINHAS</span>
+            </div>
+            <div class="mode-desc">Cria finelines limpas a partir de desenhos prontos no papel ou digital.</div>
+            <div class="mode-tip">⚠ Use para extrair somente as linhas do desenho e para pequenas escritas.</div>
+          </div>
+        </div>
 
-    <script>
-        // =====================================================================
-        // 1. CONFIGURAÇÃO PROGRESSIVE WEB APP (MANIFEST DATA URI + SERVICE WORKER)
-        // =====================================================================
-        (function initPWA() {
-            try {
-                // Ícone SVG embutido do aplicativo para a tela inicial do celular
-                const appSvgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0a0a0c"/><circle cx="256" cy="256" r="190" fill="#ff3b30" fill-opacity="0.16"/><path d="M256 116l84 96-36 164H208l-36-164 84-96z" fill="none" stroke="#ff5722" stroke-width="26" stroke-linejoin="round"/><circle cx="256" cy="232" r="24" fill="#ffffff"/></svg>`;
-                const iconDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(appSvgIcon);
+        <div class="mode-card" data-mode="lines_shade">
+          <div class="mode-thumb">🌗</div>
+          <div class="mode-info">
+            <div class="mode-title-row">
+              <span class="mode-title">LINHAS + SOMBRA</span>
+            </div>
+            <div class="mode-desc">Ideal para fotos, artes digitais e realismos, preservando linhas e detalhes de sombra.</div>
+            <div class="mode-tip">⚠ Mais indicado para desenho no papel ou arte plana.</div>
+          </div>
+        </div>
 
-                const manifestObj = {
-                    name: 'Gerador de Decalque — Studio Pro',
-                    short_name: 'Decalque Pro',
-                    description: 'Transforme fotos e referências em decalques profissionais de tatuagem em segundos.',
-                    start_url: './',
-                    display: 'standalone',
-                    background_color: '#0a0a0c',
-                    theme_color: '#0a0a0c',
-                    orientation: 'portrait',
-                    icons: [
-                        { src: iconDataUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
-                        { src: iconDataUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
-                    ]
-                };
+        <div class="mode-card active" data-mode="tattoo_to_drawing">
+          <div class="mode-thumb">🐯</div>
+          <div class="mode-info">
+            <div class="mode-title-row">
+              <span class="mode-title">TATUAGEM → DESENHO</span>
+              <span class="badge-popular">MAIS UTILIZADO</span>
+            </div>
+            <div class="mode-desc">Extrai a tatuagem da pele, planifica a visão de cima mantendo o ângulo original e recria a arte limpa.</div>
+            <div class="mode-tip">✔ Ideal para foto da tatuagem já feita no braço ou perna.</div>
+          </div>
+        </div>
+      </div>
 
-                const manifestLink = document.getElementById('pwaManifestLink');
-                if (manifestLink) {
-                    manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestObj));
-                }
+      <button type="button" id="generateBtn" class="btn-generate" disabled>
+        ⚡ GERAR DECALQUE AGORA
+      </button>
+    </section>
 
-                // Registro de Service Worker via Blob URL para funcionamento offline/PWA
-                if ('serviceWorker' in navigator) {
-                    const swCode = `
-                        const CACHE_NAME = 'decalque-pro-v1';
-                        self.addEventListener('install', (e) => { self.skipWaiting(); });
-                        self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
-                        self.addEventListener('fetch', (e) => {
-                            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-                        });
-                    `;
-                    const swBlob = new Blob([swCode], { type: 'application/javascript' });
-                    const swUrl = URL.createObjectURL(swBlob);
-                    navigator.serviceWorker.register(swUrl).catch(() => {});
-                }
-            } catch (e) {
-                // Ambiente sandbox restrito: mantém funcionamento normal da página
-            }
-        })();
+    <!-- Etapa 3: Resultado & Comparador -->
+    <section id="resultSection" class="section-card result-section">
+      <div class="section-label">
+        <span>3. SEU DECALQUE PRONTO</span>
+        <span style="color:#a1a1aa;">Arraste a barra vermelha</span>
+      </div>
 
-        // Captura do evento nativo beforeinstallprompt (Android / Chrome)
-        let deferredInstallPrompt = null;
-        const installPwaBtn = document.getElementById('installPwaBtn');
-        const pwaGuideModal = document.getElementById('pwaGuideModal');
-        const closePwaGuideBtn = document.getElementById('closePwaGuideBtn');
-        const saveAppHtmlBtn = document.getElementById('saveAppHtmlBtn');
+      <div id="comparator" class="comparator-wrap">
+        <div class="comp-layer comp-original">
+          <img id="compOriginalImg" alt="Original" />
+        </div>
+        <div id="compStencilLayer" class="comp-layer comp-stencil">
+          <canvas id="stencilCanvas"></canvas>
+        </div>
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            installPwaBtn.textContent = 'Instalar Agora';
-        });
+        <span class="comp-label label-stencil">DECALQUE</span>
+        <span class="comp-label label-original">ORIGINAL</span>
 
-        installPwaBtn.addEventListener('click', async () => {
-            if (deferredInstallPrompt) {
-                deferredInstallPrompt.prompt();
-                const { outcome } = await deferredInstallPrompt.userChoice;
-                deferredInstallPrompt = null;
-                if (outcome === 'accepted') {
-                    showToast('Aplicativo instalado na tela inicial!');
-                }
+        <div id="sliderLine" class="slider-line">
+          <div class="slider-handle">↔</div>
+        </div>
+
+        <!-- Botão circular de variações -->
+        <div class="variation-bar">
+          <button type="button" id="newVariationBtn" class="btn-var-refresh" title="Gerar nova variação">↻</button>
+          <div id="variationDots" class="var-dots"></div>
+        </div>
+      </div>
+
+      <!-- Ajustes Finos -->
+      <div class="controls-box">
+        <div class="controls-header">
+          <span>⚙️ AJUSTES FINOS PARA IMPRESSÃO</span>
+          <button type="button" id="resetControlsBtn" class="btn-reset">Resetar</button>
+        </div>
+
+        <div class="toggle-row">
+          <button type="button" id="mirrorBtn" class="btn-toggle">⇄ Espelhar (Térmica)</button>
+          <button type="button" id="purpleBtn" class="btn-toggle">🟣 Tom Roxo Carbono</button>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-top">
+            <span>Intensidade / Contraste do Traço</span>
+            <strong id="contrastVal">105%</strong>
+          </div>
+          <input type="range" id="contrastSlider" min="60" max="180" value="105" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-top">
+            <span>Alinhamento Vertical (Ângulo)</span>
+            <strong id="angleVal">0°</strong>
+          </div>
+          <input type="range" id="angleSlider" min="-45" max="45" value="0" />
+        </div>
+
+        <div class="slider-group" style="margin-bottom:0;">
+          <div class="slider-top">
+            <span>Expansão Lateral (Descurvar)</span>
+            <strong id="stretchVal">100%</strong>
+          </div>
+          <input type="range" id="stretchSlider" min="85" max="135" value="100" />
+        </div>
+      </div>
+
+      <!-- Botões Finais -->
+      <div class="action-row">
+        <button type="button" id="downloadBtn" class="btn-download">⬇️ Baixar PNG</button>
+        <div class="new-img-wrap">
+          <input type="file" id="fileInputBottom" class="native-file-overlay" accept="image/*" />
+          <div class="btn-new-img">+ Nova Imagem</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Loading -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <h3 style="font-family:'Anton',sans-serif;font-size:24px;letter-spacing:0.05em;margin-bottom:6px;">PROCESSANDO DECALQUE...</h3>
+    <p id="loadingSub" style="font-size:13px;color:#a1a1aa;max-width:300px;">Planificando perspectiva e refinando sombras em alta definição.</p>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const state = {
+      apiKey: localStorage.getItem('gemini_stencil_api_key') || '',
+      refDataUrl: null,
+      refMime: 'image/jpeg',
+      mode: 'tattoo_to_drawing',
+      variations: [],
+      activeVarIndex: 0,
+      mirror: false,
+      purple: false,
+      contrast: 105,
+      angle: 0,
+      stretch: 100,
+      sliderPct: 50,
+      deferredPrompt: null
+    };
+
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const saveKeyBtn = document.getElementById('saveKeyBtn');
+    const fileInput = document.getElementById('fileInput');
+    const fileInputChange = document.getElementById('fileInputChange');
+    const fileInputBottom = document.getElementById('fileInputBottom');
+    const uploadZone = document.getElementById('uploadZone');
+    const previewLoaded = document.getElementById('previewLoaded');
+    const refPreviewImg = document.getElementById('refPreviewImg');
+    const generateBtn = document.getElementById('generateBtn');
+    const resultSection = document.getElementById('resultSection');
+    const compOriginalImg = document.getElementById('compOriginalImg');
+    const stencilCanvas = document.getElementById('stencilCanvas');
+    const compStencilLayer = document.getElementById('compStencilLayer');
+    const sliderLine = document.getElementById('sliderLine');
+    const comparator = document.getElementById('comparator');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const toastEl = document.getElementById('toast');
+
+    if (state.apiKey) {
+      apiKeyInput.value = state.apiKey;
+    }
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+    }
+
+    saveKeyBtn.addEventListener('click', () => {
+      const val = apiKeyInput.value.trim();
+      if (!val) {
+        showToast('Cole sua chave do Google AI Studio primeiro.');
+        return;
+      }
+      state.apiKey = val;
+      localStorage.setItem('gemini_stencil_api_key', val);
+      showToast('Chave salva com sucesso!');
+    });
+
+    // PWA Install
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      state.deferredPrompt = e;
+    });
+
+    document.getElementById('installAppBtn').addEventListener('click', async () => {
+      if (state.deferredPrompt) {
+        state.deferredPrompt.prompt();
+        await state.deferredPrompt.userChoice;
+        state.deferredPrompt = null;
+      } else {
+        showToast('No Chrome: toque nos 3 pontinhos (⋮) → Adicionar à tela inicial');
+      }
+    });
+
+    // Leitura segura da imagem selecionada da galeria
+    function handleSelectedFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/') && !/\.(jpe?g|png|webp|heic|heif)$/i.test(file.name)) {
+        showToast('Selecione um arquivo de imagem válido.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          // Redimensiona mantendo alta qualidade (max 1600px) para envio rápido e estável
+          const maxDim = 1600;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
             } else {
-                pwaGuideModal.classList.add('active');
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
             }
-        });
+          }
+          const c = document.createElement('canvas');
+          c.width = w;
+          c.height = h;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
 
-        closePwaGuideBtn.addEventListener('click', () => {
-            pwaGuideModal.classList.remove('active');
-        });
+          const cleanDataUrl = c.toDataURL('image/jpeg', 0.92);
+          state.refDataUrl = cleanDataUrl;
+          state.refMime = 'image/jpeg';
 
-        pwaGuideModal.addEventListener('click', (e) => {
-            if (e.target === pwaGuideModal) {
-                pwaGuideModal.classList.remove('active');
-            }
-        });
-
-        // Botão "App Offline": salva o próprio arquivo HTML completo no aparelho
-        saveAppHtmlBtn.addEventListener('click', async () => {
-            try {
-                const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-                const blob = new Blob([htmlContent], { type: 'application/octet-stream' });
-                await triggerDirectFileSave(blob, 'Gerador-de-Decalque-Pro.html', 'text/html', '.html');
-                showToast('Arquivo do App salvo nos Downloads!');
-            } catch (err) {
-                showToast('Use o menu do navegador para salvar a página.');
-            }
-        });
-
-        // =====================================================================
-        // 2. ESTADO GLOBAL DO APLICATIVO
-        // =====================================================================
-        const state = {
-            selectedMode: 'tattoo_to_art',
-            originalDataUrl: null,
-            originalBase64: null,
-            originalMimeType: 'image/jpeg',
-            variations: [],        // Lista de { img: HTMLImageElement, seedIndex: number }
-            activeVariationIdx: 0,
-            baseStencilImg: null,
-            splitPercent: 50,
-            isMirrored: false,
-            isPurple: false,
-            contrast: 115,
-            angle: 0,
-            uncurve: 100,
-            shadow: 100
+          refPreviewImg.src = cleanDataUrl;
+          compOriginalImg.src = cleanDataUrl;
+          uploadZone.style.display = 'none';
+          previewLoaded.style.display = 'block';
+          document.getElementById('fileStatus').textContent = '✓ Imagem pronta';
+          generateBtn.disabled = false;
+          showToast('Imagem carregada da galeria!');
         };
+        img.onerror = () => showToast('Não foi possível abrir essa imagem.');
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
 
-        // Elementos DOM
-        const fileInput = document.getElementById('fileInput');
-        const uploadDropzone = document.getElementById('uploadDropzone');
-        const previewBox = document.getElementById('previewBox');
-        const originalThumbImg = document.getElementById('originalThumbImg');
-        const changePhotoLabel = document.getElementById('changePhotoLabel');
-        const generateBtn = document.getElementById('generateBtn');
-        const setupScreen = document.getElementById('setupScreen');
-        const resultScreen = document.getElementById('resultScreen');
-        const processingOverlay = document.getElementById('processingOverlay');
-        const scannerPreviewImg = document.getElementById('scannerPreviewImg');
-        const scannerStatusText = document.getElementById('scannerStatusText');
-        const compOriginalImg = document.getElementById('compOriginalImg');
-        const resultCanvas = document.getElementById('resultCanvas');
-        const comparatorBox = document.getElementById('comparatorBox');
-        const stencilClipLayer = document.getElementById('stencilClipLayer');
-        const sliderDivider = document.getElementById('sliderDivider');
-        const sliderHandle = document.getElementById('sliderHandle');
-        const cycleVariationBtn = document.getElementById('cycleVariationBtn');
-        const variationDotsBar = document.getElementById('variationDotsBar');
+    [fileInput, fileInputChange, fileInputBottom].forEach((inp) => {
+      inp.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        handleSelectedFile(file);
+        e.target.value = '';
+      });
+    });
 
-        // Controles de Estúdio & Sliders
-        const mirrorBtn = document.getElementById('mirrorBtn');
-        const purpleBtn = document.getElementById('purpleBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const backToModesBtn = document.getElementById('backToModesBtn');
-        const resetAdjustBtn = document.getElementById('resetAdjustBtn');
-        const contrastSlider = document.getElementById('contrastSlider');
-        const angleSlider = document.getElementById('angleSlider');
-        const uncurveSlider = document.getElementById('uncurveSlider');
-        const shadowSlider = document.getElementById('shadowSlider');
+    // Seleção de Modo
+    document.querySelectorAll('.mode-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.mode-card').forEach((c) => c.classList.remove('active'));
+        card.classList.add('active');
+        state.mode = card.dataset.mode;
+      });
+    });
 
-        // =====================================================================
-        // 3. NOTIFICAÇÕES DISCRETAS (SEM ALERT)
-        // =====================================================================
-        let toastTimer = null;
-        function showToast(msg) {
-            const el = document.getElementById('toastMsg');
-            el.textContent = msg;
-            el.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
-        }
+    function buildPrompt(variationIndex) {
+      const styleNuances = [
+        'Ultra-crisp hyper-detailed tattoo flash sheet rendering with smooth whip-shaded graywash gradients and razor-sharp micro-details.',
+        'High-contrast realism stencil sheet with deep velvety black shadows, luminous highlights, and fine individual hair/texture strokes.',
+        'Master tattoo artist portfolio stencil illustration on pure white paper, balanced soft smoke/background shading and clean structural edges.'
+      ];
+      const nuance = styleNuances[variationIndex % styleNuances.length];
 
-        // =====================================================================
-        // 4. LEITURA DA IMAGEM DA GALERIA / ARRASTAR E SOLTAR
-        // =====================================================================
-        ['dragenter', 'dragover'].forEach(ev => {
-            uploadDropzone.addEventListener(ev, (e) => {
-                e.preventDefault();
-                uploadDropzone.classList.add('drag-over');
-            });
-        });
+      const strictPoseRule = `
+CRITICAL GEOMETRY & POSE PRESERVATION RULE:
+- DO NOT rotate or turn the subject's head, face, gaze, or body orientation! If the tiger/lion/subject is looking to the side or in a 3/4 angle, keep that EXACT 3/4 or side pose and expression.
+- ONLY correct the camera perspective to a flat perpendicular top-down 2D view (as if photographed straight from above on flat white paper) and gently unwrap the cylindrical curvature of the arm/leg so the artwork is flat, unwarped, and complete.
+- Remove all human skin texture, pores, arm/leg edges, plastic wrap, tablet/phone screens, and social media icons.
+- Output ONLY the isolated tattoo artwork centered on a pure solid white background (#FFFFFF) with clean margins.`;
 
-        ['dragleave', 'drop'].forEach(ev => {
-            uploadDropzone.addEventListener(ev, (e) => {
-                e.preventDefault();
-                uploadDropzone.classList.remove('drag-over');
-            });
-        });
+      if (state.mode === 'lines') {
+        return `Convert this reference into a clean black-and-white fine-line tattoo stencil outline on pure white background (#FFFFFF). Extract only crisp, continuous contour lines and small lettering with zero solid shading. ${strictPoseRule}`;
+      }
+      if (state.mode === 'lines_shade') {
+        return `Convert this reference into a professional black-and-gray tattoo stencil combining crisp outlines and mapped shadow zones on pure white background (#FFFFFF). ${strictPoseRule} ${nuance}`;
+      }
+      return `Extract the tattoo design from the skin in this photo and reconstruct it into a flat, high-definition black-and-gray tattoo flash sheet illustration on a pure solid white background (#FFFFFF). Enhance fur, whiskers, eyes, foliage, and smooth surrounding background shading to studio-grade quality. ${strictPoseRule} ${nuance}`;
+    }
 
-        uploadDropzone.addEventListener('drop', (e) => {
-            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
-                processSelectedFile(e.dataTransfer.files[0]);
-            }
-        });
+    async function callGeminiImage(variationIndex) {
+      const key = apiKeyInput.value.trim() || state.apiKey;
+      if (!key) {
+        showToast('Cole e salve sua chave do Google AI Studio no topo.');
+        apiKeyInput.focus();
+        return null;
+      }
 
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files && e.target.files[0];
-            if (file) {
-                processSelectedFile(file);
-            }
-            e.target.value = '';
-        });
+      const base64Data = state.refDataUrl.split(',')[1];
+      const promptText = buildPrompt(variationIndex);
 
-        function processSelectedFile(file) {
-            if (file.type && !file.type.startsWith('image/')) {
-                showToast('Selecione uma imagem válida (JPG, PNG ou WEBP).');
-                return;
-            }
+      // Tenta primeiro gemini-2.5-flash-image e faz fallback para gemini-2.0-flash-exp-image-generation
+      const models = ['gemini-2.5-flash-image', 'gemini-2.0-flash-exp-image-generation'];
 
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = new Image();
-                img.onload = () => {
-                    const maxDim = 1600;
-                    let w = img.width;
-                    let h = img.height;
-                    if (w > maxDim || h > maxDim) {
-                        if (w > h) {
-                            h = Math.round((h * maxDim) / w);
-                            w = maxDim;
-                        } else {
-                            w = Math.round((w * maxDim) / h);
-                            h = maxDim;
-                        }
-                    }
-
-                    const c = document.createElement('canvas');
-                    c.width = w;
-                    c.height = h;
-                    const ctx = c.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-
-                    const dataUrl = c.toDataURL('image/jpeg', 0.92);
-                    state.originalDataUrl = dataUrl;
-                    state.originalBase64 = dataUrl.split(',')[1];
-                    state.originalMimeType = 'image/jpeg';
-                    state.variations = [];
-                    state.activeVariationIdx = 0;
-
-                    // Atualiza interface
-                    originalThumbImg.src = dataUrl;
-                    compOriginalImg.src = dataUrl;
-                    uploadDropzone.classList.add('hidden');
-                    previewBox.classList.add('active');
-                    changePhotoLabel.classList.add('active');
-                    generateBtn.disabled = false;
-
-                    resultScreen.classList.add('hidden');
-                    setupScreen.classList.remove('hidden');
-
-                    showToast('Imagem carregada com sucesso!');
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // =====================================================================
-        // 5. SELEÇÃO DOS 3 MODOS DE TRANSFORMAÇÃO
-        // =====================================================================
-        document.querySelectorAll('.mode-card').forEach(card => {
-            card.addEventListener('click', () => {
-                document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-                state.selectedMode = card.getAttribute('data-mode');
-            });
-        });
-
-        // =====================================================================
-        // 6. PROMPTS ESPECIALIZADOS (PRESERVA POSE E ÂNGULO + VARIAÇÕES ARTÍSTICAS)
-        // =====================================================================
-        function buildTattooPrompt(mode, variationIndex = 0) {
-            const variationFlavor = [
-                'Style nuance: Ultra-crisp photorealistic black-and-grey studio flash sheet with luminous eye reflections, hyper-detailed fur/hair strands, and velvety smooth outer smoke/shadow transitions.',
-                'Style nuance: High-contrast fine-art tattoo illustration with bold sculptural micro-shading, razor-sharp whiskers and fur texture, and clean atmospheric gradient aura.',
-                'Style nuance: Master-level custom realism stencil rendering with deep velvety blacks, delicate mid-tone whip shading, and pristine anatomical fidelity.'
-            ][variationIndex % 3];
-
-            const corePoseRule = `
-CRITICAL GEOMETRY & POSE PRESERVATION RULES:
-1. NEVER rotate, re-pose, or change the internal angle or facing direction of the subject (if a tiger, lion, portrait, or object is in a 3/4 side angle or looking left/right, keep it in that EXACT same 3/4 pose and direction — NEVER turn it into a front-facing view).
-2. ONLY correct the camera perspective so it looks like a flat, perpendicular top-down (bird's-eye) 2D sheet, gently unwrapping the cylindrical curvature of the arm/leg skin.
-3. Completely remove all human skin texture, pores, arm hair, plastic wrap glare, studio background, and phone/screen UI icons.
-4. Place the extracted artwork cleanly centered on a pure solid white (#FFFFFF) background.
-5. ${variationFlavor}
-            `.trim();
-
-            if (mode === 'lines') {
-                return `${corePoseRule}
-MODE: DECALQUE LINHAS (PURE FINELINE STENCIL).
-- Extract ONLY ultra-clean, crisp, solid black (#000000) contour lines, structural linework, and small lettering on a pure white (#FFFFFF) background.
-- Do NOT include grey shading or soft fills; convert key structural edges into clean, continuous tattoo stencil lines ready for thermal transfer paper.`;
-            }
-
-            if (mode === 'lines_shadow') {
-                return `${corePoseRule}
-MODE: LINHAS + SOMBRA (REALISM & SHADING STENCIL).
-- Preserve both the sharp structural outlines and the complete black-and-grey realism shading map of the reference.
-- Enhance micro-details, fur/hair texture, eye reflections, and smooth atmospheric outer shading against a pure white (#FFFFFF) background.`;
-            }
-
-            return `${corePoseRule}
-MODE: TATUAGEM -> DESENHO (SKIN EXTRACTION & HIGH-DEFINITION FLASH RECONSTRUCTION).
-- Extract the tattoo from the curved skin and reconstruct it as a pristine, ultra-high-resolution black-and-grey tattoo design illustration on pure white (#FFFFFF) paper.
-- Keep the exact same pose, tilt, and 3/4 angle of the subject while restoring crisp fur, sharp details, and smooth soft-edged background shading around the design.`;
-        }
-
-        // =====================================================================
-        // 7. CHAMADA À GEMINI IMAGE API COM CONTINGÊNCIA LOCAL INSTANTÂNEA
-        // =====================================================================
-        async function callGeminiStencilAPI(base64Data, mimeType, promptText) {
-            const apiKey = ""; // Preenchido automaticamente no ambiente Canvas
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: [{
-                    role: "user",
+      for (const model of models) {
+        try {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [
+                  {
                     parts: [
-                        { text: promptText },
-                        {
-                            inlineData: {
-                                mimeType: mimeType,
-                                data: base64Data
-                            }
+                      { text: promptText },
+                      {
+                        inline_data: {
+                          mime_type: state.refMime,
+                          data: base64Data
                         }
+                      }
                     ]
-                }],
+                  }
+                ],
                 generationConfig: {
-                    responseModalities: ["IMAGE"]
+                  responseModalities: ['IMAGE', 'TEXT']
                 }
-            };
-
-            const delays = [1000, 2000, 4000];
-            for (let attempt = 0; attempt <= delays.length; attempt++) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 429 && attempt < delays.length) {
-                            await new Promise(r => setTimeout(r, delays[attempt]));
-                            continue;
-                        }
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    const imgPart = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
-                    if (imgPart && imgPart.inlineData && imgPart.inlineData.data) {
-                        return `data:${imgPart.inlineData.mimeType || 'image/png'};base64,${imgPart.inlineData.data}`;
-                    }
-                    throw new Error('Sem dados de imagem na resposta');
-                } catch (err) {
-                    if (attempt === delays.length) {
-                        throw err;
-                    }
-                    await new Promise(r => setTimeout(r, delays[attempt]));
-                }
+              })
             }
+          );
+
+          if (!res.ok) continue;
+          const data = await res.json();
+          const parts = data?.candidates?.[0]?.content?.parts || [];
+          const imgPart = parts.find((p) => p.inlineData || p.inline_data);
+          if (imgPart) {
+            const inline = imgPart.inlineData || imgPart.inline_data;
+            return `data:${inline.mimeType || inline.mime_type || 'image/png'};base64,${inline.data}`;
+          }
+        } catch (err) {
+          console.warn('Falha no modelo', model, err);
+        }
+      }
+      return null;
+    }
+
+    async function runGeneration(isNewVariation = false) {
+      if (!state.refDataUrl) {
+        showToast('Selecione uma imagem da galeria primeiro.');
+        return;
+      }
+
+      loadingOverlay.classList.add('active');
+      const nextIndex = isNewVariation ? state.variations.length : 0;
+
+      const generatedUrl = await callGeminiImage(nextIndex);
+      loadingOverlay.classList.remove('active');
+
+      if (!generatedUrl) {
+        showToast('Erro ao gerar. Verifique sua chave API no topo.');
+        return;
+      }
+
+      if (!isNewVariation) {
+        state.variations = [generatedUrl];
+        state.activeVarIndex = 0;
+      } else {
+        state.variations.push(generatedUrl);
+        state.activeVarIndex = state.variations.length - 1;
+      }
+
+      renderVariationDots();
+      resultSection.classList.add('visible');
+      renderCanvas();
+      resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    generateBtn.addEventListener('click', () => runGeneration(false));
+    document.getElementById('newVariationBtn').addEventListener('click', () => runGeneration(true));
+
+    function renderVariationDots() {
+      const container = document.getElementById('variationDots');
+      container.innerHTML = '';
+      state.variations.forEach((_, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'var-dot' + (idx === state.activeVarIndex ? ' active' : '');
+        btn.textContent = idx + 1;
+        btn.addEventListener('click', () => {
+          state.activeVarIndex = idx;
+          renderVariationDots();
+          renderCanvas();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function renderCanvas(targetCanvas = stencilCanvas, exportHighRes = false) {
+      const src = state.variations[state.activeVarIndex];
+      if (!src) return;
+
+      const img = new Image();
+      img.onload = () => {
+        const scale = exportHighRes ? Math.max(1, 1600 / Math.max(img.width, img.height)) : 1;
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+
+        targetCanvas.width = w;
+        targetCanvas.height = h;
+        const ctx = targetCanvas.getContext('2d');
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.translate(w / 2, h / 2);
+        if (state.mirror) ctx.scale(-1, 1);
+        ctx.rotate((state.angle * Math.PI) / 180);
+        ctx.scale(state.stretch / 100, 1);
+        ctx.filter = `grayscale(100%) contrast(${state.contrast}%)`;
+        ctx.drawImage(img, -w / 2, -h / 2, w, h);
+        ctx.restore();
+
+        if (state.purple) {
+          const imgData = ctx.getImageData(0, 0, w, h);
+          const d = imgData.data;
+          for (let i = 0; i < d.length; i += 4) {
+            const lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
+            const ink = 255 - lum;
+            d[i] = Math.round(255 - ink * 0.62);     // R
+            d[i + 1] = Math.round(255 - ink * 0.92); // G
+            d[i + 2] = Math.round(255 - ink * 0.25); // B (roxo hectográfico)
+          }
+          ctx.putImageData(imgData, 0, 0);
+        }
+      };
+      img.src = src;
+    }
+
+    // Controles de Estúdio
+    document.getElementById('mirrorBtn').addEventListener('click', function () {
+      state.mirror = !state.mirror;
+      this.classList.toggle('active', state.mirror);
+      renderCanvas();
+    });
+
+    document.getElementById('purpleBtn').addEventListener('click', function () {
+      state.purple = !state.purple;
+      this.classList.toggle('active', state.purple);
+      renderCanvas();
+    });
+
+    document.getElementById('contrastSlider').addEventListener('input', (e) => {
+      state.contrast = Number(e.target.value);
+      document.getElementById('contrastVal').textContent = `${state.contrast}%`;
+      renderCanvas();
+    });
+
+    document.getElementById('angleSlider').addEventListener('input', (e) => {
+      state.angle = Number(e.target.value);
+      document.getElementById('angleVal').textContent = `${state.angle}°`;
+      renderCanvas();
+    });
+
+    document.getElementById('stretchSlider').addEventListener('input', (e) => {
+      state.stretch = Number(e.target.value);
+      document.getElementById('stretchVal').textContent = `${state.stretch}%`;
+      renderCanvas();
+    });
+
+    document.getElementById('resetControlsBtn').addEventListener('click', () => {
+      state.mirror = false;
+      state.purple = false;
+      state.contrast = 105;
+      state.angle = 0;
+      state.stretch = 100;
+      document.getElementById('mirrorBtn').classList.remove('active');
+      document.getElementById('purpleBtn').classList.remove('active');
+      document.getElementById('contrastSlider').value = 105;
+      document.getElementById('contrastVal').textContent = '105%';
+      document.getElementById('angleSlider').value = 0;
+      document.getElementById('angleVal').textContent = '0°';
+      document.getElementById('stretchSlider').value = 100;
+      document.getElementById('stretchVal').textContent = '100%';
+      renderCanvas();
+    });
+
+    // Comparador Deslizante
+    function updateSlider(clientX) {
+      const rect = comparator.getBoundingClientRect();
+      let pct = ((clientX - rect.left) / rect.width) * 100;
+      pct = Math.max(0, Math.min(100, pct));
+      state.sliderPct = pct;
+      sliderLine.style.left = `${pct}%`;
+      compStencilLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    }
+
+    let dragging = false;
+    comparator.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.variation-bar')) return;
+      dragging = true;
+      updateSlider(e.clientX);
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (dragging) updateSlider(e.clientX);
+    });
+    window.addEventListener('pointerup', () => {
+      dragging = false;
+    });
+
+    // Download direto na Galeria / Downloads do Chrome Android
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if (!state.variations.length) return;
+      const exportCanvas = document.createElement('canvas');
+      const src = state.variations[state.activeVarIndex];
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.max(1, 1600 / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        exportCanvas.width = w;
+        exportCanvas.height = h;
+        const ctx = exportCanvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.save();
+        ctx.translate(w / 2, h / 2);
+        if (state.mirror) ctx.scale(-1, 1);
+        ctx.rotate((state.angle * Math.PI) / 180);
+        ctx.scale(state.stretch / 100, 1);
+        ctx.filter = `grayscale(100%) contrast(${state.contrast}%)`;
+        ctx.drawImage(img, -w / 2, -h / 2, w, h);
+        ctx.restore();
+
+        if (state.purple) {
+          const imgData = ctx.getImageData(0, 0, w, h);
+          const d = imgData.data;
+          for (let i = 0; i < d.length; i += 4) {
+            const lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
+            const ink = 255 - lum;
+            d[i] = Math.round(255 - ink * 0.62);
+            d[i + 1] = Math.round(255 - ink * 0.92);
+            d[i + 2] = Math.round(255 - ink * 0.25);
+          }
+          ctx.putImageData(imgData, 0, 0);
         }
 
-        /**
-         * Motor local de processamento de alta nitidez (HTML5 Canvas) caso a API
-         * seja executada fora de ambiente autenticado ou sem conexão.
-         */
-        function generateLocalHighResStencil(sourceDataUrl, mode, variationIndex = 0) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    const w = img.width;
-                    const h = img.height;
-                    const c = document.createElement('canvas');
-                    c.width = w;
-                    c.height = h;
-                    const ctx = c.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-
-                    const imgData = ctx.getImageData(0, 0, w, h);
-                    const d = imgData.data;
-
-                    const lum = new Float32Array(w * h);
-                    let sumLum = 0;
-                    for (let i = 0, p = 0; i < d.length; i += 4, p++) {
-                        const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                        lum[p] = l;
-                        sumLum += l;
-                    }
-                    const avgLum = sumLum / (w * h);
-                    const contrastBoost = 1.45 + (variationIndex % 3) * 0.12;
-                    const whiteCutoff = 205 - (variationIndex % 3) * 8;
-
-                    for (let y = 0; y < h; y++) {
-                        for (let x = 0; x < w; x++) {
-                            const idx = y * w + x;
-                            const p4 = idx * 4;
-                            const center = lum[idx];
-
-                            if (mode === 'lines') {
-                                const left = lum[y * w + Math.max(0, x - 1)];
-                                const right = lum[y * w + Math.min(w - 1, x + 1)];
-                                const up = lum[Math.max(0, y - 1) * w + x];
-                                const down = lum[Math.min(h - 1, y + 1) * w + x];
-                                const edge = Math.abs(4 * center - left - right - up - down);
-                                let val = 255 - edge * (4.0 + (variationIndex % 3) * 0.4);
-                                val = val < 175 ? Math.max(0, val * 0.65) : 255;
-                                d[p4] = d[p4 + 1] = d[p4 + 2] = val;
-                                d[p4 + 3] = 255;
-                            } else {
-                                let norm = ((center - avgLum) * contrastBoost) + 145;
-                                if (norm > whiteCutoff) norm = 255;
-                                norm = Math.max(0, Math.min(255, norm));
-                                d[p4] = d[p4 + 1] = d[p4 + 2] = norm;
-                                d[p4 + 3] = 255;
-                            }
-                        }
-                    }
-
-                    ctx.putImageData(imgData, 0, 0);
-                    resolve(c.toDataURL('image/png'));
-                };
-                img.src = sourceDataUrl;
-            });
-        }
-
-        // =====================================================================
-        // 8. GERAÇÃO E GERENCIAMENTO DE VARIAÇÕES (BOTÃO CIRCULAR ↻ + BOLINHAS)
-        // =====================================================================
-        async function executeStencilGeneration(isNewVariation = false) {
-            if (!state.originalDataUrl) return;
-
-            const variationIndex = isNewVariation ? state.variations.length : 0;
-
-            if (isNewVariation) {
-                cycleVariationBtn.classList.add('spinning');
-                showToast(`Gerando variação #${variationIndex + 1}...`);
-            } else {
-                scannerPreviewImg.src = state.originalDataUrl;
-                processingOverlay.classList.add('active');
-            }
-
-            const statusMessages = [
-                'Analisando plano da foto...',
-                'Planificando visão de cima (Top-Down) sem alterar a pose...',
-                'Refinando pelos, sombras e nitidez máxima...'
-            ];
-            let stepIdx = 0;
-            scannerStatusText.textContent = statusMessages[0];
-            const statusInterval = setInterval(() => {
-                stepIdx = (stepIdx + 1) % statusMessages.length;
-                scannerStatusText.textContent = statusMessages[stepIdx];
-            }, 1600);
-
-            try {
-                let outputDataUrl = null;
-                try {
-                    const prompt = buildTattooPrompt(state.selectedMode, variationIndex);
-                    outputDataUrl = await callGeminiStencilAPI(
-                        state.originalBase64,
-                        state.originalMimeType,
-                        prompt
-                    );
-                } catch (apiErr) {
-                    outputDataUrl = await generateLocalHighResStencil(
-                        state.originalDataUrl,
-                        state.selectedMode,
-                        variationIndex
-                    );
-                }
-
-                const stencilImg = new Image();
-                stencilImg.onload = () => {
-                    if (!isNewVariation) {
-                        state.variations = [];
-                    }
-                    state.variations.push(stencilImg);
-                    state.activeVariationIdx = state.variations.length - 1;
-                    state.baseStencilImg = stencilImg;
-
-                    if (!isNewVariation) {
-                        resetAdjustments(false);
-                    }
-                    renderVariationDots();
-                    renderFinalCanvas();
-
-                    clearInterval(statusInterval);
-                    processingOverlay.classList.remove('active');
-                    cycleVariationBtn.classList.remove('spinning');
-
-                    if (!isNewVariation) {
-                        setupScreen.classList.add('hidden');
-                        resultScreen.classList.remove('hidden');
-                        updateSliderPosition(50);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else {
-                        showToast(`Variação #${state.variations.length} pronta!`);
-                    }
-                };
-                stencilImg.src = outputDataUrl;
-            } catch (err) {
-                clearInterval(statusInterval);
-                processingOverlay.classList.remove('active');
-                cycleVariationBtn.classList.remove('spinning');
-                showToast('Não foi possível processar a imagem. Tente novamente.');
-            }
-        }
-
-        function renderVariationDots() {
-            variationDotsBar.innerHTML = '';
-            state.variations.forEach((imgObj, idx) => {
-                const dotBtn = document.createElement('button');
-                dotBtn.type = 'button';
-                dotBtn.className = 'var-dot-btn' + (idx === state.activeVariationIdx ? ' active' : '');
-                dotBtn.textContent = String(idx + 1);
-                dotBtn.title = `Ver versão ${idx + 1}`;
-                dotBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    state.activeVariationIdx = idx;
-                    state.baseStencilImg = state.variations[idx];
-                    renderVariationDots();
-                    renderFinalCanvas();
-                    showToast(`Exibindo versão #${idx + 1}`);
-                });
-                variationDotsBar.appendChild(dotBtn);
-            });
-        }
-
-        generateBtn.addEventListener('click', () => executeStencilGeneration(false));
-
-        cycleVariationBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (cycleVariationBtn.classList.contains('spinning')) return;
-            executeStencilGeneration(true);
-        });
-
-        // =====================================================================
-        // 9. RENDERIZAÇÃO EM TEMPO REAL NO CANVAS (AJUSTES FINOS + ESPELHO + ROXO)
-        // =====================================================================
-        function renderToTargetCanvas(targetCanvas, minOutputSize = 0) {
-            const img = state.baseStencilImg;
-            if (!img) return;
-
-            let w = img.width;
-            let h = img.height;
-
-            // Garante resolução mínima de impressão (1536px+) quando solicitado na exportação
-            if (minOutputSize > 0 && Math.max(w, h) < minOutputSize) {
-                const scaleFactor = minOutputSize / Math.max(w, h);
-                w = Math.round(w * scaleFactor);
-                h = Math.round(h * scaleFactor);
-            }
-
-            targetCanvas.width = w;
-            targetCanvas.height = h;
-
-            const ctx = targetCanvas.getContext('2d');
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, w, h);
-
-            ctx.save();
-            ctx.translate(w / 2, h / 2);
-
-            const scaleX = (state.isMirrored ? -1 : 1) * (state.uncurve / 100);
-            ctx.scale(scaleX, 1);
-
-            const rad = (state.angle * Math.PI) / 180;
-            ctx.rotate(rad);
-
-            const brightness = 100 + (state.shadow - 100) * 0.15;
-            ctx.filter = `contrast(${state.contrast}%) brightness(${brightness}%)`;
-
-            ctx.drawImage(img, -w / 2, -h / 2, w, h);
-            ctx.restore();
-
-            if (state.isPurple) {
-                const frame = ctx.getImageData(0, 0, w, h);
-                const data = frame.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    const ink = 255 - gray;
-                    if (ink > 12) {
-                        data[i] = Math.min(255, 255 - ink * 0.72);
-                        data[i + 1] = Math.min(255, 255 - ink * 0.94);
-                        data[i + 2] = Math.min(255, 255 - ink * 0.35);
-                    }
-                }
-                ctx.putImageData(frame, 0, 0);
-            }
-        }
-
-        function renderFinalCanvas() {
-            renderToTargetCanvas(resultCanvas, 0);
-        }
-
-        // =====================================================================
-        // 10. COMPARADOR INTERATIVO DESLIZANTE (TOUCH + MOUSE)
-        // =====================================================================
-        function updateSliderPosition(percent) {
-            const clamped = Math.max(2, Math.min(98, percent));
-            state.splitPercent = clamped;
-            stencilClipLayer.style.clipPath = `inset(0 ${100 - clamped}% 0 0)`;
-            sliderDivider.style.left = `${clamped}%`;
-        }
-
-        let isDraggingSlider = false;
-
-        function handlePointerMove(clientX) {
-            const rect = comparatorBox.getBoundingClientRect();
-            const pct = ((clientX - rect.left) / rect.width) * 100;
-            updateSliderPosition(pct);
-        }
-
-        sliderHandle.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            isDraggingSlider = true;
-        });
-
-        comparatorBox.addEventListener('mousedown', (e) => {
-            if (e.target.closest('#variationsDock')) return;
-            isDraggingSlider = true;
-            handlePointerMove(e.clientX);
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDraggingSlider) return;
-            handlePointerMove(e.clientX);
-        });
-
-        window.addEventListener('mouseup', () => {
-            isDraggingSlider = false;
-        });
-
-        sliderHandle.addEventListener('touchstart', () => {
-            isDraggingSlider = true;
-        }, { passive: true });
-
-        comparatorBox.addEventListener('touchstart', (e) => {
-            if (e.target.closest('#variationsDock')) return;
-            if (e.touches && e.touches[0]) {
-                isDraggingSlider = true;
-                handlePointerMove(e.touches[0].clientX);
-            }
-        }, { passive: true });
-
-        window.addEventListener('touchmove', (e) => {
-            if (!isDraggingSlider || !e.touches || !e.touches[0]) return;
-            handlePointerMove(e.touches[0].clientX);
-        }, { passive: true });
-
-        window.addEventListener('touchend', () => {
-            isDraggingSlider = false;
-        });
-
-        // =====================================================================
-        // 11. DOWNLOAD DIRETO EM UM CLIQUE (1536PX+ -> GALERIA / DOWNLOADS)
-        // =====================================================================
-        async function triggerDirectFileSave(blob, filename, mimeType = 'image/png', ext = '.png') {
-            // 1. Tenta File System Access API (Chrome / Android modernos)
-            if (window.showSaveFilePicker) {
-                try {
-                    const handle = await window.showSaveFilePicker({
-                        suggestedName: filename,
-                        types: [{
-                            description: 'Arquivo',
-                            accept: { [mimeType]: [ext] }
-                        }]
-                    });
-                    const writable = await handle.createWritable();
-                    await writable.write(blob);
-                    await writable.close();
-                    return true;
-                } catch (err) {
-                    if (err && err.name === 'AbortError') return false;
-                }
-            }
-
-            // 2. Dispara download direto com MIME real (image/png) para indexar imediatamente na Galeria
-            const typedBlob = new Blob([blob], { type: mimeType });
-            const blobUrl = URL.createObjectURL(typedBlob);
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = filename;
-            link.rel = 'noopener';
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
-            return true;
-        }
-
-        downloadBtn.addEventListener('click', () => {
-            if (!state.baseStencilImg) return;
-
-            // 1) Prepara Canvas dedicado em alta resolução (1536px+) com todos os filtros aplicados
-            const exportCanvas = document.createElement('canvas');
-            renderToTargetCanvas(exportCanvas, 1536);
-
-            const filename = `decalque-tattoo-v${state.activeVariationIdx + 1}-${Date.now()}.png`;
-            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-
-            // Gera Data URL síncrono imediato como reserva instantânea
-            let fallbackDataUrl = '';
-            try {
-                fallbackDataUrl = exportCanvas.toDataURL('image/png');
-            } catch (e) {}
-
-            exportCanvas.toBlob(async (blob) => {
-                if (!blob) {
-                    if (fallbackDataUrl) {
-                        const a = document.createElement('a');
-                        a.href = fallbackDataUrl;
-                        a.download = filename;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        showToast('Salvo na Galeria / Downloads!');
-                    }
-                    return;
-                }
-
-                // 2) Dispara imediatamente o download direto via Blob URL (image/png)
-                const pngBlob = new Blob([blob], { type: 'image/png' });
-                const blobUrl = URL.createObjectURL(pngBlob);
-                const directLink = document.createElement('a');
-                directLink.href = blobUrl;
-                directLink.download = filename;
-                directLink.rel = 'noopener';
-                directLink.style.display = 'none';
-                document.body.appendChild(directLink);
-                directLink.click();
-                document.body.removeChild(directLink);
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 12000);
-
-                // 3) Em dispositivos móveis (Android/iOS), aciona também a folha nativa de compartilhamento/salvamento
-                if (isMobile && navigator.share && navigator.canShare) {
-                    try {
-                        const pngFile = new File([pngBlob], filename, { type: 'image/png' });
-                        if (navigator.canShare({ files: [pngFile] })) {
-                            await navigator.share({
-                                files: [pngFile],
-                                title: 'Decalque Profissional',
-                                text: 'Decalque pronto para impressão térmica'
-                            });
-                        }
-                    } catch (shareErr) {
-                        // Caso o usuário feche a folha nativa ou o WebView bloqueie, o download direto já foi disparado
-                    }
-                }
-
-                showToast('Salvo na Galeria / Downloads!');
-            }, 'image/png', 1.0);
-        });
-
-        // =====================================================================
-        // 12. BOTÕES DE ESTÚDIO E CONTROLES DE AJUSTE FINO
-        // =====================================================================
-        mirrorBtn.addEventListener('click', () => {
-            state.isMirrored = !state.isMirrored;
-            mirrorBtn.classList.toggle('active-mirror', state.isMirrored);
-            renderFinalCanvas();
-            showToast(state.isMirrored ? 'Decalque espelhado para impressão térmica.' : 'Espelhamento desativado.');
-        });
-
-        purpleBtn.addEventListener('click', () => {
-            state.isPurple = !state.isPurple;
-            purpleBtn.classList.toggle('active-purple', state.isPurple);
-            renderFinalCanvas();
-            showToast(state.isPurple ? 'Simulação de carbono roxo ativada.' : 'Modo preto e branco ativado.');
-        });
-
-        backToModesBtn.addEventListener('click', () => {
-            resultScreen.classList.add('hidden');
-            setupScreen.classList.remove('hidden');
-        });
-
-        contrastSlider.addEventListener('input', (e) => {
-            state.contrast = Number(e.target.value);
-            document.getElementById('contrastVal').textContent = `${state.contrast}%`;
-            renderFinalCanvas();
-        });
-
-        angleSlider.addEventListener('input', (e) => {
-            state.angle = Number(e.target.value);
-            document.getElementById('angleVal').textContent = `${state.angle}°`;
-            renderFinalCanvas();
-        });
-
-        uncurveSlider.addEventListener('input', (e) => {
-            state.uncurve = Number(e.target.value);
-            document.getElementById('uncurveVal').textContent = `${state.uncurve}%`;
-            renderFinalCanvas();
-        });
-
-        shadowSlider.addEventListener('input', (e) => {
-            state.shadow = Number(e.target.value);
-            document.getElementById('shadowVal').textContent = `${state.shadow}%`;
-            renderFinalCanvas();
-        });
-
-        function resetAdjustments(redraw = true) {
-            state.contrast = 115;
-            state.angle = 0;
-            state.uncurve = 100;
-            state.shadow = 100;
-            state.isMirrored = false;
-            state.isPurple = false;
-
-            contrastSlider.value = 115;
-            angleSlider.value = 0;
-            uncurveSlider.value = 100;
-            shadowSlider.value = 100;
-
-            document.getElementById('contrastVal').textContent = '115%';
-            document.getElementById('angleVal').textContent = '0°';
-            document.getElementById('uncurveVal').textContent = '100%';
-            document.getElementById('shadowVal').textContent = '100%';
-
-            mirrorBtn.classList.remove('active-mirror');
-            purpleBtn.classList.remove('active-purple');
-
-            if (redraw) {
-                renderFinalCanvas();
-                showToast('Ajustes restaurados.');
-            }
-        }
-
-        resetAdjustBtn.addEventListener('click', () => resetAdjustments(true));
-    </script>
+        exportCanvas.toBlob((blob) => {
+          const fileName = `decalque-studio-${Date.now()}.png`;
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          showToast('Decalque salvo na Galeria / Downloads!');
+        }, 'image/png', 1.0);
+      };
+      img.src = src;
+    });
+  </script>
 </body>
 </html>
