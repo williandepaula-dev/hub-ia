@@ -1,468 +1,1175 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#0b0b0c">
-<title>GERADOR DE DECALQUE AI</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:#0b0b0c;color:#f4f4f5;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px 14px 48px;line-height:1.4}
-.wrap{max-width:620px;margin:0 auto}
-.banner{background:linear-gradient(135deg,#2a1409,#18181b);border:1px solid #ea580c66;border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
-.banner strong{display:block;font-size:13px;color:#fff}
-.banner span{font-size:11px;color:#a1a1aa}
-.btn-sm{background:linear-gradient(135deg,#ea580c,#dc2626);color:#fff;border:0;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
-.hdr{text-align:center;margin-bottom:18px}
-.pill{display:inline-flex;align-items:center;gap:6px;background:#18181b;border:1px solid #27272a;border-radius:99px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;color:#a1a1aa;margin-bottom:8px}
-.dot{width:7px;height:7px;border-radius:50%;background:#10b981}
-h1{font-size:32px;font-weight:900;letter-spacing:.02em;color:#fff;margin-bottom:4px}
-.sub{font-size:14px;color:#d4d4d8}
-.sub b{color:#10b981}
-.card{background:#151518;border:1px solid #27272a;border-radius:16px;padding:15px;margin-bottom:14px}
-.lbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:#a1a1aa;margin-bottom:10px;display:flex;justify-content:space-between}
-.drop{position:relative;border:2px dashed #3f3f46;border-radius:14px;background:#101013;padding:26px 14px;text-align:center;overflow:hidden}
-.file-inp{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5}
-.btn-cta{display:inline-block;background:linear-gradient(135deg,#ea580c,#dc2626);color:#fff;font-size:14px;font-weight:700;padding:12px 22px;border-radius:99px;margin-top:10px}
-.prev-box{display:none;text-align:center;background:#09090b;border-radius:12px;padding:8px;border:1px solid #27272a}
-.prev-box img{max-height:260px;max-width:100%;border-radius:8px;display:block;margin:0 auto}
-.chg-wrap{position:relative;display:inline-block;margin-top:8px}
-.btn-chg{background:#27272a;color:#fff;border:1px solid #3f3f46;border-radius:99px;padding:7px 15px;font-size:12px;font-weight:700}
-.mode{background:#101013;border:1.5px solid #27272a;border-radius:12px;padding:12px;margin-bottom:9px;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
-.mode.active{border-color:#ea580c;background:#22130c}
-.m-ico{font-size:20px;background:#1f1f24;width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.m-tit{font-size:14px;font-weight:800;color:#fff;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.tag{background:#10b981;color:#042f2e;font-size:9px;font-weight:900;padding:2px 7px;border-radius:99px}
-.m-desc{font-size:12px;color:#d4d4d8;margin-top:3px}
-.m-tip{font-size:11px;color:#f87171;margin-top:3px;font-weight:600}
-.btn-gen{width:100%;margin-top:6px;background:linear-gradient(135deg,#ea580c,#dc2626);color:#fff;border:0;border-radius:13px;padding:15px;font-size:16px;font-weight:900;letter-spacing:.04em;cursor:pointer}
-.btn-gen:disabled{opacity:.45}
-.res-sec{display:none}
-.res-sec.show{display:block}
-.comp{position:relative;width:100%;height:420px;border-radius:14px;overflow:hidden;background:#fff;border:2px solid #27272a;touch-action:none;user-select:none}
-.layer{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-.layer-orig{background:#141417}
-.layer-orig img{max-width:100%;max-height:100%;object-fit:contain}
-.layer-sten{background:#fff;clip-path:inset(0 50% 0 0)}
-.layer-sten canvas{max-width:100%;max-height:100%;object-fit:contain}
-.badge-c{position:absolute;top:10px;z-index:6;font-size:10px;font-weight:800;padding:4px 9px;border-radius:6px}
-.b-left{left:10px;background:#dc2626;color:#fff}
-.b-right{right:10px;background:#18181bd9;color:#fff;border:1px solid #3f3f46}
-.bar{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#ef4444;z-index:8;transform:translateX(-50%);pointer-events:none}
-.knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#ea580c;border:3px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
-.vars{position:absolute;bottom:10px;left:10px;z-index:9;display:flex;align-items:center;gap:6px;background:#111114e0;padding:5px 8px;border-radius:99px;border:1px solid #3f3f46}
-.btn-ref{width:32px;height:32px;border-radius:50%;background:#ea580c;border:0;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
-.v-dot{width:24px;height:24px;border-radius:50%;border:1px solid #52525b;background:#27272a;color:#fff;font-size:11px;font-weight:800;cursor:pointer}
-.v-dot.active{background:#fff;color:#09090b}
-.ctrl{margin-top:12px;background:#101013;border:1px solid #27272a;border-radius:12px;padding:12px}
-.c-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#fb923c;margin-bottom:10px}
-.btn-rst{background:none;border:0;color:#9ca3af;text-decoration:underline;font-size:11px;cursor:pointer}
-.toggles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.tgl{background:#1c1c21;border:1px solid #32323a;color:#e4e4e7;border-radius:9px;padding:9px;font-size:12px;font-weight:700;cursor:pointer}
-.tgl.active{background:#2a1409;border-color:#ea580c;color:#fb923c}
-.sl-box{margin-bottom:9px}
-.sl-lbl{display:flex;justify-content:space-between;font-size:12px;color:#d4d4d8;margin-bottom:3px}
-input[type=range]{width:100%;accent-color:#ea580c}
-.acts{display:grid;grid-template-columns:1.4fr 1fr;gap:9px;margin-top:12px}
-.btn-dl{background:#10b981;color:#042f2e;border:0;border-radius:11px;padding:13px;font-size:14px;font-weight:900;cursor:pointer}
-.new-w{position:relative}
-.btn-nw{width:100%;background:#27272a;color:#fff;border:1px solid #3f3f46;border-radius:11px;padding:13px;font-size:13px;font-weight:700;text-align:center}
-.loader{display:none;position:fixed;inset:0;background:#09090beb;z-index:99;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
-.loader.show{display:flex}
-.spin{width:48px;height:48px;border:4px solid #27272a;border-top-color:#ea580c;border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
-@keyframes sp{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#18181b;color:#fff;border:1px solid #3f3f46;padding:9px 16px;border-radius:99px;font-size:12px;font-weight:700;z-index:100;display:none;max-width:90%;text-align:center}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>GERADOR DE DECALQUE — Studio Pro Stencil AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-main: #0b0b0c;
+      --bg-card: #151518;
+      --border: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #9ca3af;
+      --accent-orange: #ea580c;
+      --accent-red: #dc2626;
+      --accent-green: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      padding: 16px 14px 48px;
+      line-height: 1.45;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #a1a1aa;
+      margin-bottom: 12px;
+    }
+
+    .dot-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    .main-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(38px, 9vw, 52px);
+      letter-spacing: 0.03em;
+      line-height: 1.02;
+      color: #ffffff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #d4d4d8;
+      font-weight: 500;
+    }
+
+    .subtitle span {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Upload Zone */
+    .upload-zone {
+      position: relative;
+      border: 2px dashed #3f3f46;
+      border-radius: 16px;
+      background: #111114;
+      padding: 30px 18px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .native-file-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 10;
+      font-size: 100px;
+    }
+
+    .upload-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(234, 88, 12, 0.14);
+      border: 1px solid rgba(234, 88, 12, 0.35);
+      color: #fb923c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 20px;
+    }
+
+    .upload-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+
+    .btn-gallery-visual {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 999px;
+      box-shadow: 0 6px 20px rgba(234, 88, 12, 0.35);
+    }
+
+    .preview-loaded {
+      display: none;
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #09090b;
+      border: 1px solid #27272a;
+      text-align: center;
+    }
+
+    .preview-loaded img {
+      max-height: 280px;
+      width: 100%;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .change-photo-wrap {
+      position: relative;
+      display: inline-block;
+      margin: 10px auto;
+    }
+
+    .btn-change-photo {
+      background: #27272a;
+      color: #fff;
+      border: 1px solid #3f3f46;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Mode Cards */
+    .modes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mode-card {
+      background: #111114;
+      border: 1.5px solid #27272a;
+      border-radius: 14px;
+      padding: 13px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .mode-card.active {
+      border-color: var(--accent-orange);
+      background: rgba(234, 88, 12, 0.08);
+    }
+
+    .mode-thumb {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      background: #1f1f24;
+      border: 1px solid #32323a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+
+    .mode-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mode-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .mode-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+
+    .badge-popular {
+      background: var(--accent-green);
+      color: #042f2e;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .mode-desc {
+      font-size: 12px;
+      color: #d4d4d8;
+      margin-bottom: 4px;
+    }
+
+    .mode-tip {
+      font-size: 11px;
+      color: #f87171;
+      font-weight: 600;
+    }
+
+    .btn-generate {
+      width: 100%;
+      margin-top: 14px;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 15px 20px;
+      font-family: 'Anton', sans-serif;
+      font-size: 19px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Result & Comparator */
+    .result-section {
+      display: none;
+    }
+
+    .result-section.visible {
+      display: block;
+    }
+
+    .comparator-wrap {
+      position: relative;
+      width: 100%;
+      height: 440px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      border: 2px solid #27272a;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .comp-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .comp-original {
+      background: #141417;
+    }
+
+    .comp-original img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .comp-stencil {
+      background: #ffffff;
+      clip-path: inset(0 50% 0 0);
+    }
+
+    .comp-stencil canvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .comp-label {
+      position: absolute;
+      top: 12px;
+      z-index: 6;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 7px;
+      text-transform: uppercase;
+    }
+
+    .label-stencil {
+      left: 12px;
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .label-original {
+      right: 12px;
+      background: rgba(24, 24, 27, 0.85);
+      color: #fff;
+      border: 1px solid #3f3f46;
+    }
+
+    .slider-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+      z-index: 8;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ea580c;
+      border: 3px solid #fff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Variation Floating Controls */
+    .variation-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(17, 17, 20, 0.88);
+      backdrop-filter: blur(6px);
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid #3f3f46;
+    }
+
+    .btn-var-refresh {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .var-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .var-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid #52525b;
+      background: #27272a;
+      color: #e4e4e7;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .var-dot.active {
+      background: #fff;
+      color: #09090b;
+      border-color: #fff;
+    }
+
+    /* Studio Controls */
+    .controls-box {
+      margin-top: 14px;
+      background: #111114;
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .controls-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #fb923c;
+      text-transform: uppercase;
+    }
+
+    .btn-reset {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      text-decoration: underline;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .toggle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .btn-toggle {
+      background: #1c1c21;
+      border: 1px solid #32323a;
+      color: #e4e4e7;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-toggle.active {
+      background: rgba(234, 88, 12, 0.16);
+      border-color: var(--accent-orange);
+      color: #fb923c;
+    }
+
+    .slider-group {
+      margin-bottom: 10px;
+    }
+
+    .slider-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #d4d4d8;
+      margin-bottom: 4px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-orange);
+    }
+
+    /* Action Buttons */
+    .action-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn-download {
+      background: var(--accent-green);
+      color: #042f2e;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .new-img-wrap {
+      position: relative;
+      display: flex;
+    }
+
+    .btn-new-img {
+      width: 100%;
+      background: #27272a;
+      color: #fff;
+      border: 1px solid #3f3f46;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 9, 11, 0.9);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 4px solid #27272a;
+      border-top-color: var(--accent-orange);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #18181b;
+      color: #fff;
+      border: 1px solid #3f3f46;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="banner">
-    <div><strong>Instalar App no Celular (IA v2.0)</strong><span>Sem chave API • Sem cartão • Direto no Chrome</span></div>
-    <button type="button" id="instBtn" class="btn-sm">INSTALAR APP</button>
+  <div class="container">
+    <header class="header">
+      <div class="badge-top"><span class="dot-green"></span> STUDIO PRO STENCIL AI</div>
+      <h1 class="main-title">GERADOR DE DECALQUE</h1>
+      <p class="subtitle">Seu <span>decalque</span> pronto em <span>segundos.</span></p>
+    </header>
+
+    <section class="section-card">
+      <div class="section-label">
+        <span>1. IMAGEM DE REFERÊNCIA</span>
+        <span id="fileStatus" style="color:#10b981;"></span>
+      </div>
+
+      <div id="uploadZone" class="upload-zone">
+        <input type="file" id="fileInput" class="native-file-overlay" accept="image/*" />
+        <div class="upload-icon-box">⬆️</div>
+        <div class="upload-title">Toque para abrir a galeria</div>
+        <div class="upload-hint">Suporta JPG, PNG, WEBP</div>
+        <div class="btn-gallery-visual">🖼️ Escolher da Galeria</div>
+      </div>
+
+      <div id="previewLoaded" class="preview-loaded">
+        <img id="refPreviewImg" alt="Referência carregada" />
+        <div class="change-photo-wrap">
+          <input type="file" id="fileInputChange" class="native-file-overlay" accept="image/*" />
+          <div class="btn-change-photo">🔄 Trocar Foto da Galeria</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-label">2. ESCOLHA O MODO DE EXTRAÇÃO</div>
+      <div class="modes-list">
+        <div class="mode-card" data-mode="lines">
+          <div class="mode-thumb">✒️</div>
+          <div class="mode-info">
+            <div class="mode-title-row">
+              <span class="mode-title">DECALQUE LINHAS</span>
+            </div>
+            <div class="mode-desc">Cria finelines limpas e contornos nítidos a partir de desenhos e escritas.</div>
+            <div class="mode-tip">⚠ Use para extrair somente as linhas do desenho e pequenas frases.</div>
+          </div>
+        </div>
+
+        <div class="mode-card" data-mode="lines_shade">
+          <div class="mode-thumb">🌗</div>
+          <div class="mode-info">
+            <div class="mode-title-row">
+              <span class="mode-title">LINHAS + SOMBRA</span>
+            </div>
+            <div class="mode-desc">Ideal para fotos, artes digitais e realismos, preservando linhas e mapeamento de sombra.</div>
+            <div class="mode-tip">⚠ Mais indicado para desenho no papel ou arte plana.</div>
+          </div>
+        </div>
+
+        <div class="mode-card active" data-mode="tattoo_to_drawing">
+          <div class="mode-thumb">🐯</div>
+          <div class="mode-info">
+            <div class="mode-title-row">
+              <span class="mode-title">TATUAGEM → DESENHO</span>
+              <span class="badge-popular">MAIS UTILIZADO</span>
+            </div>
+            <div class="mode-desc">Extrai a arte da pele, apaga braço/fundo e converte em desenho plano pronto para impressão.</div>
+            <div class="mode-tip" style="color:#10b981;">✔ Ideal para foto de tatuagem na pele ou referência curva.</div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" id="generateBtn" class="btn-generate" disabled>
+        ⚡ GERAR DECALQUE COM IA
+      </button>
+    </section>
+
+    <section id="resultSection" class="section-card result-section">
+      <div class="section-label">
+        <span>3. SEU DECALQUE PRONTO</span>
+        <span style="color:#a1a1aa;">Arraste a barra vermelha</span>
+      </div>
+
+      <div id="comparator" class="comparator-wrap">
+        <div class="comp-layer comp-original">
+          <img id="compOriginalImg" alt="Original" />
+        </div>
+        <div id="compStencilLayer" class="comp-layer comp-stencil">
+          <canvas id="stencilCanvas"></canvas>
+        </div>
+
+        <span class="comp-label label-stencil">DECALQUE</span>
+        <span class="comp-label label-original">ORIGINAL</span>
+
+        <div id="sliderLine" class="slider-line">
+          <div class="slider-handle">↔</div>
+        </div>
+
+        <div class="variation-bar">
+          <button type="button" id="newVariationBtn" class="btn-var-refresh" title="Gerar nova variação">↻</button>
+          <div id="variationDots" class="var-dots"></div>
+        </div>
+      </div>
+
+      <div class="controls-box">
+        <div class="controls-header">
+          <span>⚙️ AJUSTES FINOS PARA IMPRESSÃO</span>
+          <button type="button" id="resetControlsBtn" class="btn-reset">Resetar</button>
+        </div>
+
+        <div class="toggle-row">
+          <button type="button" id="mirrorBtn" class="btn-toggle">⇄ Espelhar (Térmica)</button>
+          <button type="button" id="purpleBtn" class="btn-toggle">🟣 Tom Roxo Carbono</button>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-top">
+            <span>Contraste do Traço</span>
+            <strong id="contrastVal">105%</strong>
+          </div>
+          <input type="range" id="contrastSlider" min="60" max="180" value="105" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-top">
+            <span>Limpeza de Fundo (Branco Puro)</span>
+            <strong id="whiteCutVal">235</strong>
+          </div>
+          <input type="range" id="whiteCutSlider" min="160" max="252" value="235" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-top">
+            <span>Alinhamento Vertical (Ângulo)</span>
+            <strong id="angleVal">0°</strong>
+          </div>
+          <input type="range" id="angleSlider" min="-45" max="45" value="0" />
+        </div>
+
+        <div class="slider-group" style="margin-bottom:0;">
+          <div class="slider-top">
+            <span>Expansão Lateral (Descurvar)</span>
+            <strong id="stretchVal">100%</strong>
+          </div>
+          <input type="range" id="stretchSlider" min="85" max="135" value="100" />
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button type="button" id="downloadBtn" class="btn-download">⬇️ Baixar PNG</button>
+        <div class="new-img-wrap">
+          <input type="file" id="fileInputBottom" class="native-file-overlay" accept="image/*" />
+          <div class="btn-new-img">+ Nova Imagem</div>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <div class="hdr">
-    <div class="pill"><span class="dot"></span> STUDIO PRO STENCIL AI • v2.0</div>
-    <h1>GERADOR DE DECALQUE</h1>
-    <p class="sub">Seu <b>decalque</b> pronto em <b>segundos.</b></p>
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <h3 style="font-family:'Anton',sans-serif;font-size:24px;letter-spacing:0.05em;margin-bottom:6px;">EXTRAINDO ARTE COM IA...</h3>
+    <p style="font-size:13px;color:#a1a1aa;max-width:300px;">Removendo pele, braço e fundo para isolar o desenho na mesma pose.</p>
   </div>
 
-  <div class="card">
-    <div class="lbl"><span>1. IMAGEM DE REFERÊNCIA</span><span id="stTxt" style="color:#10b981"></span></div>
-    <div id="dropZone" class="drop">
-      <input type="file" id="inp1" class="file-inp" accept="image/*">
-      <div style="font-size:26px;margin-bottom:6px">🖼️</div>
-      <div style="font-size:15px;font-weight:700;color:#fff">Toque para abrir a galeria</div>
-      <div style="font-size:12px;color:#9ca3af">JPG, PNG ou WEBP</div>
-      <div class="btn-cta">Escolher da Galeria</div>
-    </div>
-    <div id="prevBox" class="prev-box">
-      <img id="prevImg" alt="Referência">
-      <div class="chg-wrap">
-        <input type="file" id="inp2" class="file-inp" accept="image/*">
-        <div class="btn-chg">🔄 Trocar Foto</div>
-      </div>
-    </div>
-  </div>
+  <div id="toast" class="toast"></div>
 
-  <div class="card">
-    <div class="lbl">2. ESCOLHA O MODO DE EXTRAÇÃO</div>
-    <div class="mode" data-mode="lines">
-      <div class="m-ico">✒️</div>
-      <div>
-        <div class="m-tit">DECALQUE LINHAS</div>
-        <div class="m-desc">Cria finelines limpas e contornos nítidos a partir de desenhos e escritas.</div>
-        <div class="m-tip">⚠ Use para extrair somente as linhas do desenho e pequenas frases.</div>
-      </div>
-    </div>
-    <div class="mode" data-mode="lines_shade">
-      <div class="m-ico">🌗</div>
-      <div>
-        <div class="m-tit">LINHAS + SOMBRA</div>
-        <div class="m-desc">Ideal para fotos, artes digitais e realismos, preservando linhas e sombra.</div>
-        <div class="m-tip">⚠ Indicado para desenho no papel ou arte plana.</div>
-      </div>
-    </div>
-    <div class="mode active" data-mode="tattoo_to_drawing">
-      <div class="m-ico">🐯</div>
-      <div>
-        <div class="m-tit">TATUAGEM → DESENHO <span class="tag">MAIS UTILIZADO</span></div>
-        <div class="m-desc">Extrai a arte da pele, remove braço/fundo e entrega desenho limpo no branco.</div>
-        <div class="m-tip" style="color:#10b981">✔ Ideal para foto de tattoo na pele ou referência curva.</div>
-      </div>
-    </div>
-    <button type="button" id="genBtn" class="btn-gen" disabled>⚡ GERAR DECALQUE COM IA</button>
-  </div>
+  <script>
+    const apiKey = "";
+    const state = {
+      refDataUrl: null,
+      refMime: 'image/jpeg',
+      mode: 'tattoo_to_drawing',
+      variations: [],
+      activeVarIndex: 0,
+      mirror: false,
+      purple: false,
+      contrast: 105,
+      whiteCut: 235,
+      angle: 0,
+      stretch: 100
+    };
 
-  <div id="resSec" class="card res-sec">
-    <div class="lbl"><span>3. DECALQUE PRONTO</span><span>Arraste a barra vermelha</span></div>
-    <div id="comp" class="comp">
-      <div class="layer layer-orig"><img id="origImg" alt="Original"></div>
-      <div id="stenLayer" class="layer layer-sten"><canvas id="stenCanvas"></canvas></div>
-      <span class="badge-c b-left">DECALQUE</span>
-      <span class="badge-c b-right">ORIGINAL</span>
-      <div id="bar" class="bar"><div class="knob">↔</div></div>
-      <div class="vars">
-        <button type="button" id="varBtn" class="btn-ref" title="Nova variação">↻</button>
-        <div id="vDots" style="display:flex;gap:4px"></div>
-      </div>
-    </div>
+    const fileInput = document.getElementById('fileInput');
+    const fileInputChange = document.getElementById('fileInputChange');
+    const fileInputBottom = document.getElementById('fileInputBottom');
+    const uploadZone = document.getElementById('uploadZone');
+    const previewLoaded = document.getElementById('previewLoaded');
+    const refPreviewImg = document.getElementById('refPreviewImg');
+    const generateBtn = document.getElementById('generateBtn');
+    const resultSection = document.getElementById('resultSection');
+    const compOriginalImg = document.getElementById('compOriginalImg');
+    const stencilCanvas = document.getElementById('stencilCanvas');
+    const compStencilLayer = document.getElementById('compStencilLayer');
+    const sliderLine = document.getElementById('sliderLine');
+    const comparator = document.getElementById('comparator');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const toastEl = document.getElementById('toast');
 
-    <div class="ctrl">
-      <div class="c-top"><span>⚙️ AJUSTES PARA IMPRESSÃO</span><button type="button" id="rstBtn" class="btn-rst">Resetar</button></div>
-      <div class="toggles">
-        <button type="button" id="mirBtn" class="tgl">⇄ Espelhar (Térmica)</button>
-        <button type="button" id="purBtn" class="tgl">🟣 Tom Roxo Carbono</button>
-      </div>
-      <div class="sl-box"><div class="sl-lbl"><span>Contraste do Traço</span><b id="cVal">105%</b></div><input type="range" id="cSl" min="60" max="180" value="105"></div>
-      <div class="sl-box"><div class="sl-lbl"><span>Limpeza de Fundo Branco</span><b id="wVal">235</b></div><input type="range" id="wSl" min="160" max="252" value="235"></div>
-      <div class="sl-box"><div class="sl-lbl"><span>Ângulo Vertical</span><b id="aVal">0°</b></div><input type="range" id="aSl" min="-45" max="45" value="0"></div>
-      <div class="sl-box" style="margin:0"><div class="sl-lbl"><span>Expansão Lateral</span><b id="sVal">100%</b></div><input type="range" id="sSl" min="85" max="135" value="100"></div>
-    </div>
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+    }
 
-    <div class="acts">
-      <button type="button" id="dlBtn" class="btn-dl">⬇️ Baixar PNG</button>
-      <div class="new-w">
-        <input type="file" id="inp3" class="file-inp" accept="image/*">
-        <div class="btn-nw">+ Nova Imagem</div>
-      </div>
-    </div>
-  </div>
-</div>
+    function handleSelectedFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 1024;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const c = document.createElement('canvas');
+          c.width = w;
+          c.height = h;
+          c.getContext('2d').drawImage(img, 0, 0, w, h);
 
-<div id="loader" class="loader">
-  <div class="spin"></div>
-  <div id="ldTitle" style="font-size:18px;font-weight:900;margin-bottom:6px">EXTRAINDO ARTE COM IA...</div>
-  <div id="ldSub" style="font-size:12px;color:#a1a1aa;max-width:290px">Removendo pele, braço e fundo para isolar o desenho. Pode levar 12–20s.</div>
-</div>
-<div id="toast" class="toast"></div>
+          const cleanDataUrl = c.toDataURL('image/jpeg', 0.92);
+          state.refDataUrl = cleanDataUrl;
+          state.refMime = 'image/jpeg';
 
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-}
-if ('caches' in window) {
-  caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
-}
+          refPreviewImg.src = cleanDataUrl;
+          compOriginalImg.src = cleanDataUrl;
+          uploadZone.style.display = 'none';
+          previewLoaded.style.display = 'block';
+          document.getElementById('fileStatus').textContent = '✓ Imagem pronta';
+          generateBtn.disabled = false;
+          showToast('Imagem carregada da galeria!');
+        };
+        img.onerror = () => showToast('Não foi possível abrir essa imagem.');
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
 
-const S = {
-  blob: null, hostedUrl: null, mode: 'tattoo_to_drawing', vars: [], idx: 0,
-  mirror: false, purple: false, contrast: 105, white: 235, angle: 0, stretch: 100, prompt: null
-};
+    [fileInput, fileInputChange, fileInputBottom].forEach((inp) => {
+      inp.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        handleSelectedFile(file);
+        e.target.value = '';
+      });
+    });
 
-const $ = id => document.getElementById(id);
-function toast(m) {
-  const t = $('toast');
-  t.textContent = m;
-  t.style.display = 'block';
-  clearTimeout(window._tt);
-  window._tt = setTimeout(() => t.style.display = 'none', 3200);
-}
+    document.querySelectorAll('.mode-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.mode-card').forEach((c) => c.classList.remove('active'));
+        card.classList.add('active');
+        state.mode = card.dataset.mode;
+      });
+    });
 
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.prompt = e; });
-$('instBtn').onclick = async () => {
-  if (S.prompt) { S.prompt.prompt(); await S.prompt.userChoice; S.prompt = null; }
-  else toast('No Chrome: toque em ⋮ (canto superior) → Adicionar à tela inicial');
-};
+    function buildPrompt(variationIndex) {
+      const varHints = [
+        'Keep the exact original pose, head angle, and proportions cleanly centered on pure white.',
+        'Slightly refine line clarity and smooth tonal transitions while keeping the exact same pose and angle.',
+        'Enhance fur/texture crispness and clean negative space highlights while maintaining exact pose fidelity.',
+        'Produce ultra-clean stencil-ready line definition and balanced midtone shading in the exact same pose.'
+      ];
+      const hint = varHints[variationIndex % varHints.length];
 
-function loadFile(file) {
-  if (!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    const im = new Image();
-    im.onload = () => {
-      const max = 900;
-      let w = im.width, h = im.height;
-      if (w > max || h > max) {
-        if (w > h) { h = Math.round(h * max / w); w = max; }
-        else { w = Math.round(w * max / h); h = max; }
+      if (state.mode === 'lines') {
+        return `Extract ONLY the main tattoo artwork and convert it into a crisp black and white fine-line tattoo stencil drawing isolated on a pure solid white background (#FFFFFF). Completely erase human skin, arms, hands, background objects, and shadows. Do NOT change the subject's pose, gaze direction, or angle. ${hint}`;
       }
-      const c = document.createElement('canvas');
-      c.width = w; c.height = h;
-      c.getContext('2d').drawImage(im, 0, 0, w, h);
-      const url = c.toDataURL('image/jpeg', 0.88);
-      c.toBlob(b => {
-        S.blob = b;
-        S.hostedUrl = null;
-        $('prevImg').src = url;
-        $('origImg').src = url;
-        $('dropZone').style.display = 'none';
-        $('prevBox').style.display = 'block';
-        $('stTxt').textContent = '✓ Pronta';
-        $('genBtn').disabled = false;
-        toast('Foto carregada!');
-      }, 'image/jpeg', 0.88);
-    };
-    im.onerror = () => toast('Erro ao ler imagem.');
-    im.src = e.target.result;
-  };
-  r.readAsDataURL(file);
-}
-
-['inp1', 'inp2', 'inp3'].forEach(id => {
-  $(id).onchange = e => { loadFile(e.target.files[0]); e.target.value = ''; };
-});
-
-document.querySelectorAll('.mode').forEach(el => {
-  el.onclick = () => {
-    document.querySelectorAll('.mode').forEach(m => m.classList.remove('active'));
-    el.classList.add('active');
-    S.mode = el.dataset.mode;
-  };
-});
-
-async function uploadTempImage(blob) {
-  if (S.hostedUrl) return S.hostedUrl;
-
-  try {
-    const fd = new FormData();
-    fd.append('reqtype', 'fileupload');
-    fd.append('time', '1h');
-    fd.append('fileToUpload', blob, 'ref.jpg');
-    const res = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', { method: 'POST', body: fd });
-    if (res.ok) {
-      const url = (await res.text()).trim();
-      if (url.startsWith('http')) { S.hostedUrl = url; return url; }
-    }
-  } catch (e) {}
-
-  try {
-    const fd2 = new FormData();
-    fd2.append('file', blob, 'ref.jpg');
-    const res2 = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd2 });
-    if (res2.ok) {
-      const j = await res2.json();
-      const raw = j?.data?.url;
-      if (raw) {
-        const direct = raw.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-        S.hostedUrl = direct;
-        return direct;
+      if (state.mode === 'lines_shade') {
+        return `Extract ONLY the main tattoo design and convert it into a clean black and grey tattoo stencil illustration isolated on a pure solid white background (#FFFFFF). Completely erase human skin, arms, hands, and background clutter. Preserve the exact original pose, angle, and proportions with crisp outlines and smooth shading. ${hint}`;
       }
-    }
-  } catch (e) {}
-
-  try {
-    const fd3 = new FormData();
-    fd3.append('file', blob, 'ref.jpg');
-    const res3 = await fetch('https://0x0.st', { method: 'POST', body: fd3 });
-    if (res3.ok) {
-      const u3 = (await res3.text()).trim();
-      if (u3.startsWith('http')) { S.hostedUrl = u3; return u3; }
-    }
-  } catch (e) {}
-
-  throw new Error('Não foi possível conectar ao servidor de upload. Verifique sua internet.');
-}
-
-function getPrompt(mode) {
-  if (mode === 'lines') {
-    return 'Extract ONLY the main tattoo design and convert it into a clean black and white fine-line tattoo stencil drawing on a pure solid white background (#FFFFFF). Completely remove human skin, body parts, arm, hands, background objects, and shadows. Keep the exact same pose, angle, and proportions of the subject, drawn with crisp black ink outlines only.';
-  }
-  if (mode === 'lines_shade') {
-    return 'Extract the main tattoo design and convert it into a clean black and grey tattoo stencil illustration on a pure solid white background (#FFFFFF). Completely remove human skin, body parts, arm, hands, and background clutter. Keep the exact same pose, gaze direction, and proportions with crisp black outlines and smooth grey shading.';
-  }
-  return 'Extract ONLY the main tattoo artwork from the skin and convert it into a flat, clean black and grey tattoo stencil illustration isolated on a pure solid white background (#FFFFFF). Completely erase the arm, human skin, hands, tattoo machine, table, and any secondary screens or background objects. Preserve the exact original pose, head angle, and details of the main subject as a clean 2D tattoo flash drawing on white paper.';
-}
-
-function fetchImageAsDataUrl(url) {
-  return new Promise((resolve, reject) => {
-    const im = new Image();
-    im.crossOrigin = 'anonymous';
-    const timer = setTimeout(() => reject(new Error('Tempo limite da IA excedido.')), 35000);
-    im.onload = () => {
-      clearTimeout(timer);
-      const c = document.createElement('canvas');
-      c.width = im.width; c.height = im.height;
-      c.getContext('2d').drawImage(im, 0, 0);
-      resolve(c.toDataURL('image/png'));
-    };
-    im.onerror = () => {
-      clearTimeout(timer);
-      reject(new Error('Falha ao baixar imagem da IA.'));
-    };
-    im.src = url;
-  });
-}
-
-async function runAI(addVar) {
-  if (!S.blob) return;
-  $('loader').classList.add('show');
-  $('ldTitle').textContent = 'ENVIANDO REFERÊNCIA...';
-
-  try {
-    const imgUrl = await uploadTempImage(S.blob);
-    $('ldTitle').textContent = 'IA EXTRAINDO DECALQUE...';
-
-    const prompt = encodeURIComponent(getPrompt(S.mode));
-    const seed = Math.floor(Math.random() * 999999);
-    const models = ['kontext', 'flux'];
-    let finalDataUrl = null;
-
-    for (const model of models) {
-      try {
-        const genUrl = `https://image.pollinations.ai/prompt/${prompt}?model=${model}&image=${encodeURIComponent(imgUrl)}&width=768&height=1024&seed=${seed}&nologo=true`;
-        finalDataUrl = await fetchImageAsDataUrl(genUrl);
-        if (finalDataUrl) break;
-      } catch (err) {}
+      return `Extract ONLY the main tattoo artwork from the skin and convert it into a flat, clean 2D black and grey tattoo stencil illustration isolated on a pure solid white background (#FFFFFF). Completely remove the arm, human skin, hands, tattoo machine, table, and any secondary devices or background elements. Unwrap curvature subtly so it looks like clean tattoo flash art on white paper, while strictly preserving the exact original pose, head angle, and expression of the main subject. ${hint}`;
     }
 
-    if (!finalDataUrl) throw new Error('Servidor gratuito ocupado no momento. Toque em Gerar novamente.');
+    async function generateWithGemini(variationIndex) {
+      const base64Data = state.refDataUrl.split(',')[1];
+      const promptText = buildPrompt(variationIndex);
+      const models = ['gemini-2.5-flash-image-preview', 'gemini-2.0-flash-exp-image-generation'];
 
-    $('loader').classList.remove('show');
-    if (!addVar) { S.vars = [finalDataUrl]; S.idx = 0; }
-    else { S.vars.push(finalDataUrl); S.idx = S.vars.length - 1; }
+      for (const model of models) {
+        try {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{
+                  parts: [
+                    { text: promptText },
+                    { inlineData: { mimeType: state.refMime, data: base64Data } }
+                  ]
+                }],
+                generationConfig: {
+                  responseModalities: ['IMAGE', 'TEXT']
+                }
+              })
+            }
+          );
 
-    drawDots();
-    $('resSec').classList.add('show');
-    drawCanvas();
-    $('resSec').scrollIntoView({ behavior: 'smooth' });
-    toast(addVar ? 'Variação ' + S.vars.length + ' criada pela IA!' : 'Decalque extraído com sucesso!');
-  } catch (e) {
-    $('loader').classList.remove('show');
-    alert('Aviso: ' + (e.message || 'Erro ao gerar decalque.'));
-  }
-}
-
-$('genBtn').onclick = () => runAI(false);
-$('varBtn').onclick = () => runAI(true);
-
-function drawDots() {
-  const box = $('vDots');
-  box.innerHTML = '';
-  S.vars.forEach((_, i) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'v-dot' + (i === S.idx ? ' active' : '');
-    b.textContent = i + 1;
-    b.onclick = () => { S.idx = i; drawDots(); drawCanvas(); };
-    box.appendChild(b);
-  });
-}
-
-function renderTo(img, canvas, hiRes) {
-  const sc = hiRes ? Math.max(1, 1500 / Math.max(img.width, img.height)) : 1;
-  const w = Math.round(img.width * sc), h = Math.round(img.height * sc);
-  canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, w, h);
-  ctx.save();
-  ctx.translate(w / 2, h / 2);
-  if (S.mirror) ctx.scale(-1, 1);
-  ctx.rotate(S.angle * Math.PI / 180);
-  ctx.scale(S.stretch / 100, 1);
-  ctx.filter = `grayscale(100%) contrast(${S.contrast}%)`;
-  ctx.drawImage(img, -w / 2, -h / 2, w, h);
-  ctx.restore();
-
-  const id = ctx.getImageData(0, 0, w, h), d = id.data, cut = S.white;
-  for (let i = 0; i < d.length; i += 4) {
-    let lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
-    lum = lum >= cut ? 255 : Math.max(0, (lum / cut) * 240);
-    if (S.purple) {
-      const ink = 255 - lum;
-      d[i] = Math.round(255 - ink * 0.62);
-      d[i + 1] = Math.round(255 - ink * 0.92);
-      d[i + 2] = Math.round(255 - ink * 0.25);
-    } else {
-      d[i] = d[i + 1] = d[i + 2] = lum;
+          if (!res.ok) continue;
+          const data = await res.json();
+          const parts = data?.candidates?.[0]?.content?.parts || [];
+          const imgPart = parts.find((p) => p.inlineData || p.inline_data);
+          if (imgPart) {
+            const inline = imgPart.inlineData || imgPart.inline_data;
+            return `data:${inline.mimeType || inline.mime_type || 'image/png'};base64,${inline.data}`;
+          }
+        } catch (err) {}
+      }
+      return null;
     }
-  }
-  ctx.putImageData(id, 0, 0);
-}
 
-function drawCanvas() {
-  const src = S.vars[S.idx];
-  if (!src) return;
-  const im = new Image();
-  im.onload = () => renderTo(im, $('stenCanvas'), false);
-  im.src = src;
-}
+    async function runGeneration(isNewVariation = false) {
+      if (!state.refDataUrl) {
+        showToast('Selecione uma imagem da galeria primeiro.');
+        return;
+      }
 
-$('mirBtn').onclick = function () { S.mirror = !S.mirror; this.classList.toggle('active', S.mirror); drawCanvas(); };
-$('purBtn').onclick = function () { S.purple = !S.purple; this.classList.toggle('active', S.purple); drawCanvas(); };
-$('cSl').oninput = e => { S.contrast = +e.target.value; $('cVal').textContent = S.contrast + '%'; drawCanvas(); };
-$('wSl').oninput = e => { S.white = +e.target.value; $('wVal').textContent = S.white; drawCanvas(); };
-$('aSl').oninput = e => { S.angle = +e.target.value; $('aVal').textContent = S.angle + '°'; drawCanvas(); };
-$('sSl').oninput = e => { S.stretch = +e.target.value; $('sVal').textContent = S.stretch + '%'; drawCanvas(); };
+      loadingOverlay.classList.add('active');
+      const nextIndex = isNewVariation ? state.variations.length : 0;
 
-$('rstBtn').onclick = () => {
-  S.mirror = S.purple = false; S.contrast = 105; S.white = 235; S.angle = 0; S.stretch = 100;
-  $('mirBtn').classList.remove('active'); $('purBtn').classList.remove('active');
-  $('cSl').value = 105; $('cVal').textContent = '105%';
-  $('wSl').value = 235; $('wVal').textContent = '235';
-  $('aSl').value = 0; $('aVal').textContent = '0°';
-  $('sSl').value = 100; $('sVal').textContent = '100%';
-  drawCanvas();
-};
+      const resultDataUrl = await generateWithGemini(nextIndex);
+      loadingOverlay.classList.remove('active');
 
-let drag = false;
-function moveBar(x) {
-  const r = $('comp').getBoundingClientRect();
-  const p = Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100));
-  $('bar').style.left = p + '%';
-  $('stenLayer').style.clipPath = `inset(0 ${100 - p}% 0 0)`;
-}
-$('comp').onpointerdown = e => { if (!e.target.closest('.vars')) { drag = true; moveBar(e.clientX); } };
-window.onpointermove = e => { if (drag) moveBar(e.clientX); };
-window.onpointerup = () => drag = false;
+      if (!resultDataUrl) {
+        showToast('Não foi possível gerar agora. Toque novamente para tentar.');
+        return;
+      }
 
-$('dlBtn').onclick = () => {
-  if (!S.vars.length) return;
-  const ex = document.createElement('canvas');
-  const im = new Image();
-  im.onload = () => {
-    renderTo(im, ex, true);
-    ex.toBlob(b => {
-      const u = URL.createObjectURL(b), a = document.createElement('a');
-      a.href = u; a.download = 'decalque-ai-' + Date.now() + '.png';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(u), 3000);
-      toast('Decalque salvo nos Downloads / Galeria!');
-    }, 'image/png', 1);
-  };
-  im.src = S.vars[S.idx];
-};
-</script>
+      if (!isNewVariation) {
+        state.variations = [resultDataUrl];
+        state.activeVarIndex = 0;
+      } else {
+        state.variations.push(resultDataUrl);
+        state.activeVarIndex = state.variations.length - 1;
+      }
+
+      renderVariationDots();
+      resultSection.classList.add('visible');
+      renderCanvas();
+      resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showToast(isNewVariation ? `Variação ${state.variations.length} gerada!` : 'Decalque pronto!');
+    }
+
+    generateBtn.addEventListener('click', () => runGeneration(false));
+    document.getElementById('newVariationBtn').addEventListener('click', () => runGeneration(true));
+
+    function renderVariationDots() {
+      const container = document.getElementById('variationDots');
+      container.innerHTML = '';
+      state.variations.forEach((_, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'var-dot' + (idx === state.activeVarIndex ? ' active' : '');
+        btn.textContent = idx + 1;
+        btn.addEventListener('click', () => {
+          state.activeVarIndex = idx;
+          renderVariationDots();
+          renderCanvas();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function applyStudioAdjustments(img, targetCanvas, highRes = false) {
+      const scale = highRes ? Math.max(1, 1600 / Math.max(img.width, img.height)) : 1;
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+
+      targetCanvas.width = w;
+      targetCanvas.height = h;
+      const ctx = targetCanvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.translate(w / 2, h / 2);
+      if (state.mirror) ctx.scale(-1, 1);
+      ctx.rotate((state.angle * Math.PI) / 180);
+      ctx.scale(state.stretch / 100, 1);
+      ctx.filter = `grayscale(100%) contrast(${state.contrast}%)`;
+      ctx.drawImage(img, -w / 2, -h / 2, w, h);
+      ctx.restore();
+
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const d = imgData.data;
+      const cut = state.whiteCut;
+
+      for (let i = 0; i < d.length; i += 4) {
+        let lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
+        if (lum >= cut) {
+          lum = 255;
+        } else {
+          lum = Math.max(0, (lum / cut) * 240);
+        }
+
+        if (state.purple) {
+          const ink = 255 - lum;
+          d[i] = Math.round(255 - ink * 0.62);
+          d[i + 1] = Math.round(255 - ink * 0.92);
+          d[i + 2] = Math.round(255 - ink * 0.25);
+        } else {
+          d[i] = lum;
+          d[i + 1] = lum;
+          d[i + 2] = lum;
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    function renderCanvas() {
+      const src = state.variations[state.activeVarIndex];
+      if (!src) return;
+      const img = new Image();
+      img.onload = () => applyStudioAdjustments(img, stencilCanvas, false);
+      img.src = src;
+    }
+
+    document.getElementById('mirrorBtn').addEventListener('click', function () {
+      state.mirror = !state.mirror;
+      this.classList.toggle('active', state.mirror);
+      renderCanvas();
+    });
+
+    document.getElementById('purpleBtn').addEventListener('click', function () {
+      state.purple = !state.purple;
+      this.classList.toggle('active', state.purple);
+      renderCanvas();
+    });
+
+    document.getElementById('contrastSlider').addEventListener('input', (e) => {
+      state.contrast = Number(e.target.value);
+      document.getElementById('contrastVal').textContent = `${state.contrast}%`;
+      renderCanvas();
+    });
+
+    document.getElementById('whiteCutSlider').addEventListener('input', (e) => {
+      state.whiteCut = Number(e.target.value);
+      document.getElementById('whiteCutVal').textContent = state.whiteCut;
+      renderCanvas();
+    });
+
+    document.getElementById('angleSlider').addEventListener('input', (e) => {
+      state.angle = Number(e.target.value);
+      document.getElementById('angleVal').textContent = `${state.angle}°`;
+      renderCanvas();
+    });
+
+    document.getElementById('stretchSlider').addEventListener('input', (e) => {
+      state.stretch = Number(e.target.value);
+      document.getElementById('stretchVal').textContent = `${state.stretch}%`;
+      renderCanvas();
+    });
+
+    document.getElementById('resetControlsBtn').addEventListener('click', () => {
+      state.mirror = false;
+      state.purple = false;
+      state.contrast = 105;
+      state.whiteCut = 235;
+      state.angle = 0;
+      state.stretch = 100;
+      document.getElementById('mirrorBtn').classList.remove('active');
+      document.getElementById('purpleBtn').classList.remove('active');
+      document.getElementById('contrastSlider').value = 105;
+      document.getElementById('contrastVal').textContent = '105%';
+      document.getElementById('whiteCutSlider').value = 235;
+      document.getElementById('whiteCutVal').textContent = '235';
+      document.getElementById('angleSlider').value = 0;
+      document.getElementById('angleVal').textContent = '0°';
+      document.getElementById('stretchSlider').value = 100;
+      document.getElementById('stretchVal').textContent = '100%';
+      renderCanvas();
+    });
+
+    function updateSlider(clientX) {
+      const rect = comparator.getBoundingClientRect();
+      let pct = ((clientX - rect.left) / rect.width) * 100;
+      pct = Math.max(0, Math.min(100, pct));
+      sliderLine.style.left = `${pct}%`;
+      compStencilLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    }
+
+    let dragging = false;
+    comparator.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.variation-bar')) return;
+      dragging = true;
+      updateSlider(e.clientX);
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (dragging) updateSlider(e.clientX);
+    });
+    window.addEventListener('pointerup', () => {
+      dragging = false;
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if (!state.variations.length) return;
+      const exportCanvas = document.createElement('canvas');
+      const src = state.variations[state.activeVarIndex];
+      const img = new Image();
+      img.onload = () => {
+        applyStudioAdjustments(img, exportCanvas, true);
+        exportCanvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `decalque-studio-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          showToast('Decalque salvo na Galeria / Downloads!');
+        }, 'image/png', 1.0);
+      };
+      img.src = src;
+    });
+  </script>
 </body>
 </html>
