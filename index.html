@@ -3,856 +3,1412 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta name="theme-color" content="#05070d" />
-  <title>TATTOO FORGE AI // Estúdio de Decalque & Arte</title>
+  <meta name="theme-color" content="#0b0b0d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Decalque Pro" />
+  <title>GERADOR DE DECALQUE — Studio Pro Stencil AI</title>
+  <link id="pwaManifest" rel="manifest" href="" />
   <style>
-    :root {
-      --bg: #05070d;
-      --panel: rgba(12, 18, 32, 0.94);
-      --border: rgba(56, 189, 248, 0.32);
-      --cyan: #38bdf8;
-      --violet: #8b5cf6;
-      --amber: #f59e0b;
-      --emerald: #10b981;
-      --crimson: #ef4444;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-    }
-
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      background-image:
-        radial-gradient(circle at 50% 18%, rgba(56, 189, 248, 0.09) 0%, transparent 55%),
-        linear-gradient(rgba(56, 189, 248, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.025) 1px, transparent 1px);
-      background-size: 100% 100%, 26px 26px, 26px 26px;
+    :root {
+      --bg-main: #0b0b0d;
+      --bg-card: #131317;
+      --bg-card-hover: #19191f;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-orange: #ff4b2b;
+      --accent-orange-end: #ff6b35;
+      --accent-green: #22c55e;
+      --accent-green-soft: #4ade80;
     }
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 30;
+    html, body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.4;
+    }
+
+    .app-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px 16px 72px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* API Key Banner */
+    .api-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #131317;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    .api-bar-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px;
-      background: rgba(5, 7, 13, 0.94);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+      gap: 8px;
     }
 
-    .brand {
+    .api-status {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
+      gap: 6px;
+    }
+
+    .api-status.ok { color: var(--accent-green-soft); }
+    .api-status.missing { color: #fbbf24; }
+
+    .api-input-row {
+      display: flex;
       gap: 8px;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: var(--cyan);
-      text-transform: uppercase;
     }
 
-    .brand-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 10px var(--emerald);
-    }
-
-    .hud-btn {
-      background: var(--panel);
-      color: var(--text);
-      border: 1px solid var(--border);
+    .api-input {
+      flex: 1;
+      background: #0b0b0d;
+      border: 1px solid var(--border-strong);
+      color: #ffffff;
       border-radius: 10px;
-      padding: 7px 11px;
+      padding: 9px 12px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .api-input:focus {
+      border-color: var(--accent-orange);
+    }
+
+    .btn-save-key {
+      background: #27272a;
+      color: #ffffff;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 0 14px;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
     }
 
-    main {
-      flex: 1;
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 12px 14px 96px;
+    /* Install Banner */
+    .install-bar {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: linear-gradient(135deg, rgba(255, 75, 43, 0.14), rgba(255, 107, 53, 0.06));
+      border: 1px solid rgba(255, 75, 43, 0.35);
+      border-radius: 16px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
     }
 
-    /* DROPZONE / INPUT IMAGE CARD */
-    .canvas-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
+    .install-info {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 10px;
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+      min-width: 0;
+    }
+
+    .app-icon-mini {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(255, 75, 43, 0.35);
+    }
+
+    .install-text strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .install-text span {
+      display: block;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .btn-install {
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-end));
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(255, 75, 43, 0.35);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .studio-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .studio-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    .main-title {
+      font-size: clamp(2rem, 8vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 0.96;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .subtitle span {
+      color: var(--accent-green-soft);
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .file-input-offscreen {
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0.01;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
     }
 
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .step-label {
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--cyan);
+      color: var(--text-secondary);
     }
 
-    .drop-area {
+    .change-photo-btn {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fb923c;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(251, 146, 60, 0.12);
+      border: 1px solid rgba(251, 146, 60, 0.25);
+    }
+
+    .upload-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 230px;
+      padding: 28px 20px;
+      border: 2px dashed rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+    }
+
+    .upload-icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: rgba(255, 75, 43, 0.14);
+      border: 1px solid rgba(255, 75, 43, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff6b35;
+      margin-bottom: 14px;
+    }
+
+    .upload-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .upload-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-end) 100%);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 13px 24px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(255, 75, 43, 0.35);
+    }
+
+    .preview-box {
       position: relative;
       width: 100%;
-      min-height: 210px;
-      max-height: 330px;
-      border: 1.5px dashed rgba(56, 189, 248, 0.48);
-      border-radius: 12px;
-      background: rgba(6, 10, 19, 0.85);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 16px;
-      cursor: pointer;
-      overflow: hidden;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .drop-area.dragover {
-      border-color: var(--emerald);
-      background: rgba(16, 185, 129, 0.08);
-    }
-
-    .drop-area img {
-      max-width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-
-    .drop-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .drop-icon {
-      font-size: 32px;
-      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
-    }
-
-    /* PRESET CHIPS */
-    .presets-scroll {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding: 2px 0;
-      scrollbar-width: none;
-    }
-    .presets-scroll::-webkit-scrollbar { display: none; }
-
-    .preset-chip {
-      white-space: nowrap;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(56, 189, 248, 0.32);
-      color: #e2e8f0;
-      padding: 8px 13px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.18s;
-    }
-
-    .preset-chip:active {
-      transform: scale(0.96);
-      border-color: var(--cyan);
-      background: rgba(56, 189, 248, 0.2);
-    }
-
-    /* STATUS & PROGRESS */
-    .forge-status {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px;
-      border-radius: 12px;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.45);
-      color: #fcd34d;
-      font-size: 12.5px;
-      font-weight: 700;
-      text-align: center;
-    }
-    .forge-status.active { display: flex; }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2.5px solid rgba(252, 211, 77, 0.3);
-      border-top-color: #fcd34d;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* OUTPUT RESULT CARD */
-    .result-card {
-      display: none;
-      background: var(--panel);
-      border: 1.5px solid var(--emerald);
+      height: 280px;
       border-radius: 16px;
-      padding: 12px;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: 0 0 28px rgba(16, 185, 129, 0.18);
-    }
-    .result-card.visible { display: flex; }
-
-    .result-preview {
-      width: 100%;
-      min-height: 240px;
-      background: #ffffff;
-      border-radius: 12px;
+      overflow: hidden;
+      background: #09090b;
+      border: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      padding: 6px;
     }
 
-    .result-preview.dark-bg {
-      background: #090d16;
-    }
-
-    .result-preview img {
+    .preview-box img {
       max-width: 100%;
-      max-height: 440px;
+      max-height: 100%;
       object-fit: contain;
-      border-radius: 8px;
+      display: block;
     }
 
-    .result-notes {
-      font-size: 12.5px;
-      line-height: 1.45;
-      color: #cbd5e1;
-      background: rgba(15, 23, 42, 0.85);
-      padding: 9px 11px;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-    }
-
-    .action-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .action-btn {
-      padding: 11px 10px;
-      border-radius: 11px;
-      border: 1px solid var(--cyan);
-      background: rgba(56, 189, 248, 0.15);
-      color: #fff;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
+    .scan-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(11, 11, 13, 0.86);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      padding: 20px;
+      z-index: 10;
     }
 
-    .action-btn.primary {
-      border: none;
-      background: linear-gradient(135deg, var(--emerald), #059669);
-    }
-
-    .action-btn.refine {
-      border-color: var(--violet);
-      background: rgba(139, 92, 246, 0.22);
-    }
-
-    /* BOTTOM VOICE & COMMAND DOCK */
-    footer {
-      position: fixed;
-      bottom: 0;
+    .scan-bar {
+      position: absolute;
       left: 0;
       right: 0;
-      z-index: 30;
-      background: rgba(5, 7, 13, 0.96);
-      border-top: 1px solid var(--border);
-      padding: 9px 12px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      backdrop-filter: blur(12px);
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-orange), #fff, var(--accent-orange), transparent);
+      box-shadow: 0 0 16px var(--accent-orange);
+      animation: scanMove 1.8s ease-in-out infinite;
     }
 
-    .mic-btn {
-      width: 46px;
-      height: 46px;
+    @keyframes scanMove {
+      0%, 100% { top: 8%; }
+      50% { top: 90%; }
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top-color: var(--accent-orange);
       border-radius: 50%;
-      border: 1.5px solid var(--cyan);
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.28), rgba(10, 16, 28, 0.95));
-      color: #fff;
-      font-size: 19px;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .modes-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin: 0 0 10px 4px;
+    }
+
+    .mode-card {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .mode-card.active {
+      background: linear-gradient(135deg, rgba(255, 75, 43, 0.13), rgba(255, 107, 53, 0.04));
+      border-color: rgba(255, 75, 43, 0.65);
+    }
+
+    .mode-thumb {
+      width: 58px;
+      height: 70px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    .mode-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mode-head {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .mode-name {
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .badge-popular {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #16a34a;
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .mode-desc {
+      font-size: 12.5px;
+      color: #d4d4d8;
+      line-height: 1.38;
+      margin-bottom: 5px;
+    }
+
+    .mode-tip {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #f87171;
+      line-height: 1.35;
+    }
+
+    .result-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .result-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .studio-toggles {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-strong);
+      color: #e4e4e7;
+      cursor: pointer;
+    }
+
+    .toggle-pill.active-orange {
+      background: rgba(255, 75, 43, 0.2);
+      border-color: var(--accent-orange);
+      color: #fdba74;
+    }
+
+    .toggle-pill.active-purple {
+      background: rgba(147, 51, 234, 0.25);
+      border-color: #a855f7;
+      color: #e9d5ff;
+    }
+
+    .comparator-frame {
+      position: relative;
+      width: 100%;
+      height: 410px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #ffffff;
+      border: 2px solid var(--border-strong);
+      user-select: none;
+      touch-action: pan-y;
+    }
+
+    .comparator-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .comparator-layer.original-bg {
+      background: #141418;
+    }
+
+    .comparator-layer img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .badge-decalque {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 20;
+      background: #dc2626;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+    }
+
+    .badge-original {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 20;
+      background: rgba(24, 24, 27, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .variation-dock {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 25;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 15, 19, 0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 5px;
+      border-radius: 999px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn-cycle-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-end));
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(255, 75, 43, 0.45);
     }
 
-    .mic-btn.listening {
-      border-color: var(--crimson);
-      background: rgba(239, 68, 68, 0.32);
-      box-shadow: 0 0 18px rgba(239, 68, 68, 0.7);
+    .btn-cycle-circle.spinning svg {
+      animation: spin 0.8s linear infinite;
     }
 
-    .prompt-input {
-      flex: 1;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 11px 15px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
+    .variant-pills {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding-right: 4px;
     }
 
-    .send-btn {
-      width: 46px;
-      height: 46px;
+    .variant-dot {
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, var(--cyan), var(--violet));
-      color: #fff;
-      font-size: 17px;
-      font-weight: bold;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #d4d4d8;
+      font-size: 11px;
+      font-weight: 800;
       cursor: pointer;
-      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* SETTINGS OVERLAY */
-    .overlay-panel {
-      position: fixed;
-      inset: 54px 12px 74px 12px;
-      max-width: 576px;
-      margin: 0 auto;
-      background: rgba(6, 10, 19, 0.98);
-      border: 1px solid var(--cyan);
+    .variant-dot.active {
+      background: #ffffff;
+      color: #0b0b0d;
+      border-color: #ffffff;
+    }
+
+    .slider-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.9);
+      transform: translateX(-50%);
+      z-index: 22;
+      cursor: ew-resize;
+    }
+
+    .slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-end));
+      border: 2.5px solid #ffffff;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .controls-panel {
+      margin-top: 14px;
+      padding: 14px;
       border-radius: 16px;
-      z-index: 50;
-      display: none;
-      flex-direction: column;
-      padding: 16px;
-      overflow-y: auto;
-      gap: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-subtle);
     }
-    .overlay-panel.open { display: flex; }
 
-    .overlay-header {
+    .controls-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
+      margin-bottom: 12px;
+      font-size: 11px;
       font-weight: 800;
-      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
     }
 
-    .field-group {
+    .btn-reset {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      text-decoration: underline;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .slider-group {
+      margin-bottom: 12px;
+    }
+
+    .slider-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .slider-meta {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 12px;
-      color: #cbd5e1;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
     }
 
-    .field-group input {
+    .slider-meta span:last-child {
+      color: #fb923c;
+    }
+
+    input[type="range"] {
       width: 100%;
-      padding: 11px 12px;
-      font-size: 13.5px;
-      font-family: monospace;
-      background-color: #0f172a !important;
-      color: #38bdf8 !important;
-      border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
-      border-radius: 10px;
-      outline: none;
+      accent-color: var(--accent-orange);
+      height: 6px;
+      cursor: pointer;
     }
 
-    .tip-box {
-      font-size: 12px;
-      line-height: 1.45;
-      color: #e2e8f0;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      padding: 10px 12px;
-      border-radius: 10px;
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      padding: 15px 14px;
+      font-size: 14px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(22, 163, 74, 0.35);
+    }
+
+    .btn-new {
+      background: #1f1f24;
+      color: #ffffff;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 15px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #18181b;
+      border: 1px solid var(--border-strong);
+      color: #ffffff;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 100;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+      white-space: nowrap;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 420px;
+      background: #141418;
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand">
-      <span class="brand-dot"></span>
-      <span>TATTOO FORGE AI</span>
-    </div>
-    <div style="display:flex; gap:6px;">
-      <button class="hud-btn" id="btn-clear-all">🗑️ Limpar</button>
-      <button class="hud-btn" id="btn-settings">⚙️ Chave API</button>
-    </div>
-  </header>
+  <input type="file" id="fileInput" class="file-input-offscreen" accept="image/*" />
 
-  <main>
-    <!-- 1. INPUT IMAGE DROPZONE -->
-    <section class="canvas-card">
-      <div class="card-header">
-        <span>1. Imagem de Referência / Foto</span>
-        <span id="input-badge" style="color: var(--muted);">Nenhuma imagem</span>
+  <div class="app-container">
+
+    <!-- Configuração da Chave Gemini AI (salva no celular) -->
+    <div class="api-bar">
+      <div class="api-bar-top">
+        <span id="apiStatusLabel" class="api-status missing">● Configure sua chave Google AI Studio</span>
+        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="font-size:11px;color:#fb923c;font-weight:700;text-decoration:none;">Pegar chave grátis ↗</a>
       </div>
+      <div class="api-input-row">
+        <input type="password" id="apiKeyInput" class="api-input" placeholder="Cole sua chave AIzaSy... aqui" />
+        <button type="button" id="btnSaveApiKey" class="btn-save-key">Salvar</button>
+      </div>
+    </div>
 
-      <input type="file" id="file-input" accept="image/*" style="display:none;" />
-
-      <div class="drop-area" id="drop-area">
-        <div class="drop-placeholder" id="drop-placeholder">
-          <div class="drop-icon">🖼️</div>
-          <strong>Toque aqui para soltar ou escolher uma imagem</strong>
-          <span>Envie foto de referência, desenho ou decalque para corrigir</span>
+    <!-- Barra de Instalação PWA -->
+    <div id="installBar" class="install-bar">
+      <div class="install-info">
+        <div class="app-icon-mini">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4">
+            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+          </svg>
         </div>
-        <img id="preview-input-img" style="display:none;" alt="Imagem de Entrada" />
+        <div class="install-text">
+          <strong>Instalar no Celular</strong>
+          <span>Acesso direto na tela inicial</span>
+        </div>
+      </div>
+      <button type="button" id="btnInstallApp" class="btn-install">Instalar App</button>
+    </div>
+
+    <!-- Cabeçalho -->
+    <header class="header">
+      <div class="studio-badge">
+        <span class="studio-dot"></span>
+        STUDIO PRO STENCIL AI
+      </div>
+      <h1 class="main-title">GERADOR DE<br>DECALQUE</h1>
+      <p class="subtitle">Seu <span>decalque</span> pronto em segundos.</p>
+    </header>
+
+    <!-- Etapa 1: Upload -->
+    <section class="card">
+      <div class="card-header">
+        <span class="step-label">1. Imagem de Referência</span>
+        <label for="fileInput" id="btnChangePhoto" class="change-photo-btn hidden">Trocar Foto</label>
       </div>
 
-      <!-- QUICK STUDIO COMMANDS -->
-      <div class="presets-scroll">
-        <button class="preset-chip" data-cmd="Extraia o decalque (stencil) limpo desta imagem: fundo branco puro, apenas linhas e marcações de sombra em preto nítido, pronto para impressora térmica de tatuagem.">📐 Decalque (Stencil) Limpo</button>
-        <button class="preset-chip" data-cmd="Converta esta imagem em uma arte de tatuagem Black & Grey (preto e cinza) realista profissional, com alto contraste, texturas detalhadas e fundo limpo.">🖤 Tatuagem Black & Grey</button>
-        <button class="preset-chip" data-cmd="Melhore a qualidade, nitidez e definição deste decalque/tatuagem: corrija linhas falhadas, limpe borrões e deixe os traços perfeitos para tatuar.">✨ Corrigir & Lapidar Decalque</button>
-        <button class="preset-chip" data-cmd="Transforme esta imagem em um desenho estilo Fine Line / Blackwork minimalista com traços finos, precisos e elegantes sobre fundo branco.">✒️ Fine Line / Blackwork</button>
-        <button class="preset-chip" data-cmd="Remova a pele, pelos e fundo da foto desta tatuagem, reconstruindo a arte plana em 2D sobre fundo branco puro.">🧼 Extrair Arte da Pele</button>
+      <label for="fileInput" id="dropZone" class="upload-zone">
+        <div class="upload-icon-box">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <div class="upload-title">Toque para abrir a galeria</div>
+        <div class="upload-hint">Suporta JPG, PNG, WEBP</div>
+        <span class="btn-primary">Escolher da Galeria</span>
+      </label>
+
+      <div id="previewContainer" class="preview-box hidden">
+        <img id="originalPreview" src="" alt="Referência" />
+        <div id="loadingOverlay" class="scan-overlay hidden">
+          <div class="scan-bar"></div>
+          <div class="spinner"></div>
+          <div id="loadingTitle" style="font-weight:800;font-size:15px;margin-bottom:4px;">Extraindo decalque...</div>
+          <div id="loadingSub" style="font-size:12px;color:#a1a1aa;">Preservando ângulo original &amp; planificando pele</div>
+        </div>
       </div>
     </section>
 
-    <!-- LOADING / PROCESSING INDICATOR -->
-    <div class="forge-status" id="forge-status">
-      <div class="spinner"></div>
-      <span id="forge-status-text">Forjando arte e lapidando traços...</span>
-    </div>
+    <!-- Etapa 2: Modos -->
+    <section>
+      <div class="modes-title">2. Escolha o Modo de Extração</div>
 
-    <!-- 2. OUTPUT GENERATED TATTOO / STENCIL -->
-    <section class="result-card" id="result-card">
-      <div class="card-header" style="color: var(--emerald);">
-        <span>2. Arte / Decalque Pronto</span>
-        <button class="hud-btn" id="btn-toggle-bg" style="padding:4px 8px; font-size:11px;">🌗 Fundo Branco/Escuro</button>
+      <button type="button" class="mode-card" data-mode="lines">
+        <div class="mode-thumb">
+          <svg width="42" height="54" viewBox="0 0 60 80" fill="none">
+            <path d="M30 8C20 8 15 16 15 26C15 35 21 41 21 50C21 60 14 66 14 72H46C46 66 39 60 39 50C39 41 45 35 45 26C45 16 40 8 30 8Z" stroke="#111" stroke-width="1.6"/>
+            <path d="M22 25C25 22 35 22 38 25M24 33C27 36 33 36 36 33M25 46H35M23 58H37" stroke="#111" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="mode-body">
+          <div class="mode-head">
+            <span class="mode-name">DECALQUE LINHAS</span>
+          </div>
+          <p class="mode-desc">Cria finelines limpas a partir de desenhos prontos ou fotos.</p>
+          <p class="mode-tip">▲ Use para extrair somente as linhas do desenho e para PEQUENAS ESCRITAS e frases.</p>
+        </div>
+      </button>
+
+      <button type="button" class="mode-card" data-mode="lines_shadow">
+        <div class="mode-thumb">
+          <svg width="42" height="54" viewBox="0 0 60 80" fill="none">
+            <defs>
+              <linearGradient id="shd" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#111"/>
+                <stop offset="55%" stop-color="#777"/>
+                <stop offset="100%" stop-color="#eee"/>
+              </linearGradient>
+            </defs>
+            <path d="M30 8C19 8 14 17 14 27C14 36 20 42 20 51C20 60 13 66 13 72H47C47 66 40 60 40 51C40 42 46 36 46 27C46 17 41 8 30 8Z" fill="url(#shd)" stroke="#111" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div class="mode-body">
+          <div class="mode-head">
+            <span class="mode-name">LINHAS + SOMBRA</span>
+          </div>
+          <p class="mode-desc">Ideal para fotos, artes digitais e realismos, preservando linhas e detalhes de sombra.</p>
+          <p class="mode-tip">▲ Mais indicado para desenho no papel ou arte digital.</p>
+        </div>
+      </button>
+
+      <button type="button" class="mode-card active" data-mode="tattoo_to_drawing">
+        <div class="mode-thumb">
+          <svg width="42" height="54" viewBox="0 0 60 80" fill="none">
+            <path d="M22 14L30 8L38 14L44 26L40 42L45 64L30 72L15 64L20 42L16 26L22 14Z" fill="#d4d4d8" stroke="#111" stroke-width="1.7"/>
+            <path d="M24 26C27 23 33 23 36 26M23 36L37 36M22 48C26 52 34 52 38 48" stroke="#111" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="mode-body">
+          <div class="mode-head">
+            <span class="mode-name">TATUAGEM &rarr; DESENHO</span>
+            <span class="badge-popular">MAIS UTILIZADO</span>
+          </div>
+          <p class="mode-desc">Extrai a tatuagem da pele, planifica o ângulo e recria a arte limpa em fundo branco.</p>
+          <p class="mode-tip">▲ Envie a foto da tatuagem na pele mantendo a pose original.</p>
+        </div>
+      </button>
+    </section>
+
+    <!-- Etapa 3: Resultado & Comparador -->
+    <section id="resultSection" class="card hidden">
+      <div class="result-topbar">
+        <h2 class="result-title">Seu Decalque</h2>
+        <div class="studio-toggles">
+          <button type="button" id="btnMirror" class="toggle-pill">Espelhar</button>
+          <button type="button" id="btnHecto" class="toggle-pill">Tom Roxo</button>
+        </div>
       </div>
 
-      <div class="result-preview" id="result-preview">
-        <img id="output-img" alt="Resultado Tatuagem" />
+      <div id="comparatorBox" class="comparator-frame">
+        <div class="comparator-layer original-bg">
+          <img id="compOriginal" src="" alt="Original" />
+        </div>
+
+        <div id="stencilLayer" class="comparator-layer" style="clip-path: inset(0 50% 0 0);">
+          <img id="compStencil" src="" alt="Decalque" />
+        </div>
+
+        <span class="badge-decalque">DECALQUE</span>
+        <span class="badge-original">ORIGINAL</span>
+
+        <!-- Botão Circular de Variações -->
+        <div class="variation-dock" id="variationDock">
+          <button type="button" id="btnCycleVariant" class="btn-cycle-circle" title="Gerar outra variação mantendo a pose">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 2v6h-6"/>
+              <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+              <path d="M3 22v-6h6"/>
+              <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+            </svg>
+          </button>
+          <div id="variantPills" class="variant-pills"></div>
+        </div>
+
+        <div id="sliderLine" class="slider-line" style="left: 50%;">
+          <div class="slider-handle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 3 12 9 6"/>
+              <polyline points="15 6 21 12 15 18"/>
+            </svg>
+          </div>
+        </div>
       </div>
 
-      <div class="result-notes" id="result-notes" style="display:none;"></div>
+      <!-- Ajustes Finos -->
+      <div class="controls-panel">
+        <div class="controls-header">
+          <span>Ajustes Finos de Impressão</span>
+          <button type="button" id="btnResetAdjustments" class="btn-reset">Resetar</button>
+        </div>
 
-      <div class="action-grid">
-        <button class="action-btn refine" id="btn-use-as-input">🔄 Lapidar esta Arte</button>
-        <button class="action-btn primary" id="btn-download">⬇️ Baixar PNG</button>
+        <div class="slider-group">
+          <div class="slider-meta">
+            <span>Intensidade / Contraste do Traço</span>
+            <span id="contrastVal">105%</span>
+          </div>
+          <input type="range" id="contrastSlider" min="70" max="175" value="105" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-meta">
+            <span>Ângulo da Folha</span>
+            <span id="rotateVal">0°</span>
+          </div>
+          <input type="range" id="rotateSlider" min="-45" max="45" value="0" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-meta">
+            <span>Expansão Lateral (Descurvar)</span>
+            <span id="stretchVal">100%</span>
+          </div>
+          <input type="range" id="stretchSlider" min="85" max="135" value="100" />
+        </div>
+      </div>
+
+      <!-- Ações Finais -->
+      <div class="action-row">
+        <button type="button" id="btnDownload" class="btn-download">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Baixar PNG
+        </button>
+
+        <label for="fileInput" class="btn-new">
+          + Nova Imagem
+        </label>
       </div>
     </section>
-  </main>
 
-  <!-- VOICE & TEXT COMMAND BAR -->
-  <footer>
-    <button class="mic-btn" id="btn-mic" title="Falar ordem por voz">🎙️</button>
-    <input type="text" class="prompt-input" id="prompt-input" placeholder="Fale ou digite como quer a tatuagem/decalque..." />
-    <button class="send-btn" id="btn-send" title="Executar">➤</button>
-  </footer>
-
-  <!-- SETTINGS MODAL -->
-  <div class="overlay-panel" id="settings-panel">
-    <div class="overlay-header">
-      <span>CONFIGURAÇÃO DO MOTOR VISUAL</span>
-      <button class="hud-btn" id="btn-close-settings">✕ Fechar</button>
-    </div>
-
-    <div class="field-group">
-      <label>Chave de API Google AI Studio (`AQ....` ou `AIza...`)</label>
-      <input type="text" id="api-key-input" autocomplete="off" spellcheck="false" placeholder="Cole sua chave Gemini aqui..." />
-    </div>
-
-    <div class="tip-box">
-      <strong>Como usar o Tattoo Forge:</strong><br>
-      1. Solte qualquer foto ou desenho na caixa superior.<br>
-      2. Toque no microfone (🎙️) e diga o que deseja (ex: <em>"Transforme em decalque só com linhas"</em> ou <em>"Melhore esse decalque e deixe mais nítido"</em>).<br>
-      3. Se quiser ajustar o resultado, toque em <strong>🔄 Lapidar esta Arte</strong> e dê a próxima instrução.
-    </div>
-
-    <button class="action-btn primary" id="btn-save-settings">💾 Salvar Chave</button>
   </div>
 
+  <!-- Modal de Ajuda para Instalar -->
+  <div id="installModal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <h3 style="font-size:18px;font-weight:900;margin-bottom:10px;text-align:center;">INSTALAR NA TELA INICIAL</h3>
+      <p style="font-size:13px;color:#d4d4d8;line-height:1.5;margin-bottom:12px;">
+        <strong>No Android (Chrome):</strong> Toque nos <strong>3 pontinhos (&#8942;)</strong> no canto superior direito e selecione <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar aplicativo"</strong>.
+      </p>
+      <p style="font-size:13px;color:#d4d4d8;line-height:1.5;margin-bottom:16px;">
+        <strong>No iPhone (Safari):</strong> Toque em <strong>Compartilhar</strong> na barra inferior e escolha <strong>"Adicionar à Tela de Início"</strong>.
+      </p>
+      <button type="button" id="btnCloseInstallModal" class="btn-primary" style="width:100%;">ENTENDI</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
   <script>
-    function extractCleanKey(raw) {
-      if (!raw) return '';
-      let str = String(raw).replace(/\s+/g, '');
-      if (/^AQ[A-Za-z0-9_-]{20,}$/.test(str)) {
-        str = 'AQ.' + str.slice(2);
+    (function setupPWA() {
+      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#ff4b2b"/><path d="M256 380l140-140 60 60-140 140-60-60zM376 260l-30-150L76 40l70 290 130 70 100-100z" fill="none" stroke="#fff" stroke-width="32" stroke-linejoin="round"/></svg>`;
+      const iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg);
+      const manifestObj = {
+        name: 'Gerador de Decalque Pro',
+        short_name: 'Decalque Pro',
+        start_url: '.',
+        display: 'standalone',
+        background_color: '#0b0b0d',
+        theme_color: '#0b0b0d',
+        icons: [{ src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }]
+      };
+      const manifestEl = document.getElementById('pwaManifest');
+      if (manifestEl) {
+        manifestEl.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestObj));
       }
-      const geminiNew = str.match(/AQ\.[0-9A-Za-z_.-]{20,}/);
-      if (geminiNew) return geminiNew[0];
-      const geminiOld = str.match(/AIza[0-9A-Za-z_-]{20,}/);
-      if (geminiOld) return geminiOld[0];
-      return str.replace(/[^0-9A-Za-z_.-]/g, '');
-    }
+    })();
+
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
 
     const state = {
-      apiKey: extractCleanKey(
-        localStorage.getItem('openrouter_api_key')
-        || localStorage.getItem('omni_voice_key')
-        || localStorage.getItem('gemini_api_key')
-        || ''
-      ),
-      inputBase64: '',
-      inputMime: 'image/png',
-      outputBase64: '',
-      outputMime: 'image/png'
+      apiKey: localStorage.getItem('gemini_stencil_api_key') || '',
+      originalDataUrl: null,
+      originalBase64: null,
+      originalMimeType: 'image/jpeg',
+      variants: [],
+      activeVariantIndex: 0,
+      mode: 'tattoo_to_drawing',
+      sliderPct: 50,
+      mirrored: false,
+      hectoPurple: false,
+      contrast: 105,
+      rotation: 0,
+      stretchX: 100,
+      isProcessing: false
     };
 
-    const fileInput = document.getElementById('file-input');
-    const dropArea = document.getElementById('drop-area');
-    const dropPlaceholder = document.getElementById('drop-placeholder');
-    const previewInputImg = document.getElementById('preview-input-img');
-    const inputBadge = document.getElementById('input-badge');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const apiStatusLabel = document.getElementById('apiStatusLabel');
+    const btnSaveApiKey = document.getElementById('btnSaveApiKey');
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const previewContainer = document.getElementById('previewContainer');
+    const originalPreview = document.getElementById('originalPreview');
+    const btnChangePhoto = document.getElementById('btnChangePhoto');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingTitle = document.getElementById('loadingTitle');
+    const loadingSub = document.getElementById('loadingSub');
+    const modeCards = document.querySelectorAll('.mode-card');
+    const resultSection = document.getElementById('resultSection');
+    const comparatorBox = document.getElementById('comparatorBox');
+    const compOriginal = document.getElementById('compOriginal');
+    const compStencil = document.getElementById('compStencil');
+    const stencilLayer = document.getElementById('stencilLayer');
+    const sliderLine = document.getElementById('sliderLine');
+    const btnCycleVariant = document.getElementById('btnCycleVariant');
+    const variantPills = document.getElementById('variantPills');
+    const btnMirror = document.getElementById('btnMirror');
+    const btnHecto = document.getElementById('btnHecto');
+    const contrastSlider = document.getElementById('contrastSlider');
+    const contrastVal = document.getElementById('contrastVal');
+    const rotateSlider = document.getElementById('rotateSlider');
+    const rotateVal = document.getElementById('rotateVal');
+    const stretchSlider = document.getElementById('stretchSlider');
+    const stretchVal = document.getElementById('stretchVal');
+    const btnResetAdjustments = document.getElementById('btnResetAdjustments');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnInstallApp = document.getElementById('btnInstallApp');
+    const installModal = document.getElementById('installModal');
+    const btnCloseInstallModal = document.getElementById('btnCloseInstallModal');
+    const toastEl = document.getElementById('toast');
 
-    const forgeStatus = document.getElementById('forge-status');
-    const forgeStatusText = document.getElementById('forge-status-text');
-
-    const resultCard = document.getElementById('result-card');
-    const resultPreview = document.getElementById('result-preview');
-    const outputImg = document.getElementById('output-img');
-    const resultNotes = document.getElementById('result-notes');
-
-    const promptInput = document.getElementById('prompt-input');
-    const apiKeyInput = document.getElementById('api-key-input');
-
-    apiKeyInput.value = state.apiKey;
-    if (state.apiKey) localStorage.setItem('openrouter_api_key', state.apiKey);
-
-    function setLoading(active, msg) {
-      forgeStatus.classList.toggle('active', active);
-      if (msg) forgeStatusText.textContent = msg;
+    let toastTimer = null;
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.add('hidden'), 3000);
     }
 
-    // --- IMAGE UPLOAD & RESIZE (KEEPS HIGH DETAIL WITHOUT PAYLOAD OVERFLOW) ---
-    function loadImageFile(file) {
-      if (!file || !file.type.startsWith('image/')) return;
+    function updateApiKeyUI() {
+      if (state.apiKey && state.apiKey.trim().length > 10) {
+        apiKeyInput.value = state.apiKey;
+        apiStatusLabel.textContent = '● IA Conectada (Pronta para usar)';
+        apiStatusLabel.className = 'api-status ok';
+      } else {
+        apiStatusLabel.textContent = '● Cole sua chave Google AI Studio abaixo';
+        apiStatusLabel.className = 'api-status missing';
+      }
+    }
+    updateApiKeyUI();
+
+    btnSaveApiKey.addEventListener('click', () => {
+      const val = apiKeyInput.value.trim();
+      if (!val) {
+        showToast('Cole uma chave API válida.');
+        return;
+      }
+      state.apiKey = val;
+      localStorage.setItem('gemini_stencil_api_key', val);
+      updateApiKeyUI();
+      showToast('Chave salva no aparelho!');
+      if (state.originalBase64 && state.variants.length === 0) {
+        generateStencil(false);
+      }
+    });
+
+    btnInstallApp.addEventListener('click', async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+      } else {
+        installModal.classList.remove('hidden');
+      }
+    });
+
+    btnCloseInstallModal.addEventListener('click', () => installModal.classList.add('hidden'));
+    installModal.addEventListener('click', (e) => {
+      if (e.target === installModal) installModal.classList.add('hidden');
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleImageFile(e.target.files[0]);
+        fileInput.value = '';
+      }
+    });
+
+    function handleImageFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Selecione um arquivo de imagem.');
+        return;
+      }
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = (ev) => {
         const img = new Image();
         img.onload = () => {
-          const maxDim = 1280;
+          const maxDim = 1536;
           let w = img.width;
           let h = img.height;
           if (w > maxDim || h > maxDim) {
-            if (w > h) {
-              h = Math.round((h * maxDim) / w);
-              w = maxDim;
-            } else {
-              w = Math.round((w * maxDim) / h);
-              h = maxDim;
-            }
+            const scale = maxDim / Math.max(w, h);
+            w = Math.round(w * scale);
+            h = Math.round(h * scale);
           }
           const canvas = document.createElement('canvas');
           canvas.width = w;
           canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
 
-          const dataUrl = canvas.toDataURL('image/png');
-          state.inputMime = 'image/png';
-          state.inputBase64 = dataUrl.split(',')[1];
+          const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.94);
+          state.originalDataUrl = resizedDataUrl;
+          state.originalBase64 = resizedDataUrl.split(',')[1];
+          state.originalMimeType = 'image/jpeg';
+          state.variants = [];
+          state.activeVariantIndex = 0;
 
-          previewInputImg.src = dataUrl;
-          previewInputImg.style.display = 'block';
-          dropPlaceholder.style.display = 'none';
-          inputBadge.textContent = `${w}x${h} px prontos`;
-          inputBadge.style.color = '#10b981';
+          originalPreview.src = resizedDataUrl;
+          compOriginal.src = resizedDataUrl;
+          dropZone.classList.add('hidden');
+          previewContainer.classList.remove('hidden');
+          btnChangePhoto.classList.remove('hidden');
+
+          generateStencil(false);
         };
-        img.src = e.target.result;
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    dropArea.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => loadImageFile(e.target.files[0]));
-
-    dropArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropArea.classList.add('dragover');
-    });
-    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
-    dropArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropArea.classList.remove('dragover');
-      if (e.dataTransfer.files[0]) loadImageFile(e.dataTransfer.files[0]);
-    });
-
-    // --- VOICE RECOGNITION (STT) ---
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const micBtn = document.getElementById('btn-mic');
-    let recognition = null;
-
-    if (SpeechRec) {
-      recognition = new SpeechRec();
-      recognition.lang = 'pt-BR';
-      recognition.interimResults = true;
-      recognition.continuous = false;
-
-      recognition.onstart = () => {
-        micBtn.classList.add('listening');
-        promptInput.placeholder = 'Ouvindo sua instrução de tatuagem...';
-      };
-
-      recognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
+    modeCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        if (state.isProcessing) return;
+        modeCards.forEach((c) => c.classList.remove('active'));
+        card.classList.add('active');
+        state.mode = card.dataset.mode;
+        if (state.originalBase64) {
+          state.variants = [];
+          state.activeVariantIndex = 0;
+          generateStencil(false);
         }
-        promptInput.value = transcript;
-        if (event.results[event.results.length - 1].isFinal) {
-          forgeTattooImage(transcript);
-        }
-      };
-
-      recognition.onerror = () => {
-        micBtn.classList.remove('listening');
-        promptInput.placeholder = 'Fale ou digite como quer a tatuagem/decalque...';
-      };
-
-      recognition.onend = () => {
-        micBtn.classList.remove('listening');
-        promptInput.placeholder = 'Fale ou digite como quer a tatuagem/decalque...';
-      };
-    }
-
-    micBtn.addEventListener('click', () => {
-      if (!recognition) {
-        alert('Reconhecimento de voz não suportado neste navegador. Use o Google Chrome.');
-        return;
-      }
-      try {
-        recognition.start();
-      } catch (e) {
-        recognition.stop();
-      }
-    });
-
-    // --- CORE GEMINI IMAGE-TO-IMAGE & STENCIL FORGE ENGINE ---
-    async function forgeTattooImage(customCommand) {
-      const instruction = (customCommand || promptInput.value).trim();
-      if (!instruction) {
-        alert('Fale ou digite o que você deseja fazer com a imagem.');
-        return;
-      }
-
-      const key = extractCleanKey(apiKeyInput.value || state.apiKey);
-      if (!key) {
-        document.getElementById('settings-panel').classList.add('open');
-        alert('Cole sua chave de API do Google AI Studio nas configurações primeiro.');
-        return;
-      }
-
-      promptInput.value = '';
-      setLoading(true, 'Analisando traços, luz e sombra e forjando imagem...');
-
-      const artDirectorPrompt =
-        'Você é um mestre tatuador especialista em Black & Grey, Realismo e criação de decalques (stencils) térmicos profissionais. ' +
-        'Execute exatamente a seguinte ordem sobre a imagem fornecida (ou crie do zero se nenhuma imagem foi anexada): "' + instruction + '". ' +
-        'Regras obrigatórias: ' +
-        '1. Gere uma IMAGEM nova editada/convertida de altíssima qualidade, limpa, nítida e fiel à anatomia/proporção da referência. ' +
-        '2. Se o pedido envolver decalque, stencil, linhas ou impressão, entregue fundo 100% branco puro com traços pretos nítidos e bem definidos, sem cinza sujo no fundo. ' +
-        '3. Se o pedido for melhorar ou corrigir, elimine ruídos, borrões, distorções e falhas de linha.';
-
-      const parts = [{ text: artDirectorPrompt }];
-      if (state.inputBase64) {
-        parts.push({
-          inlineData: {
-            mimeType: state.inputMime,
-            data: state.inputBase64
-          }
-        });
-      }
-
-      // Try Gemini native image-editing models in order
-      const imageModels = [
-        'gemini-2.5-flash-image',
-        'gemini-2.0-flash-exp-image-generation'
-      ];
-
-      let generatedImagePart = null;
-      let textFeedback = '';
-      let lastError = '';
-
-      for (const modelName of imageModels) {
-        try {
-          const res = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(key)}`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-goog-api-key': key
-              },
-              body: JSON.stringify({
-                contents: [{ parts }],
-                generationConfig: {
-                  responseModalities: ['IMAGE', 'TEXT']
-                }
-              })
-            }
-          );
-
-          const data = await res.json();
-          if (!res.ok || data.error) {
-            lastError = data.error?.message || `HTTP ${res.status}`;
-            continue;
-          }
-
-          const respParts = data.candidates?.[0]?.content?.parts || [];
-          for (const p of respParts) {
-            if (p.inlineData && p.inlineData.data) {
-              generatedImagePart = p.inlineData;
-            } else if (p.text) {
-              textFeedback += p.text + ' ';
-            }
-          }
-
-          if (generatedImagePart) break;
-        } catch (err) {
-          lastError = err.message;
-        }
-      }
-
-      setLoading(false);
-
-      if (!generatedImagePart) {
-        alert('Não foi possível gerar a imagem: ' + (lastError || 'Verifique sua chave API.'));
-        return;
-      }
-
-      state.outputBase64 = generatedImagePart.data;
-      state.outputMime = generatedImagePart.mimeType || 'image/png';
-
-      const outDataUrl = `data:${state.outputMime};base64,${state.outputBase64}`;
-      outputImg.src = outDataUrl;
-      resultCard.classList.add('visible');
-
-      if (textFeedback.trim()) {
-        resultNotes.textContent = textFeedback.trim();
-        resultNotes.style.display = 'block';
-      } else {
-        resultNotes.style.display = 'none';
-      }
-
-      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    // --- BUTTON ACTIONS ---
-    document.getElementById('btn-send').addEventListener('click', () => forgeTattooImage());
-    promptInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') forgeTattooImage();
-    });
-
-    document.querySelectorAll('.preset-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        if (!state.inputBase64) {
-          alert('Solte ou escolha uma imagem na caixa 1 primeiro!');
-          fileInput.click();
-          return;
-        }
-        forgeTattooImage(chip.dataset.cmd);
       });
     });
 
-    // Promote output image back to input for iterative refinement
-    document.getElementById('btn-use-as-input').addEventListener('click', () => {
-      if (!state.outputBase64) return;
-      state.inputBase64 = state.outputBase64;
-      state.inputMime = state.outputMime;
-      const url = `data:${state.inputMime};base64,${state.inputBase64}`;
-      previewInputImg.src = url;
-      previewInputImg.style.display = 'block';
-      dropPlaceholder.style.display = 'none';
-      inputBadge.textContent = 'Pronta para nova lapidação';
-      inputBadge.style.color = '#a78bfa';
-      promptInput.focus();
-      promptInput.placeholder = 'Diga o próximo ajuste (ex: afine os traços, aumente o contraste)...';
-      dropArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    btnCycleVariant.addEventListener('click', () => {
+      if (state.isProcessing || !state.originalBase64) return;
+      generateStencil(true);
     });
 
-    // Download generated PNG
-    document.getElementById('btn-download').addEventListener('click', () => {
-      if (!state.outputBase64) return;
-      const a = document.createElement('a');
-      a.href = `data:${state.outputMime};base64,${state.outputBase64}`;
-      a.download = `tattoo-forge-${Date.now()}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+    function renderVariantPills() {
+      variantPills.innerHTML = '';
+      if (state.variants.length <= 1) return;
+      state.variants.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'variant-dot' + (idx === state.activeVariantIndex ? ' active' : '');
+        dot.textContent = String(idx + 1);
+        dot.addEventListener('click', () => {
+          state.activeVariantIndex = idx;
+          compStencil.src = state.variants[idx];
+          renderVariantPills();
+        });
+        variantPills.appendChild(dot);
+      });
+    }
+
+    function buildPrompt(mode, variantNum) {
+      const styleFlavor = [
+        'Ultra-crisp hyper-detailed black and grey tattoo flash artwork, razor-sharp fur strands, luminous eyes, velvety smooth whip-shaded background.',
+        'Master-level realistic tattoo flash illustration with rich high-contrast blacks, delicate grey-wash gradients, fine whiskers, and clean outer shading.',
+        'Studio-grade black-and-grey realism stencil sheet with crisp micro-textures, balanced midtones, sharp outlines, and smooth atmospheric shadow aura.'
+      ][variantNum % 3];
+
+      const strictPoseRule = `
+CRITICAL POSE & ANGLE PRESERVATION (DO NOT CHANGE SUBJECT ORIENTATION):
+- Keep the exact original pose, head tilt, gaze direction, three-quarter (3/4) or side profile angle, and proportions of the subject/animal/object from the input photo.
+- NEVER rotate a side-facing or 3/4-facing tiger/lion/subject into a front-facing pose.
+- ONLY adjust the camera perspective so it looks like a flat top-down photograph taken straight perpendicular to the skin, gently unwrapping the cylindrical curvature of the arm/leg without altering the subject's angle.
+- Completely remove all skin texture, arm/body edges, background room, plastic wrap, glare, and phone screen icons.
+- Render on a solid pure white (#FFFFFF) background sheet.`;
+
+      if (mode === 'lines') {
+        return `Convert this tattoo reference into a clean black-and-white fine-line tattoo stencil on a pure white (#FFFFFF) background.
+${strictPoseRule}
+- Use crisp, solid black (#000000) single-needle outlines with zero grey shading.
+- Keep small lettering, whiskers, and fine details razor sharp and ready for a thermal stencil printer.`;
+      }
+
+      if (mode === 'lines_shadow') {
+        return `Convert this reference image into a high-definition black-and-grey tattoo stencil and shading guide on a pure white (#FFFFFF) background.
+${strictPoseRule}
+- ${styleFlavor}
+- Preserve both crisp structural outlines and smooth tonal shadow mapping.`;
+      }
+
+      return `Extract the tattoo design from the skin in this photo and reconstruct it into a master-quality black-and-grey tattoo flash illustration on a pure white (#FFFFFF) background.
+${strictPoseRule}
+- ${styleFlavor}
+- Upgrade image clarity to maximum studio quality: crisp individual fur hairs, sharp whiskers, clear eyes, clean foliage/elements, and smooth gradient shading around the edges.`;
+    }
+
+    async function generateStencil(isNewVariant) {
+      if (!state.originalBase64 || state.isProcessing) return;
+
+      if (!state.apiKey || state.apiKey.trim().length < 10) {
+        showToast('Cole sua chave Google AI Studio no topo primeiro!');
+        apiKeyInput.focus();
+        return;
+      }
+
+      state.isProcessing = true;
+      btnCycleVariant.classList.add('spinning');
+      loadingOverlay.classList.remove('hidden');
+
+      const variantIndex = isNewVariant ? state.variants.length : 0;
+      loadingTitle.textContent = isNewVariant
+        ? `Gerando variação #${variantIndex + 1}...`
+        : 'Extraindo e aprimorando arte...';
+      loadingSub.textContent = 'Mantendo pose original • Visão plana de cima • Máxima nitidez';
+
+      try {
+        const prompt = buildPrompt(state.mode, variantIndex);
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${encodeURIComponent(state.apiKey.trim())}`;
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: prompt },
+                {
+                  inlineData: {
+                    mimeType: state.originalMimeType,
+                    data: state.originalBase64
+                  }
+                }
+              ]
+            }],
+            generationConfig: {
+              responseModalities: ['IMAGE']
+            }
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.error?.message || 'Erro na API Gemini');
+        }
+
+        const parts = data?.candidates?.[0]?.content?.parts || [];
+        const imgPart = parts.find((p) => p.inlineData && p.inlineData.data);
+
+        if (!imgPart) {
+          throw new Error('Nenhuma imagem retornada pela IA.');
+        }
+
+        const outMime = imgPart.inlineData.mimeType || 'image/png';
+        const outputUrl = `data:${outMime};base64,${imgPart.inlineData.data}`;
+
+        if (isNewVariant) {
+          state.variants.push(outputUrl);
+          state.activeVariantIndex = state.variants.length - 1;
+        } else {
+          state.variants = [outputUrl];
+          state.activeVariantIndex = 0;
+        }
+
+        compStencil.src = outputUrl;
+        renderVariantPills();
+        applyPreviewTransforms();
+        resultSection.classList.remove('hidden');
+        setSliderPosition(isNewVariant ? 88 : 55);
+        showToast(isNewVariant ? `Variação #${state.variants.length} pronta!` : 'Decalque gerado com sucesso!');
+      } catch (err) {
+        console.error(err);
+        showToast('Erro: ' + (err.message || 'verifique sua chave API'));
+      } finally {
+        state.isProcessing = false;
+        btnCycleVariant.classList.remove('spinning');
+        loadingOverlay.classList.add('hidden');
+      }
+    }
+
+    function applyPreviewTransforms() {
+      const scaleX = (state.mirrored ? -1 : 1) * (state.stretchX / 100);
+      compStencil.style.transform = `rotate(${state.rotation}deg) scaleX(${scaleX})`;
+
+      let filterStr = `grayscale(100%) contrast(${state.contrast}%)`;
+      if (state.hectoPurple) {
+        filterStr += ' sepia(100%) hue-rotate(235deg) saturate(460%) brightness(85%)';
+      }
+      compStencil.style.filter = filterStr;
+    }
+
+    btnMirror.addEventListener('click', () => {
+      state.mirrored = !state.mirrored;
+      btnMirror.classList.toggle('active-orange', state.mirrored);
+      applyPreviewTransforms();
     });
 
-    // Toggle white/dark background behind stencil preview
-    document.getElementById('btn-toggle-bg').addEventListener('click', () => {
-      resultPreview.classList.toggle('dark-bg');
-    });
-
-    // Clear workspace
-    document.getElementById('btn-clear-all').addEventListener('click', () => {
-      state.inputBase64 = '';
-      state.outputBase64 = '';
-      fileInput.value = '';
-      previewInputImg.style.display = 'none';
-      dropPlaceholder.style.display = 'flex';
-      inputBadge.textContent = 'Nenhuma imagem';
-      inputBadge.style.color = 'var(--muted)';
-      resultCard.classList.remove('visible');
-    });
-
-    // Settings modal
-    document.getElementById('btn-settings').addEventListener('click', () => {
-      document.getElementById('settings-panel').classList.add('open');
-    });
-    document.getElementById('btn-close-settings').addEventListener('click', () => {
-      document.getElementById('settings-panel').classList.remove('open');
-    });
-    document.getElementById('btn-save-settings').addEventListener('click', () => {
-      const clean = extractCleanKey(apiKeyInput.value);
-      apiKeyInput.value = clean;
-      state.apiKey = clean;
-      localStorage.setItem('openrouter_api_key', clean);
-      document.getElementById('settings-panel').classList.remove('open');
-    });
-  </script>
-</body>
-</html>
+    btnHecto.addEventListener('click', () => {
+      state.hectoPurple = !state.hecto
