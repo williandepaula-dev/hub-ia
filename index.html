@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0b0b0c">
-<title>GERADOR DE DECALQUE</title>
+<title>GERADOR DE DECALQUE AI</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#0b0b0c;color:#f4f4f5;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px 14px 48px;line-height:1.4}
@@ -67,9 +67,9 @@ input[type=range]{width:100%;accent-color:#ea580c}
 .btn-dl{background:#10b981;color:#042f2e;border:0;border-radius:11px;padding:13px;font-size:14px;font-weight:900;cursor:pointer}
 .new-w{position:relative}
 .btn-nw{width:100%;background:#27272a;color:#fff;border:1px solid #3f3f46;border-radius:11px;padding:13px;font-size:13px;font-weight:700;text-align:center}
-.loader{display:none;position:fixed;inset:0;background:#09090be6;z-index:99;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.loader{display:none;position:fixed;inset:0;background:#09090beb;z-index:99;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
 .loader.show{display:flex}
-.spin{width:46px;height:46px;border:4px solid #27272a;border-top-color:#ea580c;border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
+.spin{width:48px;height:48px;border:4px solid #27272a;border-top-color:#ea580c;border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
 @keyframes sp{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#18181b;color:#fff;border:1px solid #3f3f46;padding:9px 16px;border-radius:99px;font-size:12px;font-weight:700;z-index:100;display:none}
 </style>
@@ -77,12 +77,12 @@ input[type=range]{width:100%;accent-color:#ea580c}
 <body>
 <div class="wrap">
   <div class="banner">
-    <div><strong>Instalar App no Celular (Grátis)</strong><span>Uso direto na tela inicial sem internet</span></div>
+    <div><strong>Instalar App no Celular (IA Grátis)</strong><span>Sem chave API • Sem cartão • Direto no Chrome</span></div>
     <button type="button" id="instBtn" class="btn-sm">INSTALAR APP</button>
   </div>
 
   <div class="hdr">
-    <div class="pill"><span class="dot"></span> STUDIO PRO STENCIL • 100% GRATUITO</div>
+    <div class="pill"><span class="dot"></span> STUDIO PRO STENCIL AI • GRATUITO</div>
     <h1>GERADOR DE DECALQUE</h1>
     <p class="sub">Seu <b>decalque</b> pronto em <b>segundos.</b></p>
   </div>
@@ -106,32 +106,32 @@ input[type=range]{width:100%;accent-color:#ea580c}
   </div>
 
   <div class="card">
-    <div class="lbl">2. MODO DE EXTRAÇÃO</div>
+    <div class="lbl">2. ESCOLHA O MODO DE EXTRAÇÃO</div>
     <div class="mode" data-mode="lines">
       <div class="m-ico">✒️</div>
       <div>
         <div class="m-tit">DECALQUE LINHAS</div>
-        <div class="m-desc">Finelines limpas e contornos nítidos para escritas e traços.</div>
-        <div class="m-tip">⚠ Ideal para linhas puras e frases.</div>
+        <div class="m-desc">Cria finelines limpas e contornos nítidos a partir de desenhos e escritas.</div>
+        <div class="m-tip">⚠ Use para extrair somente as linhas do desenho e pequenas frases.</div>
       </div>
     </div>
     <div class="mode" data-mode="lines_shade">
       <div class="m-ico">🌗</div>
       <div>
         <div class="m-tit">LINHAS + SOMBRA</div>
-        <div class="m-desc">Preserva contornos e mapeamento suave de luz e sombra.</div>
-        <div class="m-tip">⚠ Indicado para artes digitais e desenhos planos.</div>
+        <div class="m-desc">Ideal para fotos, artes digitais e realismos, preservando linhas e sombra.</div>
+        <div class="m-tip">⚠ Indicado para desenho no papel ou arte plana.</div>
       </div>
     </div>
     <div class="mode active" data-mode="tattoo_to_drawing">
       <div class="m-ico">🐯</div>
       <div>
         <div class="m-tit">TATUAGEM → DESENHO <span class="tag">MAIS UTILIZADO</span></div>
-        <div class="m-desc">Remove textura da pele, limpa ruídos e converte em arte pronta.</div>
-        <div class="m-tip" style="color:#10b981">✔ Ideal para foto de tattoo na pele ou referência sombreada.</div>
+        <div class="m-desc">Extrai a arte da pele, remove braço/fundo e entrega desenho limpo no branco.</div>
+        <div class="m-tip" style="color:#10b981">✔ Ideal para foto de tatuagem na pele ou referência curva.</div>
       </div>
     </div>
-    <button type="button" id="genBtn" class="btn-gen" disabled>⚡ GERAR DECALQUE AGORA</button>
+    <button type="button" id="genBtn" class="btn-gen" disabled>⚡ GERAR DECALQUE COM IA</button>
   </div>
 
   <div id="resSec" class="card res-sec">
@@ -154,8 +154,8 @@ input[type=range]{width:100%;accent-color:#ea580c}
         <button type="button" id="mirBtn" class="tgl">⇄ Espelhar (Térmica)</button>
         <button type="button" id="purBtn" class="tgl">🟣 Tom Roxo Carbono</button>
       </div>
-      <div class="sl-box"><div class="sl-lbl"><span>Contraste do Traço</span><b id="cVal">115%</b></div><input type="range" id="cSl" min="60" max="200" value="115"></div>
-      <div class="sl-box"><div class="sl-lbl"><span>Limpeza de Fundo Branco</span><b id="wVal">215</b></div><input type="range" id="wSl" min="140" max="250" value="215"></div>
+      <div class="sl-box"><div class="sl-lbl"><span>Contraste do Traço</span><b id="cVal">105%</b></div><input type="range" id="cSl" min="60" max="180" value="105"></div>
+      <div class="sl-box"><div class="sl-lbl"><span>Limpeza de Fundo Branco</span><b id="wVal">235</b></div><input type="range" id="wSl" min="160" max="252" value="235"></div>
       <div class="sl-box"><div class="sl-lbl"><span>Ângulo Vertical</span><b id="aVal">0°</b></div><input type="range" id="aSl" min="-45" max="45" value="0"></div>
       <div class="sl-box" style="margin:0"><div class="sl-lbl"><span>Expansão Lateral</span><b id="sVal">100%</b></div><input type="range" id="sSl" min="85" max="135" value="100"></div>
     </div>
@@ -172,13 +172,12 @@ input[type=range]{width:100%;accent-color:#ea580c}
 
 <div id="loader" class="loader">
   <div class="spin"></div>
-  <div style="font-size:18px;font-weight:900;margin-bottom:4px">GERANDO DECALQUE...</div>
-  <div style="font-size:12px;color:#a1a1aa">Processando linhas e sombras no aparelho</div>
+  <div id="ldTitle" style="font-size:18px;font-weight:900;margin-bottom:6px">EXTRAINDO ARTE COM IA...</div>
+  <div id="ldSub" style="font-size:12px;color:#a1a1aa;max-width:290px">Removendo pele, braço e fundo para isolar o desenho. Pode levar 10–18s.</div>
 </div>
 <div id="toast" class="toast"></div>
 
 <script>
-// Limpa qualquer cache ou Service Worker antigo preso no navegador
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
 }
@@ -187,8 +186,8 @@ if ('caches' in window) {
 }
 
 const S = {
-  img: null, mode: 'tattoo_to_drawing', vars: [], idx: 0,
-  mirror: false, purple: false, contrast: 115, white: 215, angle: 0, stretch: 100, prompt: null
+  blob: null, hostedUrl: null, mode: 'tattoo_to_drawing', vars: [], idx: 0,
+  mirror: false, purple: false, contrast: 105, white: 235, angle: 0, stretch: 100, prompt: null
 };
 
 const $ = id => document.getElementById(id);
@@ -197,7 +196,7 @@ function toast(m) {
   t.textContent = m;
   t.style.display = 'block';
   clearTimeout(window._tt);
-  window._tt = setTimeout(() => t.style.display = 'none', 2600);
+  window._tt = setTimeout(() => t.style.display = 'none', 2800);
 }
 
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.prompt = e; });
@@ -212,7 +211,7 @@ function loadFile(file) {
   r.onload = e => {
     const im = new Image();
     im.onload = () => {
-      const max = 1200;
+      const max = 960;
       let w = im.width, h = im.height;
       if (w > max || h > max) {
         if (w > h) { h = Math.round(h * max / w); w = max; }
@@ -221,10 +220,10 @@ function loadFile(file) {
       const c = document.createElement('canvas');
       c.width = w; c.height = h;
       c.getContext('2d').drawImage(im, 0, 0, w, h);
-      const url = c.toDataURL('image/jpeg', 0.92);
-      const clean = new Image();
-      clean.onload = () => {
-        S.img = clean;
+      const url = c.toDataURL('image/jpeg', 0.9);
+      c.toBlob(b => {
+        S.blob = b;
+        S.hostedUrl = null;
         $('prevImg').src = url;
         $('origImg').src = url;
         $('dropZone').style.display = 'none';
@@ -232,8 +231,7 @@ function loadFile(file) {
         $('stTxt').textContent = '✓ Pronta';
         $('genBtn').disabled = false;
         toast('Foto carregada!');
-      };
-      clean.src = url;
+      }, 'image/jpeg', 0.9);
     };
     im.onerror = () => toast('Erro ao ler imagem.');
     im.src = e.target.result;
@@ -253,91 +251,107 @@ document.querySelectorAll('.mode').forEach(el => {
   };
 });
 
-function boxBlur(arr, w, h, rad) {
-  const out = new Float32Array(w * h), tmp = new Float32Array(w * h), div = rad * 2 + 1;
-  for (let y = 0; y < h; y++) {
-    let sum = 0, row = y * w;
-    for (let k = -rad; k <= rad; k++) sum += arr[row + Math.max(0, Math.min(w - 1, k))];
-    for (let x = 0; x < w; x++) {
-      tmp[row + x] = sum / div;
-      sum += arr[row + Math.min(w - 1, x + rad + 1)] - arr[row + Math.max(0, x - rad)];
+async function uploadTempImage(blob) {
+  if (S.hostedUrl) return S.hostedUrl;
+
+  // Tentativa 1: Litterbox (temporário 1h)
+  try {
+    const fd = new FormData();
+    fd.append('reqtype', 'fileupload');
+    fd.append('time', '1h');
+    fd.append('fileToUpload', blob, 'ref.jpg');
+    const res = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', { method: 'POST', body: fd });
+    if (res.ok) {
+      const url = (await res.text()).trim();
+      if (url.startsWith('http')) { S.hostedUrl = url; return url; }
     }
-  }
-  for (let x = 0; x < w; x++) {
-    let sum = 0;
-    for (let k = -rad; k <= rad; k++) sum += tmp[Math.max(0, Math.min(h - 1, k)) * w + x];
-    for (let y = 0; y < h; y++) {
-      out[y * w + x] = sum / div;
-      sum += tmp[Math.min(h - 1, y + rad + 1) * w + x] - tmp[Math.max(0, y - rad) * w + x];
+  } catch (e) {}
+
+  // Tentativa 2: tmpfiles.org
+  try {
+    const fd2 = new FormData();
+    fd2.append('file', blob, 'ref.jpg');
+    const res2 = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd2 });
+    if (res2.ok) {
+      const j = await res2.json();
+      const raw = j?.data?.url;
+      if (raw) {
+        const direct = raw.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+        S.hostedUrl = direct;
+        return direct;
+      }
     }
-  }
-  return out;
+  } catch (e) {}
+
+  throw new Error('Falha ao enviar referência temporária.');
 }
 
-function makeStencil(img, mode, vIdx) {
-  const w = img.width, h = img.height;
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  const ctx = c.getContext('2d');
-  ctx.drawImage(img, 0, 0, w, h);
-  const d = ctx.getImageData(0, 0, w, h).data;
-  const gray = new Float32Array(w * h);
-
-  for (let i = 0; i < w * h; i++) {
-    const p = i * 4;
-    gray[i] = mode === 'tattoo_to_drawing'
-      ? (d[p] * 0.56 + d[p + 1] * 0.34 + d[p + 2] * 0.10)
-      : (d[p] * 0.3 + d[p + 1] * 0.59 + d[p + 2] * 0.11);
+function getPrompt(mode) {
+  if (mode === 'lines') {
+    return 'Extract ONLY the main tattoo design and convert it into a clean black and white fine-line tattoo stencil drawing on a pure solid white background (#FFFFFF). Completely remove human skin, body parts, arm, hands, background objects, and shadows. Keep the exact same pose, angle, and proportions of the subject, drawn with crisp black ink outlines only.';
   }
-
-  const v = vIdx % 4;
-  const b1 = boxBlur(gray, w, h, v === 1 ? 1 : 2);
-  const b2 = boxBlur(gray, w, h, mode === 'lines' ? 4 : (6 + v * 2));
-  const bg = boxBlur(gray, w, h, Math.max(16, Math.round(Math.min(w, h) * 0.045)));
-
-  const out = ctx.createImageData(w, h);
-  const o = out.data;
-  for (let i = 0; i < w * h; i++) {
-    const norm = Math.min(255, Math.max(0, (gray[i] / Math.max(28, bg[i])) * 235));
-    const edge = Math.max(0, b2[i] - b1[i]);
-    let val = 255;
-
-    if (mode === 'lines') {
-      val = 255 - edge * (5.4 + v * 0.8);
-      val = val < (165 - v * 8) ? Math.max(0, val * 0.42) : 255;
-    } else if (mode === 'lines_shade') {
-      val = Math.min(255, Math.max(0, norm - edge * (3.2 + v * 0.4)));
-    } else {
-      let comb = norm - edge * (3.8 + v * 0.5);
-      comb = ((comb - 128) * (1.28 + v * 0.08)) + 136;
-      val = Math.min(255, Math.max(0, comb));
-    }
-    const p = i * 4;
-    o[p] = o[p + 1] = o[p + 2] = val;
-    o[p + 3] = 255;
+  if (mode === 'lines_shade') {
+    return 'Extract the main tattoo design and convert it into a clean black and grey tattoo stencil illustration on a pure solid white background (#FFFFFF). Completely remove human skin, body parts, arm, hands, and background clutter. Keep the exact same pose, gaze direction, and proportions with crisp black outlines and smooth grey shading.';
   }
-  ctx.putImageData(out, 0, 0);
-  return c.toDataURL('image/png');
+  return 'Extract ONLY the main tattoo artwork from the skin and convert it into a flat, clean black and grey tattoo stencil illustration isolated on a pure solid white background (#FFFFFF). Completely erase the arm, human skin, hands, tattoo machine, table, and any secondary screens or background objects. Preserve the exact original pose, head angle, and details of the main subject as a clean 2D tattoo flash drawing on white paper.';
 }
 
-function run(addVar) {
-  if (!S.img) return;
+function fetchImageAsDataUrl(url) {
+  return new Promise((resolve, reject) => {
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = im.width; c.height = im.height;
+      c.getContext('2d').drawImage(im, 0, 0);
+      resolve(c.toDataURL('image/png'));
+    };
+    im.onerror = () => reject(new Error('Erro ao carregar imagem gerada pela IA.'));
+    im.src = url;
+  });
+}
+
+async function runAI(addVar) {
+  if (!S.blob) return;
   $('loader').classList.add('show');
-  setTimeout(() => {
-    const url = makeStencil(S.img, S.mode, addVar ? S.vars.length : 0);
+  $('ldTitle').textContent = 'PREPARANDO REFERÊNCIA...';
+
+  try {
+    const imgUrl = await uploadTempImage(S.blob);
+    $('ldTitle').textContent = 'IA EXTRAINDO DECALQUE...';
+
+    const prompt = encodeURIComponent(getPrompt(S.mode));
+    const seed = Math.floor(Math.random() * 999999);
+    const models = ['kontext', 'flux'];
+    let finalDataUrl = null;
+
+    for (const model of models) {
+      try {
+        const genUrl = `https://image.pollinations.ai/prompt/${prompt}?model=${model}&image=${encodeURIComponent(imgUrl)}&width=768&height=1024&seed=${seed}&nologo=true`;
+        finalDataUrl = await fetchImageAsDataUrl(genUrl);
+        if (finalDataUrl) break;
+      } catch (err) {}
+    }
+
+    if (!finalDataUrl) throw new Error('Servidor de IA ocupado. Toque novamente para gerar.');
+
     $('loader').classList.remove('show');
-    if (!addVar) { S.vars = [url]; S.idx = 0; }
-    else { S.vars.push(url); S.idx = S.vars.length - 1; }
+    if (!addVar) { S.vars = [finalDataUrl]; S.idx = 0; }
+    else { S.vars.push(finalDataUrl); S.idx = S.vars.length - 1; }
+
     drawDots();
     $('resSec').classList.add('show');
     drawCanvas();
     $('resSec').scrollIntoView({ behavior: 'smooth' });
-    toast(addVar ? 'Variação ' + S.vars.length + ' criada!' : 'Decalque pronto!');
-  }, 250);
+    toast(addVar ? 'Variação ' + S.vars.length + ' criada pela IA!' : 'Decalque extraído com sucesso!');
+  } catch (e) {
+    $('loader').classList.remove('show');
+    toast(e.message || 'Erro ao gerar decalque.');
+  }
 }
 
-$('genBtn').onclick = () => run(false);
-$('varBtn').onclick = () => run(true);
+$('genBtn').onclick = () => runAI(false);
+$('varBtn').onclick = () => runAI(true);
 
 function drawDots() {
   const box = $('vDots');
@@ -371,7 +385,7 @@ function renderTo(img, canvas, hiRes) {
   const id = ctx.getImageData(0, 0, w, h), d = id.data, cut = S.white;
   for (let i = 0; i < d.length; i += 4) {
     let lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
-    lum = lum >= cut ? 255 : Math.max(0, (lum / cut) * 235);
+    lum = lum >= cut ? 255 : Math.max(0, (lum / cut) * 240);
     if (S.purple) {
       const ink = 255 - lum;
       d[i] = Math.round(255 - ink * 0.62);
@@ -400,10 +414,10 @@ $('aSl').oninput = e => { S.angle = +e.target.value; $('aVal').textContent = S.a
 $('sSl').oninput = e => { S.stretch = +e.target.value; $('sVal').textContent = S.stretch + '%'; drawCanvas(); };
 
 $('rstBtn').onclick = () => {
-  S.mirror = S.purple = false; S.contrast = 115; S.white = 215; S.angle = 0; S.stretch = 100;
+  S.mirror = S.purple = false; S.contrast = 105; S.white = 235; S.angle = 0; S.stretch = 100;
   $('mirBtn').classList.remove('active'); $('purBtn').classList.remove('active');
-  $('cSl').value = 115; $('cVal').textContent = '115%';
-  $('wSl').value = 215; $('wVal').textContent = '215';
+  $('cSl').value = 105; $('cVal').textContent = '105%';
+  $('wSl').value = 235; $('wVal').textContent = '235';
   $('aSl').value = 0; $('aVal').textContent = '0°';
   $('sSl').value = 100; $('sVal').textContent = '100%';
   drawCanvas();
@@ -428,7 +442,7 @@ $('dlBtn').onclick = () => {
     renderTo(im, ex, true);
     ex.toBlob(b => {
       const u = URL.createObjectURL(b), a = document.createElement('a');
-      a.href = u; a.download = 'decalque-' + Date.now() + '.png';
+      a.href = u; a.download = 'decalque-ai-' + Date.now() + '.png';
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(u), 3000);
       toast('Decalque salvo nos Downloads / Galeria!');
