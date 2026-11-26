@@ -71,18 +71,18 @@ input[type=range]{width:100%;accent-color:#ea580c}
 .loader.show{display:flex}
 .spin{width:48px;height:48px;border:4px solid #27272a;border-top-color:#ea580c;border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#18181b;color:#fff;border:1px solid #3f3f46;padding:9px 16px;border-radius:99px;font-size:12px;font-weight:700;z-index:100;display:none}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#18181b;color:#fff;border:1px solid #3f3f46;padding:9px 16px;border-radius:99px;font-size:12px;font-weight:700;z-index:100;display:none;max-width:90%;text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="banner">
-    <div><strong>Instalar App no Celular (IA Grátis)</strong><span>Sem chave API • Sem cartão • Direto no Chrome</span></div>
+    <div><strong>Instalar App no Celular (IA v2.0)</strong><span>Sem chave API • Sem cartão • Direto no Chrome</span></div>
     <button type="button" id="instBtn" class="btn-sm">INSTALAR APP</button>
   </div>
 
   <div class="hdr">
-    <div class="pill"><span class="dot"></span> STUDIO PRO STENCIL AI • GRATUITO</div>
+    <div class="pill"><span class="dot"></span> STUDIO PRO STENCIL AI • v2.0</div>
     <h1>GERADOR DE DECALQUE</h1>
     <p class="sub">Seu <b>decalque</b> pronto em <b>segundos.</b></p>
   </div>
@@ -128,7 +128,7 @@ input[type=range]{width:100%;accent-color:#ea580c}
       <div>
         <div class="m-tit">TATUAGEM → DESENHO <span class="tag">MAIS UTILIZADO</span></div>
         <div class="m-desc">Extrai a arte da pele, remove braço/fundo e entrega desenho limpo no branco.</div>
-        <div class="m-tip" style="color:#10b981">✔ Ideal para foto de tatuagem na pele ou referência curva.</div>
+        <div class="m-tip" style="color:#10b981">✔ Ideal para foto de tattoo na pele ou referência curva.</div>
       </div>
     </div>
     <button type="button" id="genBtn" class="btn-gen" disabled>⚡ GERAR DECALQUE COM IA</button>
@@ -173,7 +173,7 @@ input[type=range]{width:100%;accent-color:#ea580c}
 <div id="loader" class="loader">
   <div class="spin"></div>
   <div id="ldTitle" style="font-size:18px;font-weight:900;margin-bottom:6px">EXTRAINDO ARTE COM IA...</div>
-  <div id="ldSub" style="font-size:12px;color:#a1a1aa;max-width:290px">Removendo pele, braço e fundo para isolar o desenho. Pode levar 10–18s.</div>
+  <div id="ldSub" style="font-size:12px;color:#a1a1aa;max-width:290px">Removendo pele, braço e fundo para isolar o desenho. Pode levar 12–20s.</div>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -196,7 +196,7 @@ function toast(m) {
   t.textContent = m;
   t.style.display = 'block';
   clearTimeout(window._tt);
-  window._tt = setTimeout(() => t.style.display = 'none', 2800);
+  window._tt = setTimeout(() => t.style.display = 'none', 3200);
 }
 
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.prompt = e; });
@@ -211,7 +211,7 @@ function loadFile(file) {
   r.onload = e => {
     const im = new Image();
     im.onload = () => {
-      const max = 960;
+      const max = 900;
       let w = im.width, h = im.height;
       if (w > max || h > max) {
         if (w > h) { h = Math.round(h * max / w); w = max; }
@@ -220,7 +220,7 @@ function loadFile(file) {
       const c = document.createElement('canvas');
       c.width = w; c.height = h;
       c.getContext('2d').drawImage(im, 0, 0, w, h);
-      const url = c.toDataURL('image/jpeg', 0.9);
+      const url = c.toDataURL('image/jpeg', 0.88);
       c.toBlob(b => {
         S.blob = b;
         S.hostedUrl = null;
@@ -231,7 +231,7 @@ function loadFile(file) {
         $('stTxt').textContent = '✓ Pronta';
         $('genBtn').disabled = false;
         toast('Foto carregada!');
-      }, 'image/jpeg', 0.9);
+      }, 'image/jpeg', 0.88);
     };
     im.onerror = () => toast('Erro ao ler imagem.');
     im.src = e.target.result;
@@ -254,7 +254,6 @@ document.querySelectorAll('.mode').forEach(el => {
 async function uploadTempImage(blob) {
   if (S.hostedUrl) return S.hostedUrl;
 
-  // Tentativa 1: Litterbox (temporário 1h)
   try {
     const fd = new FormData();
     fd.append('reqtype', 'fileupload');
@@ -267,7 +266,6 @@ async function uploadTempImage(blob) {
     }
   } catch (e) {}
 
-  // Tentativa 2: tmpfiles.org
   try {
     const fd2 = new FormData();
     fd2.append('file', blob, 'ref.jpg');
@@ -283,7 +281,17 @@ async function uploadTempImage(blob) {
     }
   } catch (e) {}
 
-  throw new Error('Falha ao enviar referência temporária.');
+  try {
+    const fd3 = new FormData();
+    fd3.append('file', blob, 'ref.jpg');
+    const res3 = await fetch('https://0x0.st', { method: 'POST', body: fd3 });
+    if (res3.ok) {
+      const u3 = (await res3.text()).trim();
+      if (u3.startsWith('http')) { S.hostedUrl = u3; return u3; }
+    }
+  } catch (e) {}
+
+  throw new Error('Não foi possível conectar ao servidor de upload. Verifique sua internet.');
 }
 
 function getPrompt(mode) {
@@ -300,13 +308,18 @@ function fetchImageAsDataUrl(url) {
   return new Promise((resolve, reject) => {
     const im = new Image();
     im.crossOrigin = 'anonymous';
+    const timer = setTimeout(() => reject(new Error('Tempo limite da IA excedido.')), 35000);
     im.onload = () => {
+      clearTimeout(timer);
       const c = document.createElement('canvas');
       c.width = im.width; c.height = im.height;
       c.getContext('2d').drawImage(im, 0, 0);
       resolve(c.toDataURL('image/png'));
     };
-    im.onerror = () => reject(new Error('Erro ao carregar imagem gerada pela IA.'));
+    im.onerror = () => {
+      clearTimeout(timer);
+      reject(new Error('Falha ao baixar imagem da IA.'));
+    };
     im.src = url;
   });
 }
@@ -314,7 +327,7 @@ function fetchImageAsDataUrl(url) {
 async function runAI(addVar) {
   if (!S.blob) return;
   $('loader').classList.add('show');
-  $('ldTitle').textContent = 'PREPARANDO REFERÊNCIA...';
+  $('ldTitle').textContent = 'ENVIANDO REFERÊNCIA...';
 
   try {
     const imgUrl = await uploadTempImage(S.blob);
@@ -333,7 +346,7 @@ async function runAI(addVar) {
       } catch (err) {}
     }
 
-    if (!finalDataUrl) throw new Error('Servidor de IA ocupado. Toque novamente para gerar.');
+    if (!finalDataUrl) throw new Error('Servidor gratuito ocupado no momento. Toque em Gerar novamente.');
 
     $('loader').classList.remove('show');
     if (!addVar) { S.vars = [finalDataUrl]; S.idx = 0; }
@@ -346,7 +359,7 @@ async function runAI(addVar) {
     toast(addVar ? 'Variação ' + S.vars.length + ' criada pela IA!' : 'Decalque extraído com sucesso!');
   } catch (e) {
     $('loader').classList.remove('show');
-    toast(e.message || 'Erro ao gerar decalque.');
+    alert('Aviso: ' + (e.message || 'Erro ao gerar decalque.'));
   }
 }
 
