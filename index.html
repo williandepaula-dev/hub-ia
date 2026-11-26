@@ -1,289 +1,441 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0b0b0c" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Decalque Pro" />
-  <title>GERADOR DE DECALQUE — Studio Pro Stencil</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg-main: #0b0b0c;
-      --bg-card: #151518;
-      --border: #27272a;
-      --text-main: #f4f4f5;
-      --text-muted: #9ca3af;
-      --accent-orange: #ea580c;
-      --accent-red: #dc2626;
-      --accent-green: #10b981;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0b0b0c">
+<title>GERADOR DE DECALQUE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#0b0b0c;color:#f4f4f5;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:14px 14px 48px;line-height:1.4}
+.wrap{max-width:620px;margin:0 auto}
+.banner{background:linear-gradient(135deg,#2a1409,#18181b);border:1px solid #ea580c66;border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+.banner strong{display:block;font-size:13px;color:#fff}
+.banner span{font-size:11px;color:#a1a1aa}
+.btn-sm{background:linear-gradient(135deg,#ea580c,#dc2626);color:#fff;border:0;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.hdr{text-align:center;margin-bottom:18px}
+.pill{display:inline-flex;align-items:center;gap:6px;background:#18181b;border:1px solid #27272a;border-radius:99px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;color:#a1a1aa;margin-bottom:8px}
+.dot{width:7px;height:7px;border-radius:50%;background:#10b981}
+h1{font-size:32px;font-weight:900;letter-spacing:.02em;color:#fff;margin-bottom:4px}
+.sub{font-size:14px;color:#d4d4d8}
+.sub b{color:#10b981}
+.card{background:#151518;border:1px solid #27272a;border-radius:16px;padding:15px;margin-bottom:14px}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:#a1a1aa;margin-bottom:10px;display:flex;justify-content:space-between}
+.drop{position:relative;border:2px dashed #3f3f46;border-radius:14px;background:#101013;padding:26px 14px;text-align:center;overflow:hidden}
+.file-inp{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5}
+.btn-cta{display:inline-block;background:linear-gradient(135deg,#ea580c,#dc2626);color:#fff;font-size:14px;font-weight:700;padding:12px 22px;border-radius:99px;margin-top:10px}
+.prev-box{display:none;text-align:center;background:#09090b;border-radius:12px;padding:8px;border:1px solid #27272a}
+.prev-box img{max-height:260px;max-width:100%;border-radius:8px;display:block;margin:0 auto}
+.chg-wrap{position:relative;display:inline-block;margin-top:8px}
+.btn-chg{background:#27272a;color:#fff;border:1px solid #3f3f46;border-radius:99px;padding:7px 15px;font-size:12px;font-weight:700}
+.mode{background:#101013;border:1.5px solid #27272a;border-radius:12px;padding:12px;margin-bottom:9px;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
+.mode.active{border-color:#ea580c;background:#22130c}
+.m-ico{font-size:20px;background:#1f1f24;width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-tit{font-size:14px;font-weight:800;color:#fff;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tag{background:#10b981;color:#042f2e;font-size:9px;font-weight:900;padding:2px 7px;border-radius:99px}
+.m-desc{font-size:12px;color:#d4d4d8;margin-top:3px}
+.m-tip{font-size:11px;color:#f87171;margin-top:3px;font-weight:600}
+.btn-gen{width:100%;margin-top:6px;background:linear-gradient(135deg,#ea580c,#dc2626);color:#fff;border:0;border-radius:13px;padding:15px;font-size:16px;font-weight:900;letter-spacing:.04em;cursor:pointer}
+.btn-gen:disabled{opacity:.45}
+.res-sec{display:none}
+.res-sec.show{display:block}
+.comp{position:relative;width:100%;height:420px;border-radius:14px;overflow:hidden;background:#fff;border:2px solid #27272a;touch-action:none;user-select:none}
+.layer{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.layer-orig{background:#141417}
+.layer-orig img{max-width:100%;max-height:100%;object-fit:contain}
+.layer-sten{background:#fff;clip-path:inset(0 50% 0 0)}
+.layer-sten canvas{max-width:100%;max-height:100%;object-fit:contain}
+.badge-c{position:absolute;top:10px;z-index:6;font-size:10px;font-weight:800;padding:4px 9px;border-radius:6px}
+.b-left{left:10px;background:#dc2626;color:#fff}
+.b-right{right:10px;background:#18181bd9;color:#fff;border:1px solid #3f3f46}
+.bar{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#ef4444;z-index:8;transform:translateX(-50%);pointer-events:none}
+.knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#ea580c;border:3px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.vars{position:absolute;bottom:10px;left:10px;z-index:9;display:flex;align-items:center;gap:6px;background:#111114e0;padding:5px 8px;border-radius:99px;border:1px solid #3f3f46}
+.btn-ref{width:32px;height:32px;border-radius:50%;background:#ea580c;border:0;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
+.v-dot{width:24px;height:24px;border-radius:50%;border:1px solid #52525b;background:#27272a;color:#fff;font-size:11px;font-weight:800;cursor:pointer}
+.v-dot.active{background:#fff;color:#09090b}
+.ctrl{margin-top:12px;background:#101013;border:1px solid #27272a;border-radius:12px;padding:12px}
+.c-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#fb923c;margin-bottom:10px}
+.btn-rst{background:none;border:0;color:#9ca3af;text-decoration:underline;font-size:11px;cursor:pointer}
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.tgl{background:#1c1c21;border:1px solid #32323a;color:#e4e4e7;border-radius:9px;padding:9px;font-size:12px;font-weight:700;cursor:pointer}
+.tgl.active{background:#2a1409;border-color:#ea580c;color:#fb923c}
+.sl-box{margin-bottom:9px}
+.sl-lbl{display:flex;justify-content:space-between;font-size:12px;color:#d4d4d8;margin-bottom:3px}
+input[type=range]{width:100%;accent-color:#ea580c}
+.acts{display:grid;grid-template-columns:1.4fr 1fr;gap:9px;margin-top:12px}
+.btn-dl{background:#10b981;color:#042f2e;border:0;border-radius:11px;padding:13px;font-size:14px;font-weight:900;cursor:pointer}
+.new-w{position:relative}
+.btn-nw{width:100%;background:#27272a;color:#fff;border:1px solid #3f3f46;border-radius:11px;padding:13px;font-size:13px;font-weight:700;text-align:center}
+.loader{display:none;position:fixed;inset:0;background:#09090be6;z-index:99;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.loader.show{display:flex}
+.spin{width:46px;height:46px;border:4px solid #27272a;border-top-color:#ea580c;border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#18181b;color:#fff;border:1px solid #3f3f46;padding:9px 16px;border-radius:99px;font-size:12px;font-weight:700;z-index:100;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="banner">
+    <div><strong>Instalar App no Celular (Grátis)</strong><span>Uso direto na tela inicial sem internet</span></div>
+    <button type="button" id="instBtn" class="btn-sm">INSTALAR APP</button>
+  </div>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
+  <div class="hdr">
+    <div class="pill"><span class="dot"></span> STUDIO PRO STENCIL • 100% GRATUITO</div>
+    <h1>GERADOR DE DECALQUE</h1>
+    <p class="sub">Seu <b>decalque</b> pronto em <b>segundos.</b></p>
+  </div>
 
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      min-height: 100vh;
-      padding: 14px 14px 48px;
-      line-height: 1.45;
-    }
+  <div class="card">
+    <div class="lbl"><span>1. IMAGEM DE REFERÊNCIA</span><span id="stTxt" style="color:#10b981"></span></div>
+    <div id="dropZone" class="drop">
+      <input type="file" id="inp1" class="file-inp" accept="image/*">
+      <div style="font-size:26px;margin-bottom:6px">🖼️</div>
+      <div style="font-size:15px;font-weight:700;color:#fff">Toque para abrir a galeria</div>
+      <div style="font-size:12px;color:#9ca3af">JPG, PNG ou WEBP</div>
+      <div class="btn-cta">Escolher da Galeria</div>
+    </div>
+    <div id="prevBox" class="prev-box">
+      <img id="prevImg" alt="Referência">
+      <div class="chg-wrap">
+        <input type="file" id="inp2" class="file-inp" accept="image/*">
+        <div class="btn-chg">🔄 Trocar Foto</div>
+      </div>
+    </div>
+  </div>
 
-    .container {
-      max-width: 680px;
-      margin: 0 auto;
-    }
+  <div class="card">
+    <div class="lbl">2. MODO DE EXTRAÇÃO</div>
+    <div class="mode" data-mode="lines">
+      <div class="m-ico">✒️</div>
+      <div>
+        <div class="m-tit">DECALQUE LINHAS</div>
+        <div class="m-desc">Finelines limpas e contornos nítidos para escritas e traços.</div>
+        <div class="m-tip">⚠ Ideal para linhas puras e frases.</div>
+      </div>
+    </div>
+    <div class="mode" data-mode="lines_shade">
+      <div class="m-ico">🌗</div>
+      <div>
+        <div class="m-tit">LINHAS + SOMBRA</div>
+        <div class="m-desc">Preserva contornos e mapeamento suave de luz e sombra.</div>
+        <div class="m-tip">⚠ Indicado para artes digitais e desenhos planos.</div>
+      </div>
+    </div>
+    <div class="mode active" data-mode="tattoo_to_drawing">
+      <div class="m-ico">🐯</div>
+      <div>
+        <div class="m-tit">TATUAGEM → DESENHO <span class="tag">MAIS UTILIZADO</span></div>
+        <div class="m-desc">Remove textura da pele, limpa ruídos e converte em arte pronta.</div>
+        <div class="m-tip" style="color:#10b981">✔ Ideal para foto de tattoo na pele ou referência sombreada.</div>
+      </div>
+    </div>
+    <button type="button" id="genBtn" class="btn-gen" disabled>⚡ GERAR DECALQUE AGORA</button>
+  </div>
 
-    /* Install Banner */
-    .install-card {
-      background: linear-gradient(135deg, rgba(234, 88, 12, 0.14), rgba(220, 38, 38, 0.08));
-      border: 1px solid rgba(234, 88, 12, 0.35);
-      border-radius: 16px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
+  <div id="resSec" class="card res-sec">
+    <div class="lbl"><span>3. DECALQUE PRONTO</span><span>Arraste a barra vermelha</span></div>
+    <div id="comp" class="comp">
+      <div class="layer layer-orig"><img id="origImg" alt="Original"></div>
+      <div id="stenLayer" class="layer layer-sten"><canvas id="stenCanvas"></canvas></div>
+      <span class="badge-c b-left">DECALQUE</span>
+      <span class="badge-c b-right">ORIGINAL</span>
+      <div id="bar" class="bar"><div class="knob">↔</div></div>
+      <div class="vars">
+        <button type="button" id="varBtn" class="btn-ref" title="Nova variação">↻</button>
+        <div id="vDots" style="display:flex;gap:4px"></div>
+      </div>
+    </div>
 
-    .install-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
+    <div class="ctrl">
+      <div class="c-top"><span>⚙️ AJUSTES PARA IMPRESSÃO</span><button type="button" id="rstBtn" class="btn-rst">Resetar</button></div>
+      <div class="toggles">
+        <button type="button" id="mirBtn" class="tgl">⇄ Espelhar (Térmica)</button>
+        <button type="button" id="purBtn" class="tgl">🟣 Tom Roxo Carbono</button>
+      </div>
+      <div class="sl-box"><div class="sl-lbl"><span>Contraste do Traço</span><b id="cVal">115%</b></div><input type="range" id="cSl" min="60" max="200" value="115"></div>
+      <div class="sl-box"><div class="sl-lbl"><span>Limpeza de Fundo Branco</span><b id="wVal">215</b></div><input type="range" id="wSl" min="140" max="250" value="215"></div>
+      <div class="sl-box"><div class="sl-lbl"><span>Ângulo Vertical</span><b id="aVal">0°</b></div><input type="range" id="aSl" min="-45" max="45" value="0"></div>
+      <div class="sl-box" style="margin:0"><div class="sl-lbl"><span>Expansão Lateral</span><b id="sVal">100%</b></div><input type="range" id="sSl" min="85" max="135" value="100"></div>
+    </div>
 
-    .install-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 11px;
-      background: linear-gradient(135deg, #ea580c, #dc2626);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: #fff;
-      font-size: 18px;
-    }
+    <div class="acts">
+      <button type="button" id="dlBtn" class="btn-dl">⬇️ Baixar PNG</button>
+      <div class="new-w">
+        <input type="file" id="inp3" class="file-inp" accept="image/*">
+        <div class="btn-nw">+ Nova Imagem</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    .install-text strong {
-      display: block;
-      font-size: 13px;
-      color: #fff;
-    }
+<div id="loader" class="loader">
+  <div class="spin"></div>
+  <div style="font-size:18px;font-weight:900;margin-bottom:4px">GERANDO DECALQUE...</div>
+  <div style="font-size:12px;color:#a1a1aa">Processando linhas e sombras no aparelho</div>
+</div>
+<div id="toast" class="toast"></div>
 
-    .install-text span {
-      display: block;
-      font-size: 11px;
-      color: #9ca3af;
-    }
+<script>
+// Limpa qualquer cache ou Service Worker antigo preso no navegador
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
+if ('caches' in window) {
+  caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+}
 
-    .btn-install {
-      background: linear-gradient(135deg, #ea580c, #dc2626);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 9px 14px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+const S = {
+  img: null, mode: 'tattoo_to_drawing', vars: [], idx: 0,
+  mirror: false, purple: false, contrast: 115, white: 215, angle: 0, stretch: 100, prompt: null
+};
 
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 22px;
-    }
+const $ = id => document.getElementById(id);
+function toast(m) {
+  const t = $('toast');
+  t.textContent = m;
+  t.style.display = 'block';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.style.display = 'none', 2600);
+}
 
-    .badge-top {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: #18181b;
-      border: 1px solid #27272a;
-      border-radius: 999px;
-      padding: 5px 14px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: #a1a1aa;
-      margin-bottom: 12px;
-    }
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.prompt = e; });
+$('instBtn').onclick = async () => {
+  if (S.prompt) { S.prompt.prompt(); await S.prompt.userChoice; S.prompt = null; }
+  else toast('No Chrome: toque em ⋮ (canto superior) → Adicionar à tela inicial');
+};
 
-    .dot-green {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent-green);
-      box-shadow: 0 0 8px var(--accent-green);
-    }
+function loadFile(file) {
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const im = new Image();
+    im.onload = () => {
+      const max = 1200;
+      let w = im.width, h = im.height;
+      if (w > max || h > max) {
+        if (w > h) { h = Math.round(h * max / w); w = max; }
+        else { w = Math.round(w * max / h); h = max; }
+      }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(im, 0, 0, w, h);
+      const url = c.toDataURL('image/jpeg', 0.92);
+      const clean = new Image();
+      clean.onload = () => {
+        S.img = clean;
+        $('prevImg').src = url;
+        $('origImg').src = url;
+        $('dropZone').style.display = 'none';
+        $('prevBox').style.display = 'block';
+        $('stTxt').textContent = '✓ Pronta';
+        $('genBtn').disabled = false;
+        toast('Foto carregada!');
+      };
+      clean.src = url;
+    };
+    im.onerror = () => toast('Erro ao ler imagem.');
+    im.src = e.target.result;
+  };
+  r.readAsDataURL(file);
+}
 
-    .main-title {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(38px, 9vw, 54px);
-      letter-spacing: 0.03em;
-      line-height: 1.02;
-      color: #ffffff;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
+['inp1', 'inp2', 'inp3'].forEach(id => {
+  $(id).onchange = e => { loadFile(e.target.files[0]); e.target.value = ''; };
+});
 
-    .subtitle {
-      font-size: 15px;
-      color: #d4d4d8;
-      font-weight: 500;
-    }
+document.querySelectorAll('.mode').forEach(el => {
+  el.onclick = () => {
+    document.querySelectorAll('.mode').forEach(m => m.classList.remove('active'));
+    el.classList.add('active');
+    S.mode = el.dataset.mode;
+  };
+});
 
-    .subtitle span {
-      color: var(--accent-green);
-      font-weight: 700;
+function boxBlur(arr, w, h, rad) {
+  const out = new Float32Array(w * h), tmp = new Float32Array(w * h), div = rad * 2 + 1;
+  for (let y = 0; y < h; y++) {
+    let sum = 0, row = y * w;
+    for (let k = -rad; k <= rad; k++) sum += arr[row + Math.max(0, Math.min(w - 1, k))];
+    for (let x = 0; x < w; x++) {
+      tmp[row + x] = sum / div;
+      sum += arr[row + Math.min(w - 1, x + rad + 1)] - arr[row + Math.max(0, x - rad)];
     }
-
-    /* Section Card */
-    .section-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 16px;
+  }
+  for (let x = 0; x < w; x++) {
+    let sum = 0;
+    for (let k = -rad; k <= rad; k++) sum += tmp[Math.max(0, Math.min(h - 1, k)) * w + x];
+    for (let y = 0; y < h; y++) {
+      out[y * w + x] = sum / div;
+      sum += tmp[Math.min(h - 1, y + rad + 1) * w + x] - tmp[Math.max(0, y - rad) * w + x];
     }
+  }
+  return out;
+}
 
-    .section-label {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: #a1a1aa;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+function makeStencil(img, mode, vIdx) {
+  const w = img.width, h = img.height;
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+  const d = ctx.getImageData(0, 0, w, h).data;
+  const gray = new Float32Array(w * h);
+
+  for (let i = 0; i < w * h; i++) {
+    const p = i * 4;
+    gray[i] = mode === 'tattoo_to_drawing'
+      ? (d[p] * 0.56 + d[p + 1] * 0.34 + d[p + 2] * 0.10)
+      : (d[p] * 0.3 + d[p + 1] * 0.59 + d[p + 2] * 0.11);
+  }
+
+  const v = vIdx % 4;
+  const b1 = boxBlur(gray, w, h, v === 1 ? 1 : 2);
+  const b2 = boxBlur(gray, w, h, mode === 'lines' ? 4 : (6 + v * 2));
+  const bg = boxBlur(gray, w, h, Math.max(16, Math.round(Math.min(w, h) * 0.045)));
+
+  const out = ctx.createImageData(w, h);
+  const o = out.data;
+  for (let i = 0; i < w * h; i++) {
+    const norm = Math.min(255, Math.max(0, (gray[i] / Math.max(28, bg[i])) * 235));
+    const edge = Math.max(0, b2[i] - b1[i]);
+    let val = 255;
+
+    if (mode === 'lines') {
+      val = 255 - edge * (5.4 + v * 0.8);
+      val = val < (165 - v * 8) ? Math.max(0, val * 0.42) : 255;
+    } else if (mode === 'lines_shade') {
+      val = Math.min(255, Math.max(0, norm - edge * (3.2 + v * 0.4)));
+    } else {
+      let comb = norm - edge * (3.8 + v * 0.5);
+      comb = ((comb - 128) * (1.28 + v * 0.08)) + 136;
+      val = Math.min(255, Math.max(0, comb));
     }
+    const p = i * 4;
+    o[p] = o[p + 1] = o[p + 2] = val;
+    o[p + 3] = 255;
+  }
+  ctx.putImageData(out, 0, 0);
+  return c.toDataURL('image/png');
+}
 
-    /* Upload Zone */
-    .upload-zone {
-      position: relative;
-      border: 2px dashed #3f3f46;
-      border-radius: 16px;
-      background: #111114;
-      padding: 30px 18px;
-      text-align: center;
-      overflow: hidden;
+function run(addVar) {
+  if (!S.img) return;
+  $('loader').classList.add('show');
+  setTimeout(() => {
+    const url = makeStencil(S.img, S.mode, addVar ? S.vars.length : 0);
+    $('loader').classList.remove('show');
+    if (!addVar) { S.vars = [url]; S.idx = 0; }
+    else { S.vars.push(url); S.idx = S.vars.length - 1; }
+    drawDots();
+    $('resSec').classList.add('show');
+    drawCanvas();
+    $('resSec').scrollIntoView({ behavior: 'smooth' });
+    toast(addVar ? 'Variação ' + S.vars.length + ' criada!' : 'Decalque pronto!');
+  }, 250);
+}
+
+$('genBtn').onclick = () => run(false);
+$('varBtn').onclick = () => run(true);
+
+function drawDots() {
+  const box = $('vDots');
+  box.innerHTML = '';
+  S.vars.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'v-dot' + (i === S.idx ? ' active' : '');
+    b.textContent = i + 1;
+    b.onclick = () => { S.idx = i; drawDots(); drawCanvas(); };
+    box.appendChild(b);
+  });
+}
+
+function renderTo(img, canvas, hiRes) {
+  const sc = hiRes ? Math.max(1, 1500 / Math.max(img.width, img.height)) : 1;
+  const w = Math.round(img.width * sc), h = Math.round(img.height * sc);
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, w, h);
+  ctx.save();
+  ctx.translate(w / 2, h / 2);
+  if (S.mirror) ctx.scale(-1, 1);
+  ctx.rotate(S.angle * Math.PI / 180);
+  ctx.scale(S.stretch / 100, 1);
+  ctx.filter = `grayscale(100%) contrast(${S.contrast}%)`;
+  ctx.drawImage(img, -w / 2, -h / 2, w, h);
+  ctx.restore();
+
+  const id = ctx.getImageData(0, 0, w, h), d = id.data, cut = S.white;
+  for (let i = 0; i < d.length; i += 4) {
+    let lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
+    lum = lum >= cut ? 255 : Math.max(0, (lum / cut) * 235);
+    if (S.purple) {
+      const ink = 255 - lum;
+      d[i] = Math.round(255 - ink * 0.62);
+      d[i + 1] = Math.round(255 - ink * 0.92);
+      d[i + 2] = Math.round(255 - ink * 0.25);
+    } else {
+      d[i] = d[i + 1] = d[i + 2] = lum;
     }
+  }
+  ctx.putImageData(id, 0, 0);
+}
 
-    .native-file-overlay {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-      z-index: 10;
-      font-size: 100px;
-    }
+function drawCanvas() {
+  const src = S.vars[S.idx];
+  if (!src) return;
+  const im = new Image();
+  im.onload = () => renderTo(im, $('stenCanvas'), false);
+  im.src = src;
+}
 
-    .upload-icon-box {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: rgba(234, 88, 12, 0.14);
-      border: 1px solid rgba(234, 88, 12, 0.35);
-      color: #fb923c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 14px;
-      font-size: 20px;
-    }
+$('mirBtn').onclick = function () { S.mirror = !S.mirror; this.classList.toggle('active', S.mirror); drawCanvas(); };
+$('purBtn').onclick = function () { S.purple = !S.purple; this.classList.toggle('active', S.purple); drawCanvas(); };
+$('cSl').oninput = e => { S.contrast = +e.target.value; $('cVal').textContent = S.contrast + '%'; drawCanvas(); };
+$('wSl').oninput = e => { S.white = +e.target.value; $('wVal').textContent = S.white; drawCanvas(); };
+$('aSl').oninput = e => { S.angle = +e.target.value; $('aVal').textContent = S.angle + '°'; drawCanvas(); };
+$('sSl').oninput = e => { S.stretch = +e.target.value; $('sVal').textContent = S.stretch + '%'; drawCanvas(); };
 
-    .upload-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
+$('rstBtn').onclick = () => {
+  S.mirror = S.purple = false; S.contrast = 115; S.white = 215; S.angle = 0; S.stretch = 100;
+  $('mirBtn').classList.remove('active'); $('purBtn').classList.remove('active');
+  $('cSl').value = 115; $('cVal').textContent = '115%';
+  $('wSl').value = 215; $('wVal').textContent = '215';
+  $('aSl').value = 0; $('aVal').textContent = '0°';
+  $('sSl').value = 100; $('sVal').textContent = '100%';
+  drawCanvas();
+};
 
-    .upload-hint {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 16px;
-    }
+let drag = false;
+function moveBar(x) {
+  const r = $('comp').getBoundingClientRect();
+  const p = Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100));
+  $('bar').style.left = p + '%';
+  $('stenLayer').style.clipPath = `inset(0 ${100 - p}% 0 0)`;
+}
+$('comp').onpointerdown = e => { if (!e.target.closest('.vars')) { drag = true; moveBar(e.clientX); } };
+window.onpointermove = e => { if (drag) moveBar(e.clientX); };
+window.onpointerup = () => drag = false;
 
-    .btn-gallery-visual {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #ea580c, #dc2626);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 12px 24px;
-      border-radius: 999px;
-      box-shadow: 0 6px 20px rgba(234, 88, 12, 0.35);
-    }
-
-    /* Preview Box */
-    .preview-loaded {
-      display: none;
-      position: relative;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #09090b;
-      border: 1px solid #27272a;
-      text-align: center;
-    }
-
-    .preview-loaded img {
-      max-height: 290px;
-      width: 100%;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .change-photo-wrap {
-      position: relative;
-      display: inline-block;
-      margin: 10px auto;
-    }
-
-    .btn-change-photo {
-      background: #27272a;
-      color: #fff;
-      border: 1px solid #3f3f46;
-      border-radius: 999px;
-      padding: 8px 16px;
-      font-size: 12px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Mode Cards */
-    .modes-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .mode-card {
-      background: #111114;
-      border: 1.5px solid #27272a;
-      border-radius: 14
+$('dlBtn').onclick = () => {
+  if (!S.vars.length) return;
+  const ex = document.createElement('canvas');
+  const im = new Image();
+  im.onload = () => {
+    renderTo(im, ex, true);
+    ex.toBlob(b => {
+      const u = URL.createObjectURL(b), a = document.createElement('a');
+      a.href = u; a.download = 'decalque-' + Date.now() + '.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(u), 3000);
+      toast('Decalque salvo nos Downloads / Galeria!');
+    }, 'image/png', 1);
+  };
+  im.src = S.vars[S.idx];
+};
+</script>
+</body>
+</html>
